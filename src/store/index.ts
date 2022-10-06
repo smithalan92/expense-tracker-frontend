@@ -2,11 +2,14 @@ import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
 import type { TypedUseSelectorHook } from "react-redux";
 import appReducer from "./slices/app";
+import thunkFailureMiddlewareHandler from "./middleware/thunkFailure";
 
 export const store = configureStore({
   reducer: {
     app: appReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(thunkFailureMiddlewareHandler),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

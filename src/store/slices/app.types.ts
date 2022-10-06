@@ -1,9 +1,12 @@
-export interface User {
-  id: number;
-  firstName: string;
-  lastName: string;
-}
+import { LoginUser } from "@/api.types";
 
 export interface AppState {
-  user: User | null;
+  user: LoginUser | null;
+  isLoggingIn: boolean;
+  hasFailedToLogin: boolean;
+}
+
+export interface LoginThunkParams {
+  email: string;
+  password: string;
 }

@@ -2,16 +2,16 @@ import { useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { PATHS } from "@/router";
 import { useAppSelector } from "@/store";
-import { selectUser } from "@/store/slices/app";
+import { selectIsLoggedIn } from "@/store/slices/app";
 
 export default function AppContainer() {
   const location = useLocation();
   const navigate = useNavigate();
-  const currentUser = useAppSelector(selectUser);
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
 
   useEffect(() => {
-    if (!currentUser && location.pathname !== PATHS.LOGIN) {
-      navigate(PATHS.LOGIN);
+    if (isLoggedIn && location.pathname === PATHS.LOGIN) {
+      navigate(PATHS.EXPENSES);
     } else if (location.pathname === PATHS.HOME) {
       navigate(PATHS.EXPENSES);
     }
