@@ -33,7 +33,7 @@ export default function Login() {
 
   useEffect(() => {
     if (isLoggedIn) {
-      navigate(PATHS.EXPENSES);
+      navigate(PATHS.TRIPS);
     }
   }, [isLoggedIn]);
 
@@ -42,7 +42,7 @@ export default function Login() {
       <Logo className="w-[300px]" />
       <div className="mt-12 flex flex-col">
         {hasFailedToLogin && (
-          <div className="alert alert-error shadow-lg mb-6">
+          <div className="alert alert-error shadow-lg mb-6 animate__animated animate__bounceIn">
             <span>Invalid username or password</span>
           </div>
         )}

@@ -6,10 +6,12 @@ import ExpenseList from "@/Routes/ExpenseList/ExpenseList";
 import { useAppSelector } from "./store";
 import { selectIsLoggedIn } from "./store/slices/app";
 import { useEffect } from "react";
+import TripList from "@/Routes/TripList/TripList";
 
 export const PATHS = {
   HOME: "/",
   LOGIN: "/login",
+  TRIPS: "/trips",
   EXPENSES: "/expenses",
 };
 
@@ -37,6 +39,14 @@ export default createBrowserRouter([
       {
         path: PATHS.LOGIN,
         element: <Login />,
+      },
+      {
+        path: PATHS.TRIPS,
+        element: (
+          <PrivateRoute>
+            <TripList />
+          </PrivateRoute>
+        ),
       },
       {
         path: PATHS.EXPENSES,

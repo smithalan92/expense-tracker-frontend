@@ -1,4 +1,4 @@
-import { LoginResponse, LoginToken, LoginUser } from "@/api.types";
+import { LoginResponse } from "@/api.types";
 import {
   createSlice,
   PayloadAction,
@@ -8,6 +8,7 @@ import {
 import { AppState, LoginThunkParams } from "./app.types";
 import * as api from "@/api";
 import { LOCALSTORAGE_KEY } from "@/constants";
+import { resetState as resetTripState } from "./trips";
 
 const initialState: AppState = {
   user: null,
@@ -22,6 +23,12 @@ export const login = createAsyncThunk(
   }
 );
 
+export const logout = createAsyncThunk("app/logout", (_, thunkApi) => {
+  localStorage.removeItem(LOCALSTORAGE_KEY);
+  thunkApi.dispatch(resetTripState());
+  thunkApi.dispatch(resetState());
+});
+
 export const appSlice = createSlice({
   name: "app",
   initialState,
@@ -34,6 +41,11 @@ export const appSlice = createSlice({
         state.user = user;
         api.createInstance(token.token);
       }
+    },
+    resetState: (state) => {
+      state.user = null;
+      state.isLoggingIn = false;
+      state.hasFailedToLogin = false;
     },
   },
   extraReducers(builder) {
@@ -58,7 +70,7 @@ export const appSlice = createSlice({
   },
 });
 
-export const { restoreLocalStorage } = appSlice.actions;
+export const { restoreLocalStorage, resetState } = appSlice.actions;
 
 const selectAppState = ({ app }: { app: AppState }) => app;
 

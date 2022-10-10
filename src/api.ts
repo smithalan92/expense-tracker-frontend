@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from "axios";
-import { LoginResponse } from "./api.types";
+import { GetTripsResponse, LoginResponse } from "./api.types";
 
 let http: AxiosInstance | null = null;
 
@@ -27,4 +27,10 @@ export async function login({
   });
 
   return data;
+}
+
+export async function getTrips() {
+  const { data } = await http!.get<GetTripsResponse>("/trips");
+
+  return data.trips;
 }
