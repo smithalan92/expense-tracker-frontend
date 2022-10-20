@@ -4,16 +4,16 @@ import { useAppDispatch, useAppSelector } from "@/store";
 import {
   loadExpensesForTrip,
   selectExpenses,
-  selectExpenseTrip,
   selectHasFailedToLoadExpenses,
   selectIsLoadingExpenses,
 } from "@/store/slices/expenses";
 import { useCallback, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function ExpenseList() {
   const { tripId } = useParams();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const expenses = useAppSelector(selectExpenses);
   const isLoadingExpenses = useAppSelector(selectIsLoadingExpenses);
   const hasFailedToLoadExpenses = useAppSelector(selectHasFailedToLoadExpenses);
@@ -21,6 +21,10 @@ export default function ExpenseList() {
   useEffect(() => {
     dispatch(loadExpensesForTrip(parseInt(tripId!, 10)));
   }, [tripId]);
+
+  const onClickGoBack = () => {
+    navigate(-1);
+  };
 
   const maybeRenderLoader = useCallback(() => {
     if (!isLoadingExpenses) return null;
@@ -56,7 +60,13 @@ export default function ExpenseList() {
       <div className="h-160">
         <ExpenseTable />
         <div className="flex justify-end mt-6">
-          <button className="btn btn-success font-bold text-md">
+          <button
+            className="btn btn-secondary font-bold text-md mr-4"
+            onClick={onClickGoBack}
+          >
+            Go Back
+          </button>
+          <button className="btn btn-primary font-bold text-md">
             Add expense
           </button>
         </div>
