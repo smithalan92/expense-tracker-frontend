@@ -1,3 +1,4 @@
+import AddExpenseModal from "@/components/AddExpenseModal/AddExpenseModal";
 import ExpenseTable from "@/components/ExpenseTable/ExpenseTable";
 import Spinner from "@/components/Spinner";
 import { useAppDispatch, useAppSelector } from "@/store";
@@ -6,6 +7,7 @@ import {
   selectExpenses,
   selectHasFailedToLoadExpenses,
   selectIsLoadingExpenses,
+  setShouldShowAddExpenseModal,
 } from "@/store/slices/expenses";
 import { useCallback, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -24,6 +26,10 @@ export default function ExpenseList() {
 
   const onClickGoBack = () => {
     navigate(-1);
+  };
+
+  const onClickAddExpense = () => {
+    dispatch(setShouldShowAddExpenseModal(true));
   };
 
   const maybeRenderLoader = useCallback(() => {
@@ -66,10 +72,14 @@ export default function ExpenseList() {
           >
             Go Back
           </button>
-          <button className="btn btn-primary font-bold text-md">
+          <button
+            className="btn btn-primary font-bold text-md"
+            onClick={onClickAddExpense}
+          >
             Add expense
           </button>
         </div>
+        <AddExpenseModal />
       </div>
     );
   }, [isLoadingExpenses, hasFailedToLoadExpenses]);

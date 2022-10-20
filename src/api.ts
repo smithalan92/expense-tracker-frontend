@@ -9,7 +9,7 @@ let http: AxiosInstance | null = null;
 
 // TODO - Correct url
 const API_URL =
-  process.env.NODE_ENV === "production"
+  process.env.NODE_ENV === "development"
     ? "http://localhost:3520"
     : "https://expense-tracker-api.smithy.dev";
 

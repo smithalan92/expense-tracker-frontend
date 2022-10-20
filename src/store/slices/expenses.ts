@@ -14,6 +14,7 @@ const initialState: ExpenseState = {
   isLoadingExpenses: false,
   hasLoadedExpenses: false,
   hasFailedToLoadExpenses: false,
+  shouldShowAddExpenseModal: false,
 };
 
 export const loadExpensesForTrip = createAsyncThunk(
@@ -32,6 +33,9 @@ export const expenseSlice = createSlice({
       state.isLoadingExpenses = false;
       state.hasLoadedExpenses = false;
       state.hasFailedToLoadExpenses = false;
+    },
+    setShouldShowAddExpenseModal(state, action: PayloadAction<boolean>) {
+      state.shouldShowAddExpenseModal = action.payload;
     },
   },
   extraReducers(builder) {
@@ -56,7 +60,8 @@ export const expenseSlice = createSlice({
   },
 });
 
-export const { resetState } = expenseSlice.actions;
+export const { resetState, setShouldShowAddExpenseModal } =
+  expenseSlice.actions;
 
 const selectExpenseState = ({ expenses }: { expenses: ExpenseState }) =>
   expenses;
@@ -84,6 +89,11 @@ export const selectHasFailedToLoadExpenses = createSelector(
 export const selectExpenseTrip = createSelector(
   [selectExpenseState],
   (expenseState) => expenseState.trip
+);
+
+export const selectShouldShowAddExpenseModal = createSelector(
+  [selectExpenseState],
+  (expenseState) => expenseState.shouldShowAddExpenseModal
 );
 
 export default expenseSlice.reducer;

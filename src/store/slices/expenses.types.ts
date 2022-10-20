@@ -6,4 +6,5 @@ export interface ExpenseState {
   isLoadingExpenses: boolean;
   hasLoadedExpenses: boolean;
   hasFailedToLoadExpenses: boolean;
+  shouldShowAddExpenseModal: boolean;
 }
