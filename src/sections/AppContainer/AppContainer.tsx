@@ -19,10 +19,12 @@ export default function AppContainer() {
   }, [location]);
 
   return (
-    <div className="w-full max-w-3xl min-w-[390px] flex flex-col h-full">
+    <div className="w-full max-w-3xl min-w-[390px] flex flex-col h-full overflow-hidden">
       {isLoggedIn && <Header />}
       <div className="px-4 py-8 w-full h-full">
-        <Outlet />
+        <div className="pb-12">
+          <Outlet />
+        </div>
       </div>
     </div>
   );

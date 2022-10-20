@@ -12,7 +12,7 @@ export const PATHS = {
   HOME: "/",
   LOGIN: "/login",
   TRIPS: "/trips",
-  EXPENSES: "/expenses",
+  EXPENSES: "/expenses/:tripId",
 };
 
 function PrivateRoute({ children }: { children: JSX.Element | JSX.Element[] }) {

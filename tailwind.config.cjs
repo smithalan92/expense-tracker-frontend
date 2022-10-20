@@ -13,6 +13,14 @@ module.exports = {
         "2xl": "42rem;",
         "3xl": "48rem;",
       },
+      height: {
+        160: "40rem",
+        140: "35rem",
+        100: "25rem",
+      },
+      minHeight: {
+        20: "5rem",
+      },
       spacing: {
         100: "400px",
       },

@@ -1,11 +1,17 @@
 import axios, { AxiosInstance } from "axios";
-import { GetTripsResponse, LoginResponse } from "./api.types";
+import {
+  GetTripsResponse,
+  LoginResponse,
+  GetExpensesForTripResponse,
+} from "./api.types";
 
 let http: AxiosInstance | null = null;
 
 // TODO - Correct url
 const API_URL =
-  process.env.NODE_ENV === "development" ? "http://localhost:3520" : "";
+  process.env.NODE_ENV === "production"
+    ? "http://localhost:3520"
+    : "https://expense-tracker-api.smithy.dev";
 
 export function createInstance(authToken: string) {
   http = axios.create({
@@ -33,4 +39,12 @@ export async function getTrips() {
   const { data } = await http!.get<GetTripsResponse>("/trips");
 
   return data.trips;
+}
+
+export async function getExpensesForTrip(tripId: number) {
+  const { data } = await http!.get<GetExpensesForTripResponse>(
+    `/trips/${tripId}/expenses`
+  );
+
+  return data;
 }

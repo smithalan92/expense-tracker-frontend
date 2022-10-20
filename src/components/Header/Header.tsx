@@ -13,7 +13,7 @@ export default function Header() {
   };
 
   return (
-    <div className="navbar bg-base-100 pb-4">
+    <div className="navbar bg-base-100 pb-4 min-h-20">
       <div className="absolute left-1/3 lg:left-auto">
         <Link to={PATHS.HOME} className="btn btn-ghost normal-case text-xl">
           <Logo className="w-32" />
@@ -99,8 +99,8 @@ export default function Header() {
         </ul>
       </div>
       <div className="navbar-end">
-        <div className="text-sm px-4 rounded-full bg-base-content text-base-100 w-14 h-14 flex items-center justify-center">
-          {user!.firstName}
+        <div className="text-md font-bold px-4 mx-2 rounded-full bg-base-content text-base-100 w-8 h-8 flex items-center justify-center">
+          {user!.firstName.substring(0, 1).toUpperCase()}
         </div>
       </div>
     </div>

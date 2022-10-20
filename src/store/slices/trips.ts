@@ -70,4 +70,9 @@ export const selectHasLoadedTrips = createSelector(
   (tripState) => tripState.hasLoadedTrips
 );
 
+export const selectHasFailedToLoadTrips = createSelector(
+  [selectTripState],
+  (tripState) => tripState.hasFailedToLoadTrips
+);
+
 export default tripSlice.reducer;
