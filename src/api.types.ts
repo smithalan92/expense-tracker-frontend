@@ -46,3 +46,21 @@ export interface GetExpensesForTripResponse {
   trip: Trip;
   expenses: TripExpense[];
 }
+
+export interface CountryForTrip {
+  id: number;
+  name: string;
+}
+
+export interface GetCountriesForTripResponse {
+  countries: CountryForTrip[];
+}
+
+export interface City {
+  id: number;
+  name: string;
+}
+
+export interface GetCitiesForCountryResponse {
+  cities: City[];
+}

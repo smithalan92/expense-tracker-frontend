@@ -3,6 +3,8 @@ import {
   GetTripsResponse,
   LoginResponse,
   GetExpensesForTripResponse,
+  GetCountriesForTripResponse,
+  GetCitiesForCountryResponse,
 } from "./api.types";
 
 let http: AxiosInstance | null = null;
@@ -44,6 +46,22 @@ export async function getTrips() {
 export async function getExpensesForTrip(tripId: number) {
   const { data } = await http!.get<GetExpensesForTripResponse>(
     `/trips/${tripId}/expenses`
+  );
+
+  return data;
+}
+
+export async function getCountriesForTrip(tripId: number) {
+  const { data } = await http!.get<GetCountriesForTripResponse>(
+    `/trips/${tripId}/countries`
+  );
+
+  return data;
+}
+
+export async function getCitiesForCountry(countryId: number) {
+  const { data } = await http!.get<GetCitiesForCountryResponse>(
+    `/countries/${countryId}/cities`
   );
 
   return data;

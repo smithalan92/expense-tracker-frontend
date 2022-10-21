@@ -63,24 +63,26 @@ export default function ExpenseList() {
     }
 
     return (
-      <div className="h-160">
-        <ExpenseTable />
-        <div className="flex justify-end mt-6">
-          <button
-            className="btn btn-secondary font-bold text-md mr-4"
-            onClick={onClickGoBack}
-          >
-            Go Back
-          </button>
-          <button
-            className="btn btn-primary font-bold text-md"
-            onClick={onClickAddExpense}
-          >
-            Add expense
-          </button>
+      <>
+        <div className="h-160">
+          <ExpenseTable />
+          <div className="flex justify-end mt-6">
+            <button
+              className="btn btn-secondary font-bold text-md mr-4"
+              onClick={onClickGoBack}
+            >
+              Go Back
+            </button>
+            <button
+              className="btn btn-primary font-bold text-md"
+              onClick={onClickAddExpense}
+            >
+              Add expense
+            </button>
+          </div>
         </div>
         <AddExpenseModal />
-      </div>
+      </>
     );
   }, [isLoadingExpenses, hasFailedToLoadExpenses]);
 

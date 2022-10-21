@@ -4,6 +4,7 @@ import type { TypedUseSelectorHook } from "react-redux";
 import appReducer from "./slices/app";
 import tripReducer from "./slices/trips";
 import expenseReducer from "./slices/expenses";
+import newExpenseReducer from "./slices/newExpense";
 import thunkFailureMiddlewareHandler from "./middleware/thunkFailure";
 
 export const store = configureStore({
@@ -11,6 +12,7 @@ export const store = configureStore({
     app: appReducer,
     trips: tripReducer,
     expenses: expenseReducer,
+    newExpense: newExpenseReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(thunkFailureMiddlewareHandler),
