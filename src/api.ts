@@ -6,6 +6,8 @@ import {
   GetCountriesForTripResponse,
   GetCitiesForCountryResponse,
 } from "./api.types";
+import { store } from "./store";
+import { logout } from "./store/slices/app";
 
 let http: AxiosInstance | null = null;
 
@@ -19,6 +21,17 @@ export function createInstance(authToken: string) {
   http = axios.create({
     baseURL: API_URL,
     headers: { Authorization: authToken },
+  });
+
+  http.interceptors.response.use(undefined, (error) => {
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 401) {
+        store.dispatch(logout());
+        return;
+      }
+    }
+
+    throw error;
   });
 }
 

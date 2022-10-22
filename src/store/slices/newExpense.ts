@@ -12,9 +12,11 @@ import {
 } from "@/api.types";
 
 const initialState: NewExpenseState = {
+  selectedCountryId: null,
   countries: [],
   isLoadingCountries: false,
   hasLoadingCountriesFailed: false,
+  selectedCityId: null,
   cities: [],
   isLoadingCities: false,
   hasLoadingCitiesFailed: false,
@@ -39,12 +41,22 @@ export const newExpenseSlice = createSlice({
   initialState,
   reducers: {
     resetState: (state) => {
+      state.selectedCountryId = null;
+      state.countries = [];
       state.isLoadingCountries = false;
       state.hasLoadingCountriesFailed = false;
-      state.countries = [];
+      state.selectedCityId = null;
       state.cities = [];
       state.isLoadingCities = false;
       state.hasLoadingCitiesFailed = false;
+    },
+    setSelectedCountryId: (state, action: PayloadAction<number>) => {
+      state.selectedCountryId = action.payload;
+      state.selectedCityId = null;
+      state.cities = [];
+    },
+    setSelectedCityId: (state, action: PayloadAction<number>) => {
+      state.selectedCityId = action.payload;
     },
   },
   extraReducers(builder) {
@@ -86,10 +98,16 @@ export const newExpenseSlice = createSlice({
   },
 });
 
-export const { resetState } = newExpenseSlice.actions;
+export const { resetState, setSelectedCountryId, setSelectedCityId } =
+  newExpenseSlice.actions;
 
 const selectState = ({ newExpense }: { newExpense: NewExpenseState }) =>
   newExpense;
+
+export const selectSelectedCountryId = createSelector(
+  [selectState],
+  (state) => state.selectedCountryId
+);
 
 export const selectIsLoadingCountries = createSelector(
   [selectState],
@@ -104,6 +122,11 @@ export const selectHasLoadingCountriesFailed = createSelector(
 export const selectCountries = createSelector(
   [selectState],
   (state) => state.countries
+);
+
+export const selectSelectedCityId = createSelector(
+  [selectState],
+  (state) => state.selectedCityId
 );
 
 export const selectIsLoadingCities = createSelector(

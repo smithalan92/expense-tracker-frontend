@@ -7,4 +7,6 @@ export interface NewExpenseState {
   cities: City[];
   isLoadingCities: boolean;
   hasLoadingCitiesFailed: boolean;
+  selectedCountryId: number | null;
+  selectedCityId: number | null;
 }
