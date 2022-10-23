@@ -37,6 +37,7 @@ export default function ExpenseCategoryPicker() {
     <CustomSelect
       className="flex-1"
       name="category"
+      menuPlacement="top"
       options={categoryOptions}
       isSearchable={true}
       value={selectedCategory}

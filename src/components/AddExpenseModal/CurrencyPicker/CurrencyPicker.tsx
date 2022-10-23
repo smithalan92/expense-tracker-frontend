@@ -44,6 +44,7 @@ export default function CurrencyPicker() {
   return (
     <CustomSelect
       className="flex-1"
+      menuPlacement="top"
       name="currency"
       options={currencyOptions}
       isSearchable={true}
