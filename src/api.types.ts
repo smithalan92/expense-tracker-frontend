@@ -50,6 +50,8 @@ export interface GetExpensesForTripResponse {
 export interface CountryForTrip {
   id: number;
   name: string;
+  currencyCode: string;
+  currencyId: number;
 }
 
 export interface GetCountriesForTripResponse {
@@ -63,4 +65,23 @@ export interface City {
 
 export interface GetCitiesForCountryResponse {
   cities: City[];
+}
+
+export interface Currency {
+  id: number;
+  code: number;
+  name: string;
+}
+
+export interface GetCurrenciesResponse {
+  currencies: Currency[];
+}
+
+export interface ExpenseCategory {
+  id: number;
+  name: string;
+}
+
+export interface GetExpenseCategoriesResponse {
+  categories: ExpenseCategory[];
 }

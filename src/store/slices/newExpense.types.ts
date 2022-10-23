@@ -1,4 +1,4 @@
-import { City, CountryForTrip } from "@/api.types";
+import { City, CountryForTrip, ExpenseCategory } from "@/api.types";
 
 export interface NewExpenseState {
   countries: CountryForTrip[];
@@ -9,4 +9,11 @@ export interface NewExpenseState {
   hasLoadingCitiesFailed: boolean;
   selectedCountryId: number | null;
   selectedCityId: number | null;
+  selectedCurrencyId: number | null;
+  expenseCategories: ExpenseCategory[];
+  selectedCategoryId: number | null;
+  isLoadingExpenseCategories: boolean;
+  hasLoadingExpenseCategoriesFailed: boolean;
+  expenseAmount: number;
+  expenseDescription: string;
 }

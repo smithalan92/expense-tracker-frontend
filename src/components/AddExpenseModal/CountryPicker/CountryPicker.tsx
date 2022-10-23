@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useMemo } from "react";
-import Select from "react-select";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
   selectCountries,
@@ -8,6 +7,7 @@ import {
   setSelectedCountryId,
 } from "@/store/slices/newExpense";
 import { CountryPickerOption } from "./CountryPicker.types";
+import CustomSelect from "@/components/CustomSelect/CustomSelect";
 
 export default function CountryPicker() {
   const dispatch = useAppDispatch();
@@ -32,22 +32,14 @@ export default function CountryPicker() {
     return countryOptions.find((c) => c.value === selectedCountryId);
   }, [countryOptions, selectedCountryId]);
 
-  const customStyles = {
-    option: (provided: any, state: any) => ({
-      ...provided,
-      color: state.isSelected ? "#fff" : "#000",
-    }),
-  };
-
   return (
-    <Select
+    <CustomSelect
       className="flex-1"
       name="country"
       options={countryOptions}
       isSearchable={false}
       value={selectedCountry}
       onChange={onSelectCountry}
-      styles={customStyles}
     />
   );
 }

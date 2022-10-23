@@ -1,4 +1,4 @@
-import { LoginResponse } from "@/api.types";
+import { Currency, LoginResponse } from "@/api.types";
 import {
   createSlice,
   PayloadAction,
@@ -14,6 +14,9 @@ const initialState: AppState = {
   user: null,
   isLoggingIn: false,
   hasFailedToLogin: false,
+  currencies: [],
+  isLoadingCurrencies: false,
+  hasFailedToLoadCurrencies: false,
 };
 
 export const login = createAsyncThunk(
@@ -22,6 +25,10 @@ export const login = createAsyncThunk(
     return api.login({ email, password });
   }
 );
+
+export const loadCurrencies = createAsyncThunk("app/loadCurrencies", () => {
+  return api.getCurrencies();
+});
 
 export const logout = createAsyncThunk("app/logout", (_, thunkApi) => {
   localStorage.removeItem(LOCALSTORAGE_KEY);
@@ -67,6 +74,20 @@ export const appSlice = createSlice({
       state.hasFailedToLogin = true;
       state.isLoggingIn = false;
     });
+    builder.addCase(loadCurrencies.pending, (state) => {
+      state.isLoadingCurrencies = true;
+    });
+    builder.addCase(
+      loadCurrencies.fulfilled,
+      (state, action: PayloadAction<Currency[]>) => {
+        state.currencies = action.payload;
+        state.isLoadingCurrencies = false;
+      }
+    );
+    builder.addCase(loadCurrencies.rejected, (state) => {
+      state.hasFailedToLoadCurrencies = true;
+      state.isLoadingCurrencies = false;
+    });
   },
 });
 
@@ -92,6 +113,11 @@ export const selectHasLoggingInFailed = createSelector(
 export const selectIsLoggedIn = createSelector(
   [selectAppState],
   (appState) => appState.user !== null
+);
+
+export const selectCurrencies = createSelector(
+  [selectAppState],
+  (appState) => appState.currencies
 );
 
 export default appSlice.reducer;

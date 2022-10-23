@@ -5,6 +5,10 @@ import {
   GetExpensesForTripResponse,
   GetCountriesForTripResponse,
   GetCitiesForCountryResponse,
+  GetCurrenciesResponse,
+  Currency,
+  ExpenseCategory,
+  GetExpenseCategoriesResponse,
 } from "./api.types";
 import { store } from "./store";
 import { logout } from "./store/slices/app";
@@ -78,4 +82,18 @@ export async function getCitiesForCountry(countryId: number) {
   );
 
   return data;
+}
+
+export async function getCurrencies(): Promise<Currency[]> {
+  const { data } = await http!.get<GetCurrenciesResponse>(`/currencies`);
+
+  return data.currencies;
+}
+
+export async function getExpenseCategories(): Promise<ExpenseCategory[]> {
+  const { data } = await http!.get<GetExpenseCategoriesResponse>(
+    `/expense-categories`
+  );
+
+  return data.categories;
 }

@@ -7,6 +7,7 @@ import {
   selectExpenses,
   selectHasFailedToLoadExpenses,
   selectIsLoadingExpenses,
+  selectShouldShowAddExpenseModal,
   setShouldShowAddExpenseModal,
 } from "@/store/slices/expenses";
 import { useCallback, useEffect } from "react";
@@ -19,6 +20,9 @@ export default function ExpenseList() {
   const expenses = useAppSelector(selectExpenses);
   const isLoadingExpenses = useAppSelector(selectIsLoadingExpenses);
   const hasFailedToLoadExpenses = useAppSelector(selectHasFailedToLoadExpenses);
+  const shouldShowAddExpenseModal = useAppSelector(
+    selectShouldShowAddExpenseModal
+  );
 
   useEffect(() => {
     dispatch(loadExpensesForTrip(parseInt(tripId!, 10)));
@@ -81,18 +85,16 @@ export default function ExpenseList() {
             </button>
           </div>
         </div>
-        <AddExpenseModal />
       </>
     );
   }, [isLoadingExpenses, hasFailedToLoadExpenses]);
 
   return (
     <div className="w-full h-full">
-      <>
-        {maybeRenderLoader()}
-        {maybeRenderFailureState()}
-        {maybeRenderExpenseList()}
-      </>
+      {maybeRenderLoader()}
+      {maybeRenderFailureState()}
+      {maybeRenderExpenseList()}
+      {shouldShowAddExpenseModal && <AddExpenseModal />}
     </div>
   );
 }

@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useEffect, useMemo } from "react";
-import Select from "react-select";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
   loadCitiesForCountry,
@@ -11,6 +10,7 @@ import {
   setSelectedCityId,
 } from "@/store/slices/newExpense";
 import { CityPickerOption } from "./CityPicker.types";
+import CustomSelect from "@/components/CustomSelect/CustomSelect";
 
 export default function CityPicker() {
   const dispatch = useAppDispatch();
@@ -38,13 +38,6 @@ export default function CityPicker() {
     return cityOptions.find((c) => c.value === selectedCityId);
   }, [cityOptions, selectedCityId]);
 
-  const customStyles = {
-    option: (provided: any, state: any) => ({
-      ...provided,
-      color: state.isSelected ? "#fff" : "#000",
-    }),
-  };
-
   useEffect(() => {
     if (selectedCountryId) {
       dispatch(loadCitiesForCountry(selectedCountryId));
@@ -52,14 +45,13 @@ export default function CityPicker() {
   }, [selectedCountryId]);
 
   return (
-    <Select
+    <CustomSelect
       className="flex-1"
       name="city"
       options={cityOptions}
       isSearchable={true}
       value={selectedCity}
       onChange={onSelectCity}
-      styles={customStyles}
       isLoading={isLoadingCities}
       isDisabled={!selectedCountryId || isLoadingCities}
     />
