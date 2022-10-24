@@ -10,14 +10,16 @@ export default function ExpenseTable() {
     <div className="overflow-y-scroll h-140">
       <table className="table table-compact w-full border-collapse">
         <colgroup>
-          <col width="50%" />
+          <col width="25%" />
+          <col width="25%" />
           <col width="25%" />
           <col width="25%" />
         </colgroup>
         <thead className="sticky top-0">
           <tr>
+            <th>Date</th>
             <th>Category</th>
-            <th align="center">Date</th>
+            <th>City</th>
             <th align="center">Amount</th>
           </tr>
         </thead>

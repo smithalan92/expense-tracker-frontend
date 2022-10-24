@@ -7,7 +7,7 @@ export default function ExpenseTableFooter() {
   return (
     <tfoot>
       <tr className="sticky bottom-0 select-none">
-        <td></td>
+        <td colSpan={2}></td>
         <td align="right">Total</td>
         <td align="center">€{trip!.totalExpenseAmount}</td>
       </tr>

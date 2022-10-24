@@ -30,16 +30,41 @@ export interface GetTripsResponse {
   trips: Trip[];
 }
 
-export interface TripExpense {
+export interface ExpenseCurrency {
+  id: number;
+  code: string;
+  name: string;
+}
+
+export interface ExpenseCategory {
   id: number;
   name: string;
-  amount: number;
-  euroAmount: number;
-  currencyCode: string;
-  date: string;
+}
+
+export interface ExpenseCity {
+  id: number;
+  name: string;
+  timezone: string;
+}
+
+export interface ExpenseCountry {
+  id: number;
+  name: string;
+}
+
+export interface TripExpense {
+  id: number;
+  amount: string;
+  currency: ExpenseCurrency;
+  euroAmount: string;
+  localDateTime: string;
   description: string;
-  categoryId: number;
-  categoryName: string;
+  category: ExpenseCategory;
+  city: ExpenseCity;
+  country: ExpenseCountry;
+  userId: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface GetExpensesForTripResponse {
