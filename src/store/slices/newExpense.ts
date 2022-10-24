@@ -7,10 +7,48 @@ import {
 import * as api from "@/api";
 import { NewExpenseState } from "./newExpense.types";
 import {
+  AddExpenseForTripBody,
   GetCitiesForCountryResponse,
   GetCountriesForTripResponse,
 } from "@/api.types";
 import { formatDateForStoring } from "@/utils/date";
+import { RootState } from "..";
+import {
+  loadExpensesForTrip,
+  selectExpenseTrip,
+  setShouldShowAddExpenseModal,
+} from "./expenses";
+
+// TODO fix typing
+export const addExpense = createAsyncThunk<void, unknown, { state: RootState }>(
+  "expenses/loadExpensesForTrip",
+  async (_, thunkApi) => {
+    const state = thunkApi.getState();
+    const { id: tripId } = selectExpenseTrip(state)!;
+
+    const localDateTime = selectExpenseDate(state)!;
+    const cityId = selectSelectedCityId(state)!;
+    const amount = selectExpenseAmount(state)!;
+    const currencyId = selectSelectedCurrencyId(state)!;
+    const categoryId = selectSelectedCategoryId(state)!;
+    const description = selectExpenseDescription(state)!;
+
+    const payload: AddExpenseForTripBody = {
+      localDateTime,
+      cityId,
+      amount,
+      currencyId,
+      categoryId,
+      description,
+    };
+
+    await api.addExpenseToTrip(tripId, payload);
+
+    await thunkApi.dispatch(loadExpensesForTrip(tripId));
+
+    thunkApi.dispatch(setShouldShowAddExpenseModal(false));
+  }
+);
 
 const initialState: NewExpenseState = {
   selectedCountryId: null,
@@ -29,6 +67,7 @@ const initialState: NewExpenseState = {
   expenseAmount: 0,
   expenseDescription: "",
   expenseDate: formatDateForStoring(new Date()),
+  isSavingExpense: false,
 };
 
 export const loadCountriesForTrip = createAsyncThunk(
@@ -72,6 +111,8 @@ export const newExpenseSlice = createSlice({
       state.hasLoadingExpenseCategoriesFailed = false;
       state.expenseAmount = 0;
       state.expenseDescription = "";
+      state.expenseDate = formatDateForStoring(new Date());
+      state.isSavingExpense = false;
     },
     setSelectedCountryId: (state, action: PayloadAction<number>) => {
       state.selectedCountryId = action.payload;
@@ -147,6 +188,18 @@ export const newExpenseSlice = createSlice({
     builder.addCase(loadExpenseCategories.rejected, (state) => {
       state.hasLoadingExpenseCategoriesFailed = true;
       state.isLoadingExpenseCategories = false;
+    });
+
+    builder.addCase(addExpense.pending, (state) => {
+      state.isSavingExpense = true;
+    });
+
+    builder.addCase(addExpense.fulfilled, (state) => {
+      state.isSavingExpense = false;
+    });
+
+    builder.addCase(addExpense.rejected, () => {
+      // TODO
     });
   },
 });
@@ -248,5 +301,10 @@ export const selectCanSaveExpense = createSelector([selectState], (state) => {
     state.selectedCategoryId
   );
 });
+
+export const selectIsSavingExpense = createSelector(
+  [selectState],
+  (state) => state.isSavingExpense
+);
 
 export default newExpenseSlice.reducer;

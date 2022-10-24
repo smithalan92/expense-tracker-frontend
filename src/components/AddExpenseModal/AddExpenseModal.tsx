@@ -2,13 +2,16 @@
 import { useAppDispatch, useAppSelector } from "@/store";
 import { setShouldShowAddExpenseModal } from "@/store/slices/expenses";
 import {
+  addExpense,
   loadCountriesForTrip,
   loadExpenseCategories,
   resetState as resetNewExpenseState,
   selectCanSaveExpense,
+  selectIsSavingExpense,
 } from "@/store/slices/newExpense";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
+import Spinner from "../Spinner";
 import CityPicker from "./CityPicker/CityPicker";
 import CountryPicker from "./CountryPicker/CountryPicker";
 import CurrencyPicker from "./CurrencyPicker/CurrencyPicker";
@@ -21,9 +24,14 @@ export default function AddExpenseModal() {
   const tripId = parseInt(useParams().tripId!, 10);
   const dispatch = useAppDispatch();
   const canSaveExpense = useAppSelector(selectCanSaveExpense);
+  const isSavingExpense = useAppSelector(selectIsSavingExpense);
 
   const onClickCancel = () => {
     dispatch(setShouldShowAddExpenseModal(false));
+  };
+
+  const onClickAddExpense = () => {
+    dispatch(addExpense(1));
   };
 
   useEffect(() => {
@@ -79,12 +87,17 @@ export default function AddExpenseModal() {
           <button
             className="btn btn-primary font-bold text-md"
             disabled={!canSaveExpense}
-            // onClick={onClickAddExpense}
+            onClick={onClickAddExpense}
           >
             Save
           </button>
         </div>
       </div>
+      {isSavingExpense && (
+        <div className="w-full h-full bg-black/50 z-10 flex items-center justify-center">
+          <Spinner />
+        </div>
+      )}
     </div>
   );
 }

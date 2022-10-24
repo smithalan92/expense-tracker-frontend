@@ -9,6 +9,7 @@ import {
   Currency,
   ExpenseCategory,
   GetExpenseCategoriesResponse,
+  AddExpenseForTripBody,
 } from "./api.types";
 import { store } from "./store";
 import { logout } from "./store/slices/app";
@@ -96,4 +97,13 @@ export async function getExpenseCategories(): Promise<ExpenseCategory[]> {
   );
 
   return data.categories;
+}
+
+export async function addExpenseToTrip(
+  tripId: number,
+  expense: AddExpenseForTripBody
+) {
+  await http!.post(`/trips/${tripId}/expense`, {
+    ...expense,
+  });
 }

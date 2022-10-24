@@ -17,4 +17,5 @@ export interface NewExpenseState {
   expenseAmount: number;
   expenseDescription: string;
   expenseDate: string;
+  isSavingExpense: boolean;
 }

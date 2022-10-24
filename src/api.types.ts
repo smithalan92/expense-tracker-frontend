@@ -85,3 +85,12 @@ export interface ExpenseCategory {
 export interface GetExpenseCategoriesResponse {
   categories: ExpenseCategory[];
 }
+
+export interface AddExpenseForTripBody {
+  localDateTime: string;
+  cityId: number;
+  amount: number;
+  currencyId: number;
+  categoryId: number;
+  description: string;
+}
