@@ -5,7 +5,7 @@ import { ExpenseProps } from "./Expense.types";
 export default function Expense({ expense }: ExpenseProps) {
   return (
     <tr className="hover cursor-pointer select-none">
-      <td className="text-ellipsis overflow-hidden">{expense.name}</td>
+      <td className="text-ellipsis overflow-hidden">{expense.categoryName}</td>
       <td align="center">{expense.date}</td>
       <td align="center">€{expense.euroAmount}</td>
     </tr>

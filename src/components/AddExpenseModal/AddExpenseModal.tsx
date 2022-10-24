@@ -12,6 +12,7 @@ import { useParams } from "react-router-dom";
 import CityPicker from "./CityPicker/CityPicker";
 import CountryPicker from "./CountryPicker/CountryPicker";
 import CurrencyPicker from "./CurrencyPicker/CurrencyPicker";
+import CustomDatePicker from "./DatePicker/DatePicker";
 import ExpenseAmountInput from "./ExpenseAmountInput/ExpenseAmountInput";
 import ExpenseCategoryPicker from "./ExpenseCategoryPicker/ExpenseCategoryPicker";
 import ExpenseDescription from "./ExpenseDescription/ExpenseDescription";
@@ -38,7 +39,11 @@ export default function AddExpenseModal() {
     <div className="flex w-full h-full absolute top-0 left-0 justify-center items-center bg-black/50">
       <div className="modal-box overflow-hidden absolute bottom-[-32px] md:relative box-content">
         <h2 className="font-bold text-2xl mb-2">Add Expense</h2>
-        <div className="h-[550px] pr-4">
+        <div className="h-[550px] overflow-y-scroll pr-4">
+          <div className="flex items-center py-4">
+            <div className="w-24 mb-4">When</div>
+            <CustomDatePicker />
+          </div>
           <div className="flex items-center py-4">
             <div className="w-24">Country</div>
             <CountryPicker />

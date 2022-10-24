@@ -16,4 +16,5 @@ export interface NewExpenseState {
   hasLoadingExpenseCategoriesFailed: boolean;
   expenseAmount: number;
   expenseDescription: string;
+  expenseDate: string;
 }

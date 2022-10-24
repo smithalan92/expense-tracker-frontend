@@ -10,6 +10,7 @@ import {
   GetCitiesForCountryResponse,
   GetCountriesForTripResponse,
 } from "@/api.types";
+import { formatDateForStoring } from "@/utils/date";
 
 const initialState: NewExpenseState = {
   selectedCountryId: null,
@@ -27,6 +28,7 @@ const initialState: NewExpenseState = {
   hasLoadingExpenseCategoriesFailed: false,
   expenseAmount: 0,
   expenseDescription: "",
+  expenseDate: formatDateForStoring(new Date()),
 };
 
 export const loadCountriesForTrip = createAsyncThunk(
@@ -91,6 +93,9 @@ export const newExpenseSlice = createSlice({
     setExpenseDescription: (state, action: PayloadAction<string>) => {
       state.expenseDescription = action.payload;
     },
+    setExpenseDate: (state, action: PayloadAction<string>) => {
+      state.expenseDate = action.payload;
+    },
   },
   extraReducers(builder) {
     builder.addCase(loadCountriesForTrip.pending, (state) => {
@@ -154,6 +159,7 @@ export const {
   setSelectedCategoryId,
   setExpenseAmount,
   setExpenseDescription,
+  setExpenseDate,
 } = newExpenseSlice.actions;
 
 const selectState = ({ newExpense }: { newExpense: NewExpenseState }) =>
@@ -226,6 +232,11 @@ export const selectExpenseAmount = createSelector(
 export const selectExpenseDescription = createSelector(
   [selectState],
   (state) => state.expenseDescription
+);
+
+export const selectExpenseDate = createSelector(
+  [selectState],
+  (state) => state.expenseDate
 );
 
 export const selectCanSaveExpense = createSelector([selectState], (state) => {

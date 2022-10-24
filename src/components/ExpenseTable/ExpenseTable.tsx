@@ -16,7 +16,7 @@ export default function ExpenseTable() {
         </colgroup>
         <thead className="sticky top-0">
           <tr>
-            <th>Name</th>
+            <th>Category</th>
             <th align="center">Date</th>
             <th align="center">Amount</th>
           </tr>
