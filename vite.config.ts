@@ -7,24 +7,24 @@ import { VitePWA, VitePWAOptions } from "vite-plugin-pwa";
 const pwaOptions: Partial<VitePWAOptions> = {
   mode: "development",
   base: "/",
-  includeAssets: ["favicon.ico", "pwa-192x192.png", "pwa-512x512"],
+  includeAssets: ["favicon.svg", "icon-192x192.png", "icon-512x512"],
   manifest: {
-    name: "PWA Router",
-    short_name: "PWA Router",
-    theme_color: "#ffffff",
+    name: "expensr",
+    short_name: "expensr",
+    theme_color: "#1d283a",
     icons: [
       {
-        src: "pwa-192x192.png", // <== don't add slash, for testing
+        src: "icon-192x192.png", // <== don't add slash, for testing
         sizes: "192x192",
         type: "image/png",
       },
       {
-        src: "/pwa-512x512.png", // <== don't remove slash, for testing
+        src: "/icon-512x512.png", // <== don't remove slash, for testing
         sizes: "512x512",
         type: "image/png",
       },
       {
-        src: "pwa-512x512.png", // <== don't add slash, for testing
+        src: "icon-512x512.png", // <== don't add slash, for testing
         sizes: "512x512",
         type: "image/png",
         purpose: "any maskable",
