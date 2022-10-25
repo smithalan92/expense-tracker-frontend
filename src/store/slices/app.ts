@@ -7,8 +7,15 @@ import {
 } from "@reduxjs/toolkit";
 import { AppState, LoginThunkParams } from "./app.types";
 import * as api from "@/api";
-import { LOCALSTORAGE_KEY } from "@/constants";
 import { resetState as resetTripState } from "./trips";
+import {
+  deleteStorageItem,
+  getStorageItem,
+  LOCALSTORAGE_AUTH_KEY,
+  LOCALSTORAGE_CURRENCIES_KEY,
+  setStorageItem,
+} from "@/utils/localStorage";
+import axios from "axios";
 
 const initialState: AppState = {
   user: null,
@@ -26,12 +33,25 @@ export const login = createAsyncThunk(
   }
 );
 
-export const loadCurrencies = createAsyncThunk("app/loadCurrencies", () => {
-  return api.getCurrencies();
-});
+export const loadCurrencies = createAsyncThunk(
+  "app/loadCurrencies",
+  async () => {
+    try {
+      const result = await api.getCurrencies();
+      setStorageItem(LOCALSTORAGE_CURRENCIES_KEY, result);
+      return result;
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.code === "ERR_NETWORK") {
+        const savedResult = getStorageItem(LOCALSTORAGE_CURRENCIES_KEY);
+        if (savedResult) return savedResult;
+      }
+      throw err;
+    }
+  }
+);
 
 export const logout = createAsyncThunk("app/logout", (_, thunkApi) => {
-  localStorage.removeItem(LOCALSTORAGE_KEY);
+  deleteStorageItem(LOCALSTORAGE_AUTH_KEY);
   thunkApi.dispatch(resetTripState());
   thunkApi.dispatch(resetState());
 });
@@ -41,10 +61,10 @@ export const appSlice = createSlice({
   initialState,
   reducers: {
     restoreLocalStorage: (state) => {
-      const data = localStorage.getItem(LOCALSTORAGE_KEY);
+      const data = getStorageItem(LOCALSTORAGE_AUTH_KEY);
 
       if (data) {
-        const { user, token }: LoginResponse = JSON.parse(data);
+        const { user, token } = data as any;
         state.user = user;
         api.createInstance(token.token);
       }
@@ -63,7 +83,7 @@ export const appSlice = createSlice({
     builder.addCase(
       login.fulfilled,
       (state, action: PayloadAction<LoginResponse>) => {
-        localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(action.payload));
+        setStorageItem(LOCALSTORAGE_AUTH_KEY, action.payload);
         api.createInstance(action.payload.token.token);
 
         state.user = action.payload.user;

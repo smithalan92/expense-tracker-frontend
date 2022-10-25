@@ -8,6 +8,7 @@ import * as api from "@/api";
 import { NewExpenseState } from "./newExpense.types";
 import {
   AddExpenseForTripBody,
+  ExpenseCategory,
   GetCitiesForCountryResponse,
   GetCountriesForTripResponse,
 } from "@/api.types";
@@ -18,6 +19,34 @@ import {
   selectExpenseTrip,
   setShouldShowAddExpenseModal,
 } from "./expenses";
+import {
+  getCountryCitiesKey,
+  getStorageItem,
+  getTripCountriesKey,
+  LOCALSTORAGE_EXPENSE_CATEGORIES_KEY,
+  setStorageItem,
+} from "@/utils/localStorage";
+import axios from "axios";
+
+const initialState: NewExpenseState = {
+  selectedCountryId: null,
+  countries: [],
+  isLoadingCountries: false,
+  hasLoadingCountriesFailed: false,
+  selectedCityId: null,
+  cities: [],
+  isLoadingCities: false,
+  hasLoadingCitiesFailed: false,
+  selectedCurrencyId: null,
+  expenseCategories: [],
+  selectedCategoryId: null,
+  isLoadingExpenseCategories: false,
+  hasLoadingExpenseCategoriesFailed: false,
+  expenseAmount: 0,
+  expenseDescription: "",
+  expenseDate: formatDateForStoring(new Date()),
+  isSavingExpense: false,
+};
 
 // TODO fix typing
 export const addExpense = createAsyncThunk<void, unknown, { state: RootState }>(
@@ -50,44 +79,60 @@ export const addExpense = createAsyncThunk<void, unknown, { state: RootState }>(
   }
 );
 
-const initialState: NewExpenseState = {
-  selectedCountryId: null,
-  countries: [],
-  isLoadingCountries: false,
-  hasLoadingCountriesFailed: false,
-  selectedCityId: null,
-  cities: [],
-  isLoadingCities: false,
-  hasLoadingCitiesFailed: false,
-  selectedCurrencyId: null,
-  expenseCategories: [],
-  selectedCategoryId: null,
-  isLoadingExpenseCategories: false,
-  hasLoadingExpenseCategoriesFailed: false,
-  expenseAmount: 0,
-  expenseDescription: "",
-  expenseDate: formatDateForStoring(new Date()),
-  isSavingExpense: false,
-};
-
 export const loadCountriesForTrip = createAsyncThunk(
   "newExpense/loadCountriesForTrip",
-  (tripId: number) => {
-    return api.getCountriesForTrip(tripId);
+  async (tripId: number) => {
+    try {
+      const result = await api.getCountriesForTrip(tripId);
+      setStorageItem(getTripCountriesKey(tripId), result);
+      return result;
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.code === "ERR_NETWORK") {
+        const savedResult = getStorageItem<GetCountriesForTripResponse>(
+          getTripCountriesKey(tripId)
+        );
+        if (savedResult) return savedResult;
+      }
+      throw err;
+    }
   }
 );
 
 export const loadCitiesForCountry = createAsyncThunk(
   "newExpense/loadCitiesForCountry",
-  (countryId: number) => {
-    return api.getCitiesForCountry(countryId);
+  async (countryId: number) => {
+    try {
+      const result = await api.getCitiesForCountry(countryId);
+      setStorageItem(getCountryCitiesKey(countryId), result);
+      return result;
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.code === "ERR_NETWORK") {
+        const savedResult = getStorageItem<GetCitiesForCountryResponse>(
+          getCountryCitiesKey(countryId)
+        );
+        if (savedResult) return savedResult;
+      }
+      throw err;
+    }
   }
 );
 
 export const loadExpenseCategories = createAsyncThunk(
   "newExpense/loadExpenseCategories",
-  () => {
-    return api.getExpenseCategories();
+  async () => {
+    try {
+      const result = await api.getExpenseCategories();
+      setStorageItem(LOCALSTORAGE_EXPENSE_CATEGORIES_KEY, result);
+      return result;
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.code === "ERR_NETWORK") {
+        const savedResult = getStorageItem<ExpenseCategory[]>(
+          LOCALSTORAGE_EXPENSE_CATEGORIES_KEY
+        );
+        if (savedResult) return savedResult;
+      }
+      throw err;
+    }
   }
 );
 

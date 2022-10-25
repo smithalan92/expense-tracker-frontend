@@ -7,6 +7,12 @@ import {
 import { TripState } from "./trips.types";
 import * as api from "@/api";
 import { Trip } from "@/api.types";
+import {
+  getStorageItem,
+  LOCALSTORAGE_TRIPS_KEY,
+  setStorageItem,
+} from "@/utils/localStorage";
+import axios from "axios";
 
 const initialState: TripState = {
   trips: [],
@@ -16,7 +22,17 @@ const initialState: TripState = {
 };
 
 export const loadTrips = createAsyncThunk("trips/loadTrips", () => {
-  return api.getTrips();
+  try {
+    const result = api.getTrips();
+    setStorageItem(LOCALSTORAGE_TRIPS_KEY, result);
+    return result;
+  } catch (err) {
+    if (axios.isAxiosError(err) && err.code === "ERR_NETWORK") {
+      const savedTrips = getStorageItem<Trip[]>(LOCALSTORAGE_TRIPS_KEY);
+      if (savedTrips) return savedTrips;
+    }
+    throw err;
+  }
 });
 
 export const tripSlice = createSlice({

@@ -7,6 +7,12 @@ import {
 import * as api from "@/api";
 import { ExpenseState } from "./expenses.types";
 import { GetExpensesForTripResponse } from "@/api.types";
+import {
+  getStorageItem,
+  getTripExpensesKey,
+  setStorageItem,
+} from "@/utils/localStorage";
+import axios from "axios";
 
 const initialState: ExpenseState = {
   trip: null,
@@ -19,8 +25,22 @@ const initialState: ExpenseState = {
 
 export const loadExpensesForTrip = createAsyncThunk(
   "expenses/loadExpensesForTrip",
-  (tripId: number) => {
-    return api.getExpensesForTrip(tripId);
+  async (tripId: number) => {
+    try {
+      const result = await api.getExpensesForTrip(tripId);
+      setStorageItem(getTripExpensesKey(tripId), result);
+      return result;
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.code === "ERR_NETWORK") {
+        const savedResponse = getStorageItem<GetExpensesForTripResponse>(
+          getTripExpensesKey(1)
+        );
+
+        if (savedResponse) return savedResponse;
+      }
+
+      throw err;
+    }
   }
 );
 
