@@ -21,9 +21,9 @@ const initialState: TripState = {
   hasFailedToLoadTrips: false,
 };
 
-export const loadTrips = createAsyncThunk("trips/loadTrips", () => {
+export const loadTrips = createAsyncThunk("trips/loadTrips", async () => {
   try {
-    const result = api.getTrips();
+    const result = await api.getTrips();
     setStorageItem(LOCALSTORAGE_TRIPS_KEY, result);
     return result;
   } catch (err) {
