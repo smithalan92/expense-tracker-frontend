@@ -42,7 +42,9 @@ export const loadCurrencies = createAsyncThunk(
       return result;
     } catch (err) {
       if (axios.isAxiosError(err) && err.code === "ERR_NETWORK") {
-        const savedResult = getStorageItem(LOCALSTORAGE_CURRENCIES_KEY);
+        const savedResult = getStorageItem<Currency[]>(
+          LOCALSTORAGE_CURRENCIES_KEY
+        );
         if (savedResult) return savedResult;
       }
       throw err;
