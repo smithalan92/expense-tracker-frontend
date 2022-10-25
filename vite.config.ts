@@ -7,7 +7,7 @@ import { VitePWA, VitePWAOptions } from "vite-plugin-pwa";
 const pwaOptions: Partial<VitePWAOptions> = {
   mode: "development",
   base: "/",
-  includeAssets: ["favicon.svg", "icon-192x192.png", "icon-512x512"],
+  includeAssets: ["favicon.svg"],
   manifest: {
     name: "expensr",
     short_name: "expensr",
