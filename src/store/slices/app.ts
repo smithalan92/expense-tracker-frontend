@@ -1,4 +1,4 @@
-import { Currency, LoginResponse } from "@/api.types";
+import { LoginResponse } from "@/api.types";
 import {
   createSlice,
   PayloadAction,
@@ -7,23 +7,18 @@ import {
 } from "@reduxjs/toolkit";
 import { AppState, LoginThunkParams } from "./app.types";
 import * as api from "@/api";
-import { resetState as resetTripState } from "./trips";
+import { resetState as resetTripDataState } from "./trips";
 import {
   deleteStorageItem,
   getStorageItem,
   LOCALSTORAGE_AUTH_KEY,
-  LOCALSTORAGE_CURRENCIES_KEY,
   setStorageItem,
 } from "@/utils/localStorage";
-import axios from "axios";
 
 const initialState: AppState = {
   user: null,
   isLoggingIn: false,
   hasFailedToLogin: false,
-  currencies: [],
-  isLoadingCurrencies: false,
-  hasFailedToLoadCurrencies: false,
 };
 
 export const login = createAsyncThunk(
@@ -33,28 +28,9 @@ export const login = createAsyncThunk(
   }
 );
 
-export const loadCurrencies = createAsyncThunk(
-  "app/loadCurrencies",
-  async () => {
-    try {
-      const result = await api.getCurrencies();
-      setStorageItem(LOCALSTORAGE_CURRENCIES_KEY, result);
-      return result;
-    } catch (err) {
-      if (axios.isAxiosError(err) && err.code === "ERR_NETWORK") {
-        const savedResult = getStorageItem<Currency[]>(
-          LOCALSTORAGE_CURRENCIES_KEY
-        );
-        if (savedResult) return savedResult;
-      }
-      throw err;
-    }
-  }
-);
-
 export const logout = createAsyncThunk("app/logout", (_, thunkApi) => {
   deleteStorageItem(LOCALSTORAGE_AUTH_KEY);
-  thunkApi.dispatch(resetTripState());
+  thunkApi.dispatch(resetTripDataState());
   thunkApi.dispatch(resetState());
 });
 
@@ -96,20 +72,6 @@ export const appSlice = createSlice({
       state.hasFailedToLogin = true;
       state.isLoggingIn = false;
     });
-    builder.addCase(loadCurrencies.pending, (state) => {
-      state.isLoadingCurrencies = true;
-    });
-    builder.addCase(
-      loadCurrencies.fulfilled,
-      (state, action: PayloadAction<Currency[]>) => {
-        state.currencies = action.payload;
-        state.isLoadingCurrencies = false;
-      }
-    );
-    builder.addCase(loadCurrencies.rejected, (state) => {
-      state.hasFailedToLoadCurrencies = true;
-      state.isLoadingCurrencies = false;
-    });
   },
 });
 
@@ -135,11 +97,6 @@ export const selectHasLoggingInFailed = createSelector(
 export const selectIsLoggedIn = createSelector(
   [selectAppState],
   (appState) => appState.user !== null
-);
-
-export const selectCurrencies = createSelector(
-  [selectAppState],
-  (appState) => appState.currencies
 );
 
 export default appSlice.reducer;

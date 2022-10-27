@@ -2,17 +2,15 @@ import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
 import type { TypedUseSelectorHook } from "react-redux";
 import appReducer from "./slices/app";
-import tripReducer from "./slices/trips";
-import expenseReducer from "./slices/expenses";
-import newExpenseReducer from "./slices/newExpense";
+import tripsReducer from "./slices/trips";
+import tripDataReducer from "./slices/tripData";
 import thunkFailureMiddlewareHandler from "./middleware/thunkFailure";
 
 export const store = configureStore({
   reducer: {
     app: appReducer,
-    trips: tripReducer,
-    expenses: expenseReducer,
-    newExpense: newExpenseReducer,
+    trips: tripsReducer,
+    tripData: tripDataReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(thunkFailureMiddlewareHandler),

@@ -1,43 +1,42 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useEffect, useMemo } from "react";
-import { useAppDispatch, useAppSelector } from "@/store";
-import {
-  loadCitiesForCountryIds,
-  selectCities,
-  selectIsLoadingCities,
-  selectSelectedCityId,
-  selectSelectedCountryId,
-  setSelectedCityId,
-} from "@/store/slices/newExpense";
-import { CityPickerOption } from "./CityPicker.types";
+import { useAppSelector } from "@/store";
+import { CityPickerOption, CityPickerProps } from "./CityPicker.types";
 import CustomSelect from "@/components/CustomSelect/CustomSelect";
+import { selectCitiesForCountryId } from "@/store/slices/tripData";
 
-export default function CityPicker() {
-  const dispatch = useAppDispatch();
-  const selectedCountryId = useAppSelector(selectSelectedCountryId);
-  const selectedCityId = useAppSelector(selectSelectedCityId);
-  const cities = useAppSelector(selectCities);
-  const isLoadingCities = useAppSelector(selectIsLoadingCities);
+export default function CityPicker({
+  value,
+  selectedCountryId,
+  onChange,
+}: CityPickerProps) {
+  const cities = useAppSelector((state) =>
+    selectCitiesForCountryId(state, selectedCountryId)
+  );
 
   const onSelectCity = useCallback(
     (option: CityPickerOption | null) => {
-      dispatch(setSelectedCityId(option!.value));
+      onChange(option!.value);
     },
-    [dispatch]
+    [onChange]
   );
 
   const cityOptions = useMemo(() => {
-    if (!cities[selectedCountryId!]) return [];
-    return cities[selectedCountryId!].map<CityPickerOption>((city) => ({
+    return cities.map<CityPickerOption>((city) => ({
       value: city.id,
       label: city.name,
     }));
   }, [cities, selectedCountryId]);
 
   const selectedCity = useMemo(() => {
-    if (!selectedCityId) return null;
-    return cityOptions.find((c) => c.value === selectedCityId);
-  }, [cityOptions, selectedCityId]);
+    if (!value) return null;
+    return cityOptions.find((c) => c.value === value);
+  }, [cityOptions, value]);
+
+  useEffect(() => {
+    if (selectedCountryId && value) {
+      onChange(null);
+    }
+  }, [selectedCountryId]);
 
   return (
     <CustomSelect
@@ -47,8 +46,7 @@ export default function CityPicker() {
       isSearchable={true}
       value={selectedCity}
       onChange={onSelectCity}
-      isLoading={isLoadingCities}
-      isDisabled={!selectedCountryId || isLoadingCities}
+      isDisabled={!selectedCountryId}
     />
   );
 }

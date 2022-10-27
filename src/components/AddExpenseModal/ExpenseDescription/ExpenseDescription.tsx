@@ -1,26 +1,21 @@
-import { useAppDispatch, useAppSelector } from "@/store";
-import {
-  selectExpenseDescription,
-  setExpenseDescription,
-} from "@/store/slices/newExpense";
 import { useCallback } from "react";
+import { ExpenseDescriptionProps } from "./ExpenseDescription.types";
 
-export default function ExpenseDescription() {
-  const dispatch = useAppDispatch();
-  const expenseDescription = useAppSelector(selectExpenseDescription);
-
+export default function ExpenseDescription({
+  value,
+  onChange,
+}: ExpenseDescriptionProps) {
   const onChangeDescription = useCallback(
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      dispatch(setExpenseDescription(e.target.value));
+      onChange(e.target.value);
     },
-    [dispatch]
+    [onChange]
   );
 
   return (
     <textarea
       className="textarea textarea-bordered"
-      placeholder="Description for expense"
-      value={expenseDescription}
+      value={value}
       onChange={onChangeDescription}
     />
   );

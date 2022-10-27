@@ -1,4 +1,3 @@
-import { PATHS } from "@/router";
 import { Link } from "react-router-dom";
 import { TripProps } from "./Trip.types";
 
@@ -21,7 +20,7 @@ export default function Trip({ trip }: TripProps) {
           {trip.totalExpenseAmount}
         </p>
         <div className="card-actions justify-center mt-4 mb-4">
-          <Link className="btn btn-primary" to={`/expenses/${trip.id}`}>
+          <Link className="btn btn-primary" to={`/trips/${trip.id}`}>
             View expenses
           </Link>
         </div>

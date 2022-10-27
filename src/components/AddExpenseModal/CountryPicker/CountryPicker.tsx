@@ -1,24 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useMemo } from "react";
-import { useAppDispatch, useAppSelector } from "@/store";
-import {
-  selectCountries,
-  selectSelectedCountryId,
-  setSelectedCountryId,
-} from "@/store/slices/newExpense";
-import { CountryPickerOption } from "./CountryPicker.types";
+import { useAppSelector } from "@/store";
+import { selectCountries } from "@/store/slices/tripData";
+import { CountryPickerOption, CountryPickerProps } from "./CountryPicker.types";
 import CustomSelect from "@/components/CustomSelect/CustomSelect";
 
-export default function CountryPicker() {
-  const dispatch = useAppDispatch();
-  const selectedCountryId = useAppSelector(selectSelectedCountryId);
+export default function CountryPicker({ value, onChange }: CountryPickerProps) {
   const countries = useAppSelector(selectCountries);
 
   const onSelectCountry = useCallback(
     (option: CountryPickerOption | null) => {
-      dispatch(setSelectedCountryId(option!.value));
+      onChange(option!.value);
     },
-    [dispatch]
+    [onChange]
   );
 
   const countryOptions = useMemo(() => {
@@ -29,8 +23,8 @@ export default function CountryPicker() {
   }, [countries]);
 
   const selectedCountry = useMemo(() => {
-    return countryOptions.find((c) => c.value === selectedCountryId);
-  }, [countryOptions, selectedCountryId]);
+    return countryOptions.find((c) => c.value === value);
+  }, [countryOptions, value]);
 
   return (
     <CustomSelect

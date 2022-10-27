@@ -1,26 +1,23 @@
-import { useAppDispatch, useAppSelector } from "@/store";
-import {
-  selectExpenseAmount,
-  setExpenseAmount,
-} from "@/store/slices/newExpense";
 import { useCallback } from "react";
+import { ExpenseAmountInputProps } from "./ExpenseAmountInput.types";
 
-export default function ExpenseAmountInput() {
-  const dispatch = useAppDispatch();
-  const expenseAmount = useAppSelector(selectExpenseAmount);
-
+export default function ExpenseAmountInput({
+  value,
+  onChange,
+}: ExpenseAmountInputProps) {
   const onChangeAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const amount = parseFloat(e.target.value);
-      dispatch(setExpenseAmount(amount));
+      onChange(amount);
     },
-    [dispatch]
+    [onChange]
   );
 
   return (
     <input
       type="number"
-      value={expenseAmount}
+      placeholder="0.00"
+      value={value ?? ""}
       onChange={onChangeAmount}
       className="flex-1 input input-md input-bordered w-32 bg-white text-black"
     />

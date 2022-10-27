@@ -1,22 +1,16 @@
-import { useAppDispatch, useAppSelector } from "@/store";
-import { selectExpenseDate, setExpenseDate } from "@/store/slices/newExpense";
 import { formatDateForStoring } from "@/utils/date";
 import { useMemo } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { DatePickerProps } from "./DatePicker.types";
 
-export default function CustomDatePicker() {
-  const dispatch = useAppDispatch();
-  const selectedDateString = useAppSelector(selectExpenseDate);
+export default function CustomDatePicker({ value, onChange }: DatePickerProps) {
   const onChangeDate = (date: Date | null) => {
     const stringDate = formatDateForStoring(date!);
-    dispatch(setExpenseDate(stringDate));
+    onChange(stringDate);
   };
 
-  const selectedDate = useMemo(
-    () => new Date(selectedDateString),
-    [selectedDateString]
-  );
+  const selectedDate = useMemo(() => new Date(value), [value]);
 
   return (
     <div className="flex-1">

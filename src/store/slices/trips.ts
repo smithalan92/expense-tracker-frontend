@@ -4,7 +4,7 @@ import {
   createSelector,
   createAsyncThunk,
 } from "@reduxjs/toolkit";
-import { TripState } from "./trips.types";
+import { TripsState } from "./trips.types";
 import * as api from "@/api";
 import { Trip } from "@/api.types";
 import {
@@ -14,7 +14,7 @@ import {
 } from "@/utils/localStorage";
 import axios from "axios";
 
-const initialState: TripState = {
+const initialState: TripsState = {
   trips: [],
   isLoadingTrips: false,
   hasLoadedTrips: false,
@@ -69,26 +69,26 @@ export const tripSlice = createSlice({
 
 export const { resetState } = tripSlice.actions;
 
-const selectTripState = ({ trips }: { trips: TripState }) => trips;
+const selectTripDataState = ({ trips }: { trips: TripDataState }) => trips;
 
 export const selectTrips = createSelector(
-  [selectTripState],
-  (tripState) => tripState.trips
+  [selectTripDataState],
+  (TripDataState) => TripDataState.trips
 );
 
 export const selectIsLoadingTrips = createSelector(
-  [selectTripState],
-  (tripState) => tripState.isLoadingTrips
+  [selectTripDataState],
+  (TripDataState) => TripDataState.isLoadingTrips
 );
 
 export const selectHasLoadedTrips = createSelector(
-  [selectTripState],
-  (tripState) => tripState.hasLoadedTrips
+  [selectTripDataState],
+  (TripDataState) => TripDataState.hasLoadedTrips
 );
 
 export const selectHasFailedToLoadTrips = createSelector(
-  [selectTripState],
-  (tripState) => tripState.hasFailedToLoadTrips
+  [selectTripDataState],
+  (TripDataState) => TripDataState.hasFailedToLoadTrips
 );
 
 export default tripSlice.reducer;

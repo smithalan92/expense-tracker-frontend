@@ -3,13 +3,12 @@ import {
   GetTripsResponse,
   LoginResponse,
   GetExpensesForTripResponse,
-  GetCountriesForTripResponse,
-  GetCitiesForCountryIdsResponse,
   GetCurrenciesResponse,
   Currency,
   ExpenseCategory,
   GetExpenseCategoriesResponse,
   AddExpenseForTripBody,
+  GetTripDataResponse,
 } from "./api.types";
 import { store } from "./store";
 import { logout } from "./store/slices/app";
@@ -61,47 +60,20 @@ export async function getTrips() {
   return data.trips;
 }
 
+export async function getTripData(tripId: number) {
+  const { data } = await http!.get<GetTripDataResponse>(
+    `/trips/${tripId}/data`
+  );
+
+  return data;
+}
+
 export async function getExpensesForTrip(tripId: number) {
   const { data } = await http!.get<GetExpensesForTripResponse>(
     `/trips/${tripId}/expenses`
   );
 
   return data;
-}
-
-export async function getCountriesForTrip(tripId: number) {
-  const { data } = await http!.get<GetCountriesForTripResponse>(
-    `/trips/${tripId}/countries`
-  );
-
-  return data;
-}
-
-export async function getCitiesForCountries(countryIds: number[]) {
-  const { data } = await http!.get<GetCitiesForCountryIdsResponse>(
-    `/countries/cities`,
-    {
-      params: {
-        countryIds,
-      },
-    }
-  );
-
-  return data;
-}
-
-export async function getCurrencies(): Promise<Currency[]> {
-  const { data } = await http!.get<GetCurrenciesResponse>(`/currencies`);
-
-  return data.currencies;
-}
-
-export async function getExpenseCategories(): Promise<ExpenseCategory[]> {
-  const { data } = await http!.get<GetExpenseCategoriesResponse>(
-    `/expense-categories`
-  );
-
-  return data.categories;
 }
 
 export async function addExpenseToTrip(

@@ -1,17 +1,17 @@
 import CustomSelect from "@/components/CustomSelect/CustomSelect";
-import { useAppDispatch, useAppSelector } from "@/store";
-import {
-  selectExpenseCategories,
-  selectSelectedCategoryId,
-  setSelectedCategoryId,
-} from "@/store/slices/newExpense";
+import { useAppSelector } from "@/store";
+import { selectCategories } from "@/store/slices/tripData";
 import { useCallback, useMemo } from "react";
-import { CategoryPickerOption } from "./ExpenseCategoryPicker.types";
+import {
+  CategoryPickerOption,
+  ExpenseCategoryPickerProps,
+} from "./ExpenseCategoryPicker.types";
 
-export default function ExpenseCategoryPicker() {
-  const dispatch = useAppDispatch();
-  const categories = useAppSelector(selectExpenseCategories);
-  const selectedCategoryId = useAppSelector(selectSelectedCategoryId);
+export default function ExpenseCategoryPicker({
+  value,
+  onChange,
+}: ExpenseCategoryPickerProps) {
+  const categories = useAppSelector(selectCategories);
 
   const categoryOptions = useMemo(() => {
     return categories.map<CategoryPickerOption>((category) => ({
@@ -21,16 +21,16 @@ export default function ExpenseCategoryPicker() {
   }, [categories]);
 
   const selectedCategory = useMemo(() => {
-    if (!selectedCategoryId) return null;
+    if (!value) return null;
 
-    return categoryOptions.find((c) => c.value === selectedCategoryId);
-  }, [selectedCategoryId]);
+    return categoryOptions.find((c) => c.value === value);
+  }, [value]);
 
   const onSelectCurrency = useCallback(
     (option: CategoryPickerOption | null) => {
-      dispatch(setSelectedCategoryId(option!.value));
+      onChange(option!.value);
     },
-    [dispatch]
+    [onChange]
   );
 
   return (

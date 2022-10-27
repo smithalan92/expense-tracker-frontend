@@ -1,19 +1,21 @@
 import CustomSelect from "@/components/CustomSelect/CustomSelect";
-import { useAppDispatch, useAppSelector } from "@/store";
-import { selectCurrencies } from "@/store/slices/app";
-import {
-  selectSelectedCountry,
-  selectSelectedCurrencyId,
-  setSelectedCurrencyId,
-} from "@/store/slices/newExpense";
+import { useAppSelector } from "@/store";
+import { selectCurrencies, selectCountryById } from "@/store/slices/tripData";
 import { useCallback, useEffect, useMemo } from "react";
-import { CurrencyPickerOption } from "./CurrencyPicker.types";
+import {
+  CurrencyPickerOption,
+  CurrencyPickerProps,
+} from "./CurrencyPicker.types";
 
-export default function CurrencyPicker() {
-  const dispatch = useAppDispatch();
+export default function CurrencyPicker({
+  value,
+  selectedCountryId,
+  onChange,
+}: CurrencyPickerProps) {
   const currencies = useAppSelector(selectCurrencies);
-  const selectedCountry = useAppSelector(selectSelectedCountry);
-  const selectedCurrencyId = useAppSelector(selectSelectedCurrencyId);
+  const selectedCountry = useAppSelector((state) =>
+    selectCountryById(state, selectedCountryId ?? 0)
+  );
 
   const currencyOptions = useMemo(() => {
     return currencies.map<CurrencyPickerOption>((currency) => ({
@@ -23,22 +25,22 @@ export default function CurrencyPicker() {
   }, [currencies]);
 
   const selectedCurrency = useMemo(() => {
-    if (!selectedCurrencyId) return null;
+    if (!value) return null;
 
-    return currencyOptions.find((c) => c.value === selectedCurrencyId);
-  }, [selectedCurrencyId]);
+    return currencyOptions.find((c) => c.value === value);
+  }, [value]);
 
   useEffect(() => {
     if (selectedCountry) {
-      dispatch(setSelectedCurrencyId(selectedCountry.currencyId));
+      onChange(selectedCountry.currencyId);
     }
   }, [selectedCountry]);
 
   const onSelectCurrency = useCallback(
     (option: CurrencyPickerOption | null) => {
-      dispatch(setSelectedCurrencyId(option!.value));
+      onChange(option!.value);
     },
-    [dispatch]
+    [onChange]
   );
 
   return (

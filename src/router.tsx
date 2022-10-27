@@ -2,7 +2,7 @@ import { createBrowserRouter, useNavigate } from "react-router-dom";
 import AppContainer from "@/sections/AppContainer/AppContainer";
 import ErrorPage from "@/Routes/ErrorPage/ErrorPage";
 import Login from "@/Routes/Login/Login";
-import ExpenseList from "@/Routes/ExpenseList/ExpenseList";
+import TripData from "@/Routes/TripData/TripData";
 import { useAppSelector } from "./store";
 import { selectIsLoggedIn } from "./store/slices/app";
 import { useEffect } from "react";
@@ -12,7 +12,7 @@ export const PATHS = {
   HOME: "/",
   LOGIN: "/login",
   TRIPS: "/trips",
-  EXPENSES: "/expenses/:tripId",
+  TRIP: "/trips/:tripId",
 };
 
 function PrivateRoute({ children }: { children: JSX.Element | JSX.Element[] }) {
@@ -49,10 +49,10 @@ export default createBrowserRouter([
         ),
       },
       {
-        path: PATHS.EXPENSES,
+        path: PATHS.TRIP,
         element: (
           <PrivateRoute>
-            <ExpenseList />
+            <TripData />
           </PrivateRoute>
         ),
       },

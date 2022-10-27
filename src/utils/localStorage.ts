@@ -5,6 +5,10 @@ export const LOCALSTORAGE_TRIPS_KEY = "trips";
 export const LOCALSTORAGE_CURRENCIES_KEY = "currencies";
 export const LOCALSTORAGE_EXPENSE_CATEGORIES_KEY = "expense-categories";
 
+export function getTripDataKey(tripId: number) {
+  return `trip-data-${tripId}`;
+}
+
 export function getTripExpensesKey(tripId: number) {
   return `trip-expenses-${tripId}`;
 }

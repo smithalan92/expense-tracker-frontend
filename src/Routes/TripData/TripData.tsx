@@ -3,32 +3,38 @@ import ExpenseTable from "@/components/ExpenseTable/ExpenseTable";
 import Spinner from "@/components/Spinner";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
-  loadExpensesForTrip,
-  selectCanShowSyncButton,
-  selectExpenses,
-  selectHasFailedToLoadExpenses,
-  selectIsLoadingExpenses,
+  loadTripData,
+  selectIsLoadingTripData,
+  selectHasFailedToTripData,
+  syncUnsavedExpenses,
   selectShouldShowAddExpenseModal,
   setShouldShowAddExpenseModal,
-  syncUnsavedExpenses,
-} from "@/store/slices/expenses";
+  selectCanShowSyncButton,
+  selectIsAddingExpense,
+  selectIsSyncingUnSavedExpenses,
+  selectIsLoadingExpenses,
+} from "@/store/slices/tripData";
 import { useCallback, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-export default function ExpenseList() {
+export default function TripData() {
   const { tripId } = useParams();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const expenses = useAppSelector(selectExpenses);
-  const isLoadingExpenses = useAppSelector(selectIsLoadingExpenses);
-  const hasFailedToLoadExpenses = useAppSelector(selectHasFailedToLoadExpenses);
+  const isLoadingData = useAppSelector(selectIsLoadingTripData);
+  const hasFailedToLoadData = useAppSelector(selectHasFailedToTripData);
   const shouldShowAddExpenseModal = useAppSelector(
     selectShouldShowAddExpenseModal
   );
   const shouldShowSyncButton = useAppSelector(selectCanShowSyncButton);
+  const isSavingExpense = useAppSelector(selectIsAddingExpense);
+  const isSyncingUnsavedExpenses = useAppSelector(
+    selectIsSyncingUnSavedExpenses
+  );
+  const isLoadingExpenses = useAppSelector(selectIsLoadingExpenses);
 
   useEffect(() => {
-    dispatch(loadExpensesForTrip(parseInt(tripId!, 10)));
+    dispatch(loadTripData(parseInt(tripId!, 10)));
   }, [tripId]);
 
   const onClickGoBack = () => {
@@ -44,26 +50,34 @@ export default function ExpenseList() {
   };
 
   const maybeRenderLoader = useCallback(() => {
-    if (!isLoadingExpenses) return null;
+    if (
+      !isLoadingData &&
+      !isSavingExpense &&
+      !isSyncingUnsavedExpenses &&
+      !isLoadingExpenses
+    )
+      return null;
 
     return (
-      <div className="w-full h-full flex justify-center items-center">
+      <div className="absolute w-screen h-screen bg-black/30 z-10 flex items-center justify-center top-0 left-0">
         <Spinner />
       </div>
     );
-  }, [isLoadingExpenses]);
+  }, [isLoadingData, isSavingExpense, isSyncingUnsavedExpenses]);
 
   const maybeRenderFailureState = useCallback(() => {
-    if (!hasFailedToLoadExpenses) return null;
+    if (!hasFailedToLoadData) return null;
 
-    <div className="w-full h-full flex justify-center items-center">
-      Something went wrong loading expenses. Please refresh the page and try
-      again.
-    </div>;
-  }, [hasFailedToLoadExpenses]);
+    return (
+      <div className="text-center">
+        Something went wrong loading expenses. Please refresh the page and try
+        again.
+      </div>
+    );
+  }, [hasFailedToLoadData]);
 
   const maybeRenderExpenseList = useCallback(() => {
-    if (isLoadingExpenses || hasFailedToLoadExpenses) return null;
+    if (isLoadingData || hasFailedToLoadData) return null;
 
     return (
       <>
@@ -94,7 +108,7 @@ export default function ExpenseList() {
         </div>
       </>
     );
-  }, [isLoadingExpenses, hasFailedToLoadExpenses, shouldShowSyncButton]);
+  }, [isLoadingData, hasFailedToLoadData, shouldShowSyncButton]);
 
   return (
     <div className="w-full h-full">

@@ -1,6 +1,6 @@
 import Expense from "@/components/Expense/Expense";
 import { useAppSelector } from "@/store";
-import { selectExpenses } from "@/store/slices/expenses";
+import { selectExpenses } from "@/store/slices/tripData";
 import ExpenseTableFooter from "@/components/ExpenseTableFooter/ExpenseTableFooter";
 
 export default function ExpenseTable() {
