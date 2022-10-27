@@ -68,7 +68,7 @@ export const addExpense = createAsyncThunk<
   { state: RootState }
 >("tripData/addExpense", async (params, thunkApi) => {
   const state = thunkApi.getState();
-  const { id: tripId } = selectExpenseTrip(state)!;
+  const { id: tripId } = selectTrip(state)!;
 
   const payload: AddExpenseForTripBody = {
     localDateTime: params.date,
@@ -98,7 +98,7 @@ export const loadExpenses = createAsyncThunk<
   { state: RootState }
 >("tripData/loadExpenses", async (__, thunkApi) => {
   const state = thunkApi.getState();
-  const { id: tripId } = selectExpenseTrip(state)!;
+  const { id: tripId } = selectTrip(state)!;
 
   try {
     const data = await api.getExpensesForTrip(tripId);
@@ -291,10 +291,7 @@ export const selectHasFailedToTripData = createSelector(
   (state) => state.hasFailedToTripData
 );
 
-export const selectExpenseTrip = createSelector(
-  [selectState],
-  (state) => state.trip
-);
+export const selectTrip = createSelector([selectState], (state) => state.trip);
 
 export const selectShouldShowAddExpenseModal = createSelector(
   [selectState],

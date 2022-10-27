@@ -21,7 +21,7 @@ export default function AppContainer() {
   return (
     <div className="w-full max-w-3xl min-w-[390px] flex flex-col h-full overflow-hidden">
       {isLoggedIn && <Header />}
-      <div className="px-4 py-8 w-full h-full">
+      <div className="px-4 w-full h-full">
         <div className="pb-12">
           <Outlet />
         </div>

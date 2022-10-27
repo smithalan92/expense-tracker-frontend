@@ -58,7 +58,7 @@ export default function TripList() {
   }, [isLoadingTrips, hasFailedToLoadTrips, trips]);
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full pt-8">
       <>
         {maybeRenderLoader()}
         {maybeRenderFailureState()}

@@ -13,8 +13,10 @@ import {
   selectIsAddingExpense,
   selectIsSyncingUnSavedExpenses,
   selectIsLoadingExpenses,
+  selectTrip,
 } from "@/store/slices/tripData";
-import { useCallback, useEffect } from "react";
+import format from "date-fns/format";
+import { useCallback, useEffect, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function TripData() {
@@ -32,6 +34,7 @@ export default function TripData() {
     selectIsSyncingUnSavedExpenses
   );
   const isLoadingExpenses = useAppSelector(selectIsLoadingExpenses);
+  const trip = useAppSelector(selectTrip);
 
   useEffect(() => {
     dispatch(loadTripData(parseInt(tripId!, 10)));
@@ -48,6 +51,16 @@ export default function TripData() {
   const onClickSync = () => {
     dispatch(syncUnsavedExpenses());
   };
+
+  const tripStartDate = useMemo(() => {
+    if (!trip.startDate) return "";
+    return format(new Date(trip.startDate), "dd MMM yyyy");
+  }, [trip]);
+
+  const tripEndDate = useMemo(() => {
+    if (!trip.startDate) return "";
+    return format(new Date(trip.endDate), "dd MMM yyyy");
+  }, [trip]);
 
   const maybeRenderLoader = useCallback(() => {
     if (
@@ -81,7 +94,13 @@ export default function TripData() {
 
     return (
       <>
-        <div className="h-160">
+        <div className="h-160 pt-4">
+          <div className="text-center ml-2 font-bold text-2xl mb-2 text-white">
+            {trip.name}
+          </div>
+          <div className="text-center ml-2 text-md mb-6">
+            {tripStartDate} to {tripEndDate}
+          </div>
           <ExpenseTable />
           <div className="flex justify-end mt-6">
             <button

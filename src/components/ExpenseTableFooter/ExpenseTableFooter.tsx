@@ -1,8 +1,8 @@
 import { useAppSelector } from "@/store";
-import { selectExpenseTrip } from "@/store/slices/tripData";
+import { selectTrip } from "@/store/slices/tripData";
 
 export default function ExpenseTableFooter() {
-  const trip = useAppSelector(selectExpenseTrip);
+  const trip = useAppSelector(selectTrip);
 
   return (
     <tfoot>
