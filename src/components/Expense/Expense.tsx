@@ -10,11 +10,31 @@ export default function Expense({ expense }: ExpenseProps) {
   }, [expense]);
 
   return (
-    <tr className="hover cursor-pointer select-none">
-      <td>{formattedDate}</td>
-      <td className="text-ellipsis overflow-hidden">{expense.category.name}</td>
-      <td className="text-ellipsis overflow-hidden">{expense.city.name}</td>
-      <td align="center">€{expense.euroAmount}</td>
-    </tr>
+    <>
+      {expense.isSaved && (
+        <tr className="hover cursor-pointer select-none">
+          <td>{formattedDate}</td>
+          <td className="text-ellipsis overflow-hidden">
+            {expense.category.name}
+          </td>
+          <td className="text-ellipsis overflow-hidden">{expense.city.name}</td>
+          <td align="center">€{expense.euroAmount}</td>
+        </tr>
+      )}
+      {!expense.isSaved && (
+        <tr className="hover cursor-pointer select-none">
+          <td className="bg-rose-900">{formattedDate}</td>
+          <td className="text-ellipsis overflow-hidden bg-rose-900">
+            {expense.category.name}
+          </td>
+          <td className="text-ellipsis overflow-hidden bg-rose-900">
+            {expense.city.name}
+          </td>
+          <td align="center" className=" bg-rose-900">
+            {expense.euroAmount}
+          </td>
+        </tr>
+      )}
+    </>
   );
 }

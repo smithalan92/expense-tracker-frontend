@@ -1,5 +1,5 @@
-import { TripExpense } from "@/api.types";
+import { ParsedTripExpense } from "@/store/slices/expenses.types";
 
 export interface ExpenseProps {
-  expense: TripExpense;
+  expense: ParsedTripExpense;
 }

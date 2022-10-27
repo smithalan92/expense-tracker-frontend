@@ -4,11 +4,13 @@ import Spinner from "@/components/Spinner";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
   loadExpensesForTrip,
+  selectCanShowSyncButton,
   selectExpenses,
   selectHasFailedToLoadExpenses,
   selectIsLoadingExpenses,
   selectShouldShowAddExpenseModal,
   setShouldShowAddExpenseModal,
+  syncUnsavedExpenses,
 } from "@/store/slices/expenses";
 import { useCallback, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -23,6 +25,7 @@ export default function ExpenseList() {
   const shouldShowAddExpenseModal = useAppSelector(
     selectShouldShowAddExpenseModal
   );
+  const shouldShowSyncButton = useAppSelector(selectCanShowSyncButton);
 
   useEffect(() => {
     dispatch(loadExpensesForTrip(parseInt(tripId!, 10)));
@@ -34,6 +37,10 @@ export default function ExpenseList() {
 
   const onClickAddExpense = () => {
     dispatch(setShouldShowAddExpenseModal(true));
+  };
+
+  const onClickSync = () => {
+    dispatch(syncUnsavedExpenses());
   };
 
   const maybeRenderLoader = useCallback(() => {
@@ -75,19 +82,27 @@ export default function ExpenseList() {
               className="btn btn-secondary font-bold text-md mr-4"
               onClick={onClickGoBack}
             >
-              Go Back
+              Back
             </button>
+            {shouldShowSyncButton && (
+              <button
+                className="btn btn-primary font-bold text-md mr-4"
+                onClick={onClickSync}
+              >
+                Sync
+              </button>
+            )}
             <button
               className="btn btn-primary font-bold text-md"
               onClick={onClickAddExpense}
             >
-              Add expense
+              Add
             </button>
           </div>
         </div>
       </>
     );
-  }, [isLoadingExpenses, hasFailedToLoadExpenses]);
+  }, [isLoadingExpenses, hasFailedToLoadExpenses, shouldShowSyncButton]);
 
   return (
     <div className="w-full h-full">

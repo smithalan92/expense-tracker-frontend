@@ -13,8 +13,9 @@ import {
   GetCountriesForTripResponse,
 } from "@/api.types";
 import { formatDateForStoring } from "@/utils/date";
-import { RootState } from "..";
+import { RootState, store } from "..";
 import {
+  addUnsavedExpense,
   loadExpensesForTrip,
   selectExpenseTrip,
   setShouldShowAddExpenseModal,
@@ -27,6 +28,7 @@ import {
   setStorageItem,
 } from "@/utils/localStorage";
 import axios from "axios";
+import { ParsedTripExpense } from "./expenses.types";
 
 const initialState: NewExpenseState = {
   selectedCountryId: null,
@@ -50,7 +52,7 @@ const initialState: NewExpenseState = {
 };
 
 export const addExpense = createAsyncThunk<void, void, { state: RootState }>(
-  "expenses/loadExpensesForTrip",
+  "expenses/addExpense",
   async (_, thunkApi) => {
     const state = thunkApi.getState();
     const { id: tripId } = selectExpenseTrip(state)!;
@@ -71,9 +73,47 @@ export const addExpense = createAsyncThunk<void, void, { state: RootState }>(
       description,
     };
 
-    await api.addExpenseToTrip(tripId, payload);
+    try {
+      await api.addExpenseToTrip(tripId, payload);
+      await thunkApi.dispatch(loadExpensesForTrip(tripId));
+    } catch (err) {
+      console.log(err);
 
-    await thunkApi.dispatch(loadExpensesForTrip(tripId));
+      const currency = state.app.currencies.find((c) => c.id == currencyId)!;
+      const category = state.newExpense.expenseCategories.find(
+        (c) => c.id == categoryId
+      )!;
+      const city = state.newExpense.cities[
+        state.newExpense.selectedCountryId!
+      ].find((c) => c.id === cityId)!;
+
+      const tempExpense: ParsedTripExpense = {
+        id: Math.random() * -1,
+        amount: `${amount}`,
+        currency,
+        euroAmount: `${amount} ${currency.code}`,
+        localDateTime,
+        description,
+        category,
+        city: {
+          ...city,
+          timezone: "",
+        },
+        country: {
+          id: 0,
+          name: "",
+        },
+        user: {
+          id: 0,
+          firstName: "",
+        },
+        createdAt: "",
+        updatedAt: "",
+        isSaved: false,
+      };
+
+      thunkApi.dispatch(addUnsavedExpense(tempExpense));
+    }
 
     thunkApi.dispatch(setShouldShowAddExpenseModal(false));
   }

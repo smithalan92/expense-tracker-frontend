@@ -17,6 +17,10 @@ export function getCountriesCitiesKey(countryIds: number[]) {
   return `country-${countryIds.join("-")}-cities`;
 }
 
+export function getUnsavedExpensesForTripKey(tripId: number) {
+  return `trip-expenses-unsaved-${tripId}`;
+}
+
 export function setStorageItem(key: string, data: unknown) {
   const parsedData = JSON.stringify(data);
 

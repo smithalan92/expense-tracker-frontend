@@ -102,7 +102,7 @@ export interface GetCitiesForCountryIdsResponse {
 
 export interface Currency {
   id: number;
-  code: number;
+  code: string;
   name: string;
 }
 
