@@ -65,14 +65,6 @@ export default function ExpenseList() {
   const maybeRenderExpenseList = useCallback(() => {
     if (isLoadingExpenses || hasFailedToLoadExpenses) return null;
 
-    if (!expenses || !expenses.length) {
-      return (
-        <div className="w-full h-full flex justify-center items-center">
-          No expenses available
-        </div>
-      );
-    }
-
     return (
       <>
         <div className="h-160">

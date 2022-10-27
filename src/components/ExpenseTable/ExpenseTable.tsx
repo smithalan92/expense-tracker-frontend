@@ -27,8 +27,15 @@ export default function ExpenseTable() {
           {expenses.map((expense) => {
             return <Expense key={expense.id} expense={expense} />;
           })}
+          {expenses.length === 0 && (
+            <tr>
+              <td colSpan={4} style={{ textAlign: "center" }}>
+                No expenses available.
+              </td>
+            </tr>
+          )}
         </tbody>
-        <ExpenseTableFooter />
+        {expenses.length > 0 && <ExpenseTableFooter />}
       </table>
     </div>
   );
