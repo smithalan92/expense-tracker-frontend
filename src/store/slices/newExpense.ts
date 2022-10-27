@@ -9,7 +9,7 @@ import { NewExpenseState } from "./newExpense.types";
 import {
   AddExpenseForTripBody,
   ExpenseCategory,
-  GetCitiesForCountryResponse,
+  GetCitiesForCountryIdsResponse,
   GetCountriesForTripResponse,
 } from "@/api.types";
 import { formatDateForStoring } from "@/utils/date";
@@ -20,7 +20,7 @@ import {
   setShouldShowAddExpenseModal,
 } from "./expenses";
 import {
-  getCountryCitiesKey,
+  getCountriesCitiesKey,
   getStorageItem,
   getTripCountriesKey,
   LOCALSTORAGE_EXPENSE_CATEGORIES_KEY,
@@ -32,9 +32,10 @@ const initialState: NewExpenseState = {
   selectedCountryId: null,
   countries: [],
   isLoadingCountries: false,
+  hasLoadedCountries: false,
   hasLoadingCountriesFailed: false,
   selectedCityId: null,
-  cities: [],
+  cities: {},
   isLoadingCities: false,
   hasLoadingCitiesFailed: false,
   selectedCurrencyId: null,
@@ -48,8 +49,7 @@ const initialState: NewExpenseState = {
   isSavingExpense: false,
 };
 
-// TODO fix typing
-export const addExpense = createAsyncThunk<void, unknown, { state: RootState }>(
+export const addExpense = createAsyncThunk<void, void, { state: RootState }>(
   "expenses/loadExpensesForTrip",
   async (_, thunkApi) => {
     const state = thunkApi.getState();
@@ -98,24 +98,28 @@ export const loadCountriesForTrip = createAsyncThunk(
   }
 );
 
-export const loadCitiesForCountry = createAsyncThunk(
-  "newExpense/loadCitiesForCountry",
-  async (countryId: number) => {
-    try {
-      const result = await api.getCitiesForCountry(countryId);
-      setStorageItem(getCountryCitiesKey(countryId), result);
-      return result;
-    } catch (err) {
-      if (axios.isAxiosError(err) && err.code === "ERR_NETWORK") {
-        const savedResult = getStorageItem<GetCitiesForCountryResponse>(
-          getCountryCitiesKey(countryId)
-        );
-        if (savedResult) return savedResult;
-      }
-      throw err;
+export const loadCitiesForCountryIds = createAsyncThunk<
+  GetCitiesForCountryIdsResponse,
+  void,
+  { state: RootState }
+>("newExpense/loadCitiesForCountry", async (_, thunkApi) => {
+  const countries = selectCountries(thunkApi.getState());
+  const countryIds = countries.map((c) => c.id);
+
+  try {
+    const result = await api.getCitiesForCountries(countryIds);
+    setStorageItem(getCountriesCitiesKey(countryIds), result);
+    return result;
+  } catch (err) {
+    if (axios.isAxiosError(err) && err.code === "ERR_NETWORK") {
+      const savedResult = getStorageItem<GetCitiesForCountryIdsResponse>(
+        getCountriesCitiesKey(countryIds)
+      );
+      if (savedResult) return savedResult;
     }
+    throw err;
   }
-);
+});
 
 export const loadExpenseCategories = createAsyncThunk(
   "newExpense/loadExpenseCategories",
@@ -146,7 +150,7 @@ export const newExpenseSlice = createSlice({
       state.isLoadingCountries = false;
       state.hasLoadingCountriesFailed = false;
       state.selectedCityId = null;
-      state.cities = [];
+      state.cities = {};
       state.isLoadingCities = false;
       state.hasLoadingCitiesFailed = false;
       state.selectedCurrencyId = null;
@@ -162,7 +166,6 @@ export const newExpenseSlice = createSlice({
     setSelectedCountryId: (state, action: PayloadAction<number>) => {
       state.selectedCountryId = action.payload;
       state.selectedCityId = null;
-      state.cities = [];
     },
     setSelectedCityId: (state, action: PayloadAction<number>) => {
       state.selectedCityId = action.payload;
@@ -187,6 +190,7 @@ export const newExpenseSlice = createSlice({
     builder.addCase(loadCountriesForTrip.pending, (state) => {
       state.isLoadingCountries = true;
       state.hasLoadingCountriesFailed = false;
+      state.hasLoadedCountries = false;
     });
 
     builder.addCase(
@@ -194,6 +198,7 @@ export const newExpenseSlice = createSlice({
       (state, action: PayloadAction<GetCountriesForTripResponse>) => {
         state.countries = action.payload.countries;
         state.isLoadingCountries = false;
+        state.hasLoadedCountries = true;
       }
     );
 
@@ -202,20 +207,20 @@ export const newExpenseSlice = createSlice({
       state.hasLoadingCountriesFailed = true;
     });
 
-    builder.addCase(loadCitiesForCountry.pending, (state) => {
+    builder.addCase(loadCitiesForCountryIds.pending, (state) => {
       state.isLoadingCities = true;
       state.hasLoadingCitiesFailed = false;
     });
 
     builder.addCase(
-      loadCitiesForCountry.fulfilled,
-      (state, action: PayloadAction<GetCitiesForCountryResponse>) => {
-        state.cities = action.payload.cities;
+      loadCitiesForCountryIds.fulfilled,
+      (state, action: PayloadAction<GetCitiesForCountryIdsResponse>) => {
+        state.cities = { ...action.payload.countries };
         state.isLoadingCities = false;
       }
     );
 
-    builder.addCase(loadCitiesForCountry.rejected, (state) => {
+    builder.addCase(loadCitiesForCountryIds.rejected, (state) => {
       state.isLoadingCities = false;
       state.hasLoadingCitiesFailed = true;
     });
@@ -271,6 +276,11 @@ export const selectSelectedCountryId = createSelector(
 export const selectIsLoadingCountries = createSelector(
   [selectState],
   (state) => state.isLoadingCountries
+);
+
+export const selectHasLoadedCountries = createSelector(
+  [selectState],
+  (state) => state.hasLoadedCountries
 );
 
 export const selectHasLoadingCountriesFailed = createSelector(

@@ -13,8 +13,8 @@ export function getTripCountriesKey(tripId: number) {
   return `trip-countries-${tripId}`;
 }
 
-export function getCountryCitiesKey(countryId: number) {
-  return `country-${countryId}-cities`;
+export function getCountriesCitiesKey(countryIds: number[]) {
+  return `country-${countryIds.join("-")}-cities`;
 }
 
 export function setStorageItem(key: string, data: unknown) {

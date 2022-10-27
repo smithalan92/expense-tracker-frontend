@@ -4,7 +4,7 @@ import {
   LoginResponse,
   GetExpensesForTripResponse,
   GetCountriesForTripResponse,
-  GetCitiesForCountryResponse,
+  GetCitiesForCountryIdsResponse,
   GetCurrenciesResponse,
   Currency,
   ExpenseCategory,
@@ -77,9 +77,14 @@ export async function getCountriesForTrip(tripId: number) {
   return data;
 }
 
-export async function getCitiesForCountry(countryId: number) {
-  const { data } = await http!.get<GetCitiesForCountryResponse>(
-    `/countries/${countryId}/cities`
+export async function getCitiesForCountries(countryIds: number[]) {
+  const { data } = await http!.get<GetCitiesForCountryIdsResponse>(
+    `/countries/cities`,
+    {
+      params: {
+        countryIds,
+      },
+    }
   );
 
   return data;

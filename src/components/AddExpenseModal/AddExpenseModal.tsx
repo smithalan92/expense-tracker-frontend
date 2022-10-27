@@ -3,10 +3,12 @@ import { useAppDispatch, useAppSelector } from "@/store";
 import { setShouldShowAddExpenseModal } from "@/store/slices/expenses";
 import {
   addExpense,
+  loadCitiesForCountryIds,
   loadCountriesForTrip,
   loadExpenseCategories,
   resetState as resetNewExpenseState,
   selectCanSaveExpense,
+  selectHasLoadedCountries,
   selectIsSavingExpense,
 } from "@/store/slices/newExpense";
 import { useEffect } from "react";
@@ -25,13 +27,20 @@ export default function AddExpenseModal() {
   const dispatch = useAppDispatch();
   const canSaveExpense = useAppSelector(selectCanSaveExpense);
   const isSavingExpense = useAppSelector(selectIsSavingExpense);
+  const hasLoadedCountries = useAppSelector(selectHasLoadedCountries);
+
+  useEffect(() => {
+    if (hasLoadedCountries) {
+      dispatch(loadCitiesForCountryIds());
+    }
+  }, [hasLoadedCountries]);
 
   const onClickCancel = () => {
     dispatch(setShouldShowAddExpenseModal(false));
   };
 
   const onClickAddExpense = () => {
-    dispatch(addExpense(1));
+    dispatch(addExpense());
   };
 
   useEffect(() => {

@@ -23,7 +23,7 @@ export default function AppContainer() {
     if (isLoggedIn) {
       dispatch(loadCurrencies());
     }
-  }, [dispatch]);
+  }, [dispatch, isLoggedIn]);
 
   return (
     <div className="w-full max-w-3xl min-w-[390px] flex flex-col h-full overflow-hidden">

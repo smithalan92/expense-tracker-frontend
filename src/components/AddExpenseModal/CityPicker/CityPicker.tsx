@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
-  loadCitiesForCountry,
+  loadCitiesForCountryIds,
   selectCities,
   selectIsLoadingCities,
   selectSelectedCityId,
@@ -27,22 +27,17 @@ export default function CityPicker() {
   );
 
   const cityOptions = useMemo(() => {
-    return cities.map<CityPickerOption>((city) => ({
+    if (!cities[selectedCountryId!]) return [];
+    return cities[selectedCountryId!].map<CityPickerOption>((city) => ({
       value: city.id,
       label: city.name,
     }));
-  }, [cities]);
+  }, [cities, selectedCountryId]);
 
   const selectedCity = useMemo(() => {
     if (!selectedCityId) return null;
     return cityOptions.find((c) => c.value === selectedCityId);
   }, [cityOptions, selectedCityId]);
-
-  useEffect(() => {
-    if (selectedCountryId) {
-      dispatch(loadCitiesForCountry(selectedCountryId));
-    }
-  }, [selectedCountryId]);
 
   return (
     <CustomSelect
