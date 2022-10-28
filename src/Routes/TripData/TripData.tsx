@@ -1,4 +1,5 @@
 import AddExpenseModal from "@/components/AddExpenseModal/AddExpenseModal";
+import { DeleteExpenseAlert } from "@/components/DeleteExpenseAlert/DeleteExpenseAlert";
 import ExpenseTable from "@/components/ExpenseTable/ExpenseTable";
 import Spinner from "@/components/Spinner";
 import TripStatsModal from "@/components/TripStatsModal/TripStatsModal";
@@ -19,7 +20,7 @@ import {
   setShouldShowTripStatsModal,
 } from "@/store/slices/tripData";
 import format from "date-fns/format";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function TripData() {
@@ -41,6 +42,12 @@ export default function TripData() {
   );
   const isLoadingExpenses = useAppSelector(selectIsLoadingExpenses);
   const trip = useAppSelector(selectTrip);
+
+  const [expenseToDelete, setExpenseToDelete] = useState<null | number>(null);
+
+  const onClickExpense = (expenseId: number) => {
+    setExpenseToDelete(expenseId);
+  };
 
   useEffect(() => {
     dispatch(loadTripData(parseInt(tripId!, 10)));
@@ -111,7 +118,7 @@ export default function TripData() {
           <div className="text-center ml-2 text-md mb-6">
             {tripStartDate} to {tripEndDate}
           </div>
-          <ExpenseTable />
+          <ExpenseTable onClickExpense={onClickExpense} />
           <div className="flex justify-end mt-6">
             <button
               className="btn btn-secondary font-bold text-md mr-4"
@@ -153,6 +160,12 @@ export default function TripData() {
       {shouldShowAddExpenseModal && <AddExpenseModal />}
       {shouldShowTripStatsModal && (
         <TripStatsModal tripId={parseInt(tripId!, 10)} />
+      )}
+      {expenseToDelete! !== null && (
+        <DeleteExpenseAlert
+          expenseId={expenseToDelete!}
+          onClose={() => setExpenseToDelete(null)}
+        />
       )}
     </div>
   );

@@ -4,7 +4,7 @@ import format from "date-fns/format";
 import { useMemo } from "react";
 import { ExpenseProps } from "./Expense.types";
 
-export default function Expense({ expense }: ExpenseProps) {
+export default function Expense({ expense, onClick }: ExpenseProps) {
   const formattedDate = useMemo(() => {
     return format(new Date(expense.localDateTime), "dd-MM-yyyy");
   }, [expense]);
@@ -12,7 +12,10 @@ export default function Expense({ expense }: ExpenseProps) {
   return (
     <>
       {expense.isSaved && (
-        <tr className="hover cursor-pointer select-none">
+        <tr
+          className="hover cursor-pointer select-none"
+          onClick={() => onClick(expense.id)}
+        >
           <td>{formattedDate}</td>
           <td className="text-ellipsis overflow-hidden">
             {expense.category.name}
@@ -22,7 +25,10 @@ export default function Expense({ expense }: ExpenseProps) {
         </tr>
       )}
       {!expense.isSaved && (
-        <tr className="hover cursor-pointer select-none">
+        <tr
+          className="hover cursor-pointer select-none"
+          onClick={() => onClick(expense.id)}
+        >
           <td className="bg-rose-900">{formattedDate}</td>
           <td className="text-ellipsis overflow-hidden bg-rose-900">
             {expense.category.name}

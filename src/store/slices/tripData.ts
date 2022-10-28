@@ -5,7 +5,11 @@ import {
   createAsyncThunk,
 } from "@reduxjs/toolkit";
 import * as api from "@/api";
-import { AddExpenseParams, ParsedTripExpense } from "./tripData.types";
+import {
+  AddExpenseParams,
+  DeleteExpenseFufilledActionParams,
+  ParsedTripExpense,
+} from "./tripData.types";
 import {
   AddExpenseForTripBody,
   GetExpensesForTripResponse,
@@ -39,6 +43,9 @@ const initialState: TripDataState = {
   isLoadingExpenses: false,
   shouldShowAddExpenseModal: false,
   shouldShowTripStatsModal: false,
+  isDeletingExpense: false,
+  didDeleteExpense: false,
+  didDeletingExpenseFail: false,
 };
 
 export const loadTripData = createAsyncThunk(
@@ -144,6 +151,28 @@ export const syncUnsavedExpenses = createAsyncThunk<
   return savedExpenses;
 });
 
+export const deleteExpense = createAsyncThunk<
+  DeleteExpenseFufilledActionParams,
+  number,
+  { state: RootState }
+>("tripData/deleteExpense", async (expenseId, thunkApi) => {
+  const state = thunkApi.getState();
+  const tripId = state.tripData.trip.id;
+
+  const tempExp = state.tripData.unsavedExpenses.find(
+    (e) => e.id === expenseId
+  );
+
+  // No api call if its local;
+  if (tempExp) {
+    return { tripId, expenseId };
+  }
+
+  await api.deleteExpense(tripId, expenseId);
+
+  return { tripId, expenseId };
+});
+
 export const expenseSlice = createSlice({
   name: "tripData",
   initialState,
@@ -162,6 +191,10 @@ export const expenseSlice = createSlice({
       state.unsavedExpenses = [];
       state.isSyncingUnSavedExpenses = false;
       state.shouldShowAddExpenseModal = false;
+      state.shouldShowTripStatsModal = false;
+      state.isDeletingExpense = false;
+      state.didDeleteExpense = false;
+      state.didDeletingExpenseFail = false;
     },
     loadUnsavedExpensesFromStorage: (state, action: PayloadAction<number>) => {
       const unsavedExpenses = getStorageItem<ParsedTripExpense[]>(
@@ -184,6 +217,11 @@ export const expenseSlice = createSlice({
         getUnsavedExpensesForTripKey(state.trip.id),
         state.unsavedExpenses
       );
+    },
+    resetDeleteStates(state) {
+      state.isDeletingExpense = false;
+      state.didDeleteExpense = false;
+      state.didDeletingExpenseFail = false;
     },
   },
   extraReducers(builder) {
@@ -255,6 +293,32 @@ export const expenseSlice = createSlice({
       }
       state.isLoadingExpenses = false;
     });
+
+    builder.addCase(deleteExpense.pending, (state) => {
+      state.isDeletingExpense = true;
+    });
+
+    builder.addCase(
+      deleteExpense.fulfilled,
+      (state, action: PayloadAction<DeleteExpenseFufilledActionParams>) => {
+        const { tripId, expenseId } = action.payload;
+        state.expenses = state.expenses.filter((e) => e.id !== expenseId);
+        state.unsavedExpenses = state.unsavedExpenses.filter(
+          (e) => e.id !== expenseId
+        );
+        setStorageItem(
+          getUnsavedExpensesForTripKey(tripId),
+          state.unsavedExpenses
+        );
+        state.didDeleteExpense = true;
+        state.isDeletingExpense = false;
+      }
+    );
+
+    builder.addCase(deleteExpense.rejected, (state) => {
+      state.didDeletingExpenseFail = true;
+      state.isDeletingExpense = false;
+    });
   },
 });
 
@@ -264,6 +328,7 @@ export const {
   addUnsavedExpense,
   loadUnsavedExpensesFromStorage,
   setShouldShowTripStatsModal,
+  resetDeleteStates,
 } = expenseSlice.actions;
 
 const selectState = ({ tripData }: { tripData: TripDataState }) => tripData;
@@ -322,6 +387,16 @@ export const selectCitiesForCountryId = createSelector(
   }
 );
 
+export const selectExpenseById = createSelector(
+  [selectState, (state, expenseId: number) => expenseId],
+  (state, expenseId) => {
+    const expense = state.expenses.find((e) => e.id === expenseId);
+    if (expense) return expense;
+
+    return state.unsavedExpenses.find((e) => e.id === expenseId);
+  }
+);
+
 export const selectCurrencies = createSelector(
   [selectState],
   (state) => state.currencies
@@ -350,6 +425,21 @@ export const selectIsLoadingExpenses = createSelector(
 export const selectShouldShowTripStatsModal = createSelector(
   [selectState],
   (state) => state.shouldShowTripStatsModal
+);
+
+export const selectIsDeletingExpense = createSelector(
+  [selectState],
+  (state) => state.isDeletingExpense
+);
+
+export const selectDidDeletingExpense = createSelector(
+  [selectState],
+  (state) => state.didDeleteExpense
+);
+
+export const selectDidDeletingExpenseFail = createSelector(
+  [selectState],
+  (state) => state.didDeletingExpenseFail
 );
 
 export default expenseSlice.reducer;

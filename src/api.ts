@@ -89,3 +89,7 @@ export async function addExpenseToTrip(
     ...expense,
   });
 }
+
+export async function deleteExpense(tripId: number, expenseId: number) {
+  return http!.delete(`/trips/${tripId}/expense/${expenseId}`);
+}

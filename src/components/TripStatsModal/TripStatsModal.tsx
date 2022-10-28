@@ -151,7 +151,6 @@ export default function TripStatsModal({ tripId }: { tripId: number }) {
           {maybeRenderFailedState()}
           {maybeRenderContent()}
         </div>
-        <div className="flex justify-end pt-8"></div>
       </div>
     </div>
   );

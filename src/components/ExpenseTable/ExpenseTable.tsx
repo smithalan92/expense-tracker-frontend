@@ -3,7 +3,11 @@ import { useAppSelector } from "@/store";
 import { selectExpenses } from "@/store/slices/tripData";
 import ExpenseTableFooter from "@/components/ExpenseTableFooter/ExpenseTableFooter";
 
-export default function ExpenseTable() {
+export default function ExpenseTable({
+  onClickExpense,
+}: {
+  onClickExpense: (id: number) => void;
+}) {
   const expenses = useAppSelector(selectExpenses)!;
 
   return (
@@ -25,7 +29,13 @@ export default function ExpenseTable() {
         </thead>
         <tbody>
           {expenses.map((expense) => {
-            return <Expense key={expense.id} expense={expense} />;
+            return (
+              <Expense
+                key={expense.id}
+                expense={expense}
+                onClick={onClickExpense}
+              />
+            );
           })}
           {expenses.length === 0 && (
             <tr>

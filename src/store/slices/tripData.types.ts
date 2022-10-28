@@ -27,6 +27,9 @@ export interface TripDataState {
   isLoadingExpenses: boolean;
   shouldShowAddExpenseModal: boolean;
   shouldShowTripStatsModal: boolean;
+  isDeletingExpense: boolean;
+  didDeleteExpense: boolean;
+  didDeletingExpenseFail: boolean;
 }
 
 export interface AddExpenseParams {
@@ -36,4 +39,9 @@ export interface AddExpenseParams {
   currencyId: number;
   categoryId: number;
   description: string;
+}
+
+export interface DeleteExpenseFufilledActionParams {
+  tripId: number;
+  expenseId: number;
 }
