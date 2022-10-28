@@ -1,4 +1,4 @@
-import { ParsedTripExpense } from "@/store/slices/trip.types";
+import { ParsedTripExpense } from "@/store/slices/tripData.types";
 
 export interface ExpenseProps {
   expense: ParsedTripExpense;
