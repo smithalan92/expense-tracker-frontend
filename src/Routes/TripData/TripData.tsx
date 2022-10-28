@@ -22,6 +22,7 @@ import {
 import format from "date-fns/format";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { ReactComponent as RefreshIcon } from "@/assets/refresh.svg";
 
 export default function TripData() {
   const { tripId } = useParams();
@@ -68,6 +69,10 @@ export default function TripData() {
   const onClickViewStats = () => {
     dispatch(setShouldShowTripStatsModal(true));
   };
+
+  const onClickRefresh = () => {
+    dispatch(loadTripData(trip.id))
+  }
 
   const tripStartDate = useMemo(() => {
     if (!trip.startDate) return "";
@@ -125,6 +130,9 @@ export default function TripData() {
               onClick={onClickGoBack}
             >
               Back
+            </button>
+            <button className="btn btn-accent font-bold text-md mr-4" onClick={onClickRefresh}>
+              <RefreshIcon className="w-6 h-6 fill-black"/>
             </button>
             <button
               className="btn btn-accent font-bold text-md mr-4"

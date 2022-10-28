@@ -11,7 +11,7 @@ export default function ExpenseTable({
   const expenses = useAppSelector(selectExpenses)!;
 
   return (
-    <div className="overflow-y-scroll h-120">
+    <div className="overflow-y-scroll h-100">
       <table className="table table-compact w-full border-collapse">
         <colgroup>
           <col width="25%" />
