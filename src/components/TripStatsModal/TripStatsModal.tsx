@@ -4,7 +4,7 @@ import { useAppDispatch } from "@/store";
 import { setShouldShowTripStatsModal } from "@/store/slices/tripData";
 import { formatDateForStoring } from "@/utils/date";
 import format from "date-fns/format";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Spinner from "../Spinner";
 
 export default function TripStatsModal({ tripId }: { tripId: number }) {
@@ -13,6 +13,11 @@ export default function TripStatsModal({ tripId }: { tripId: number }) {
   const [isLoading, setIsLoading] = useState(true);
   const [hasFailedToLoad, setHasFailedToLoad] = useState(false);
   const [stats, setStats] = useState<GetTripStatsResponse | null>(null);
+
+  const hasEmptyStats = useMemo(() => {
+    if (stats === null) return false;
+    return stats.userBreakdown.length === 0;
+  }, [stats]);
 
   useEffect(() => {
     getTripStats(tripId)
@@ -31,7 +36,7 @@ export default function TripStatsModal({ tripId }: { tripId: number }) {
   };
 
   const maybeRenderContent = useCallback(() => {
-    if (isLoading || (hasFailedToLoad && !stats)) return null;
+    if (isLoading || (hasFailedToLoad && !stats) || hasEmptyStats) return null;
 
     const {
       mostExpenseDay,
@@ -136,6 +141,15 @@ export default function TripStatsModal({ tripId }: { tripId: number }) {
     );
   }, [isLoading]);
 
+  const maybeRenderEmptyState = useCallback(() => {
+    if (!hasEmptyStats) return null;
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        No stats available. Add some expenses and come back!
+      </div>
+    );
+  }, [isLoading]);
+
   return (
     <div className="flex w-full h-full absolute top-0 left-0 justify-center items-center bg-black/50">
       <div className="modal-box overflow-hidden absolute bottom-[-32px] md:relative box-content">
@@ -150,6 +164,7 @@ export default function TripStatsModal({ tripId }: { tripId: number }) {
           {maybeRenderLoader()}
           {maybeRenderFailedState()}
           {maybeRenderContent()}
+          {maybeRenderEmptyState()}
         </div>
       </div>
     </div>

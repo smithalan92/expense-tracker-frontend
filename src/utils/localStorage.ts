@@ -1,24 +1,10 @@
-const LOCALSTORAGE_BASE_KEY = "expense-tracker-v1";
+const LOCALSTORAGE_BASE_KEY = "expense-tracker-v2";
 
 export const LOCALSTORAGE_AUTH_KEY = "auth";
 export const LOCALSTORAGE_TRIPS_KEY = "trips";
-export const LOCALSTORAGE_CURRENCIES_KEY = "currencies";
-export const LOCALSTORAGE_EXPENSE_CATEGORIES_KEY = "expense-categories";
 
 export function getTripDataKey(tripId: number) {
   return `trip-data-${tripId}`;
-}
-
-export function getTripExpensesKey(tripId: number) {
-  return `trip-expenses-${tripId}`;
-}
-
-export function getTripCountriesKey(tripId: number) {
-  return `trip-countries-${tripId}`;
-}
-
-export function getCountriesCitiesKey(countryIds: number[]) {
-  return `country-${countryIds.join("-")}-cities`;
 }
 
 export function getUnsavedExpensesForTripKey(tripId: number) {
@@ -39,4 +25,8 @@ export function getStorageItem<T = unknown>(key: string): T | null {
 
 export function deleteStorageItem(key: string) {
   localStorage.removeItem(`${LOCALSTORAGE_BASE_KEY}-${key}`);
+}
+
+export function deleteAllLocalStorage() {
+  localStorage.clear();
 }

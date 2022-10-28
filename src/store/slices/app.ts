@@ -7,9 +7,10 @@ import {
 } from "@reduxjs/toolkit";
 import { AppState, LoginThunkParams } from "./app.types";
 import * as api from "@/api";
-import { resetState as resetTripDataState } from "./trips";
+import { resetState as resetTripsState } from "./trips";
+import { resetState as resetTripDataState } from "./tripData";
 import {
-  deleteStorageItem,
+  deleteAllLocalStorage,
   getStorageItem,
   LOCALSTORAGE_AUTH_KEY,
   setStorageItem,
@@ -29,7 +30,8 @@ export const login = createAsyncThunk(
 );
 
 export const logout = createAsyncThunk("app/logout", (_, thunkApi) => {
-  deleteStorageItem(LOCALSTORAGE_AUTH_KEY);
+  deleteAllLocalStorage();
+  thunkApi.dispatch(resetTripsState());
   thunkApi.dispatch(resetTripDataState());
   thunkApi.dispatch(resetState());
 });
