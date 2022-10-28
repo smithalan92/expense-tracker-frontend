@@ -24,8 +24,9 @@ export interface TripDataState {
   isAddingExpense: boolean;
   unsavedExpenses: ParsedTripExpense[];
   isSyncingUnSavedExpenses: boolean;
-  shouldShowAddExpenseModal: boolean;
   isLoadingExpenses: boolean;
+  shouldShowAddExpenseModal: boolean;
+  shouldShowTripStatsModal: boolean;
 }
 
 export interface AddExpenseParams {

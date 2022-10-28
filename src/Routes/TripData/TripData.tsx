@@ -1,6 +1,7 @@
 import AddExpenseModal from "@/components/AddExpenseModal/AddExpenseModal";
 import ExpenseTable from "@/components/ExpenseTable/ExpenseTable";
 import Spinner from "@/components/Spinner";
+import TripStatsModal from "@/components/TripStatsModal/TripStatsModal";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
   loadTripData,
@@ -14,6 +15,8 @@ import {
   selectIsSyncingUnSavedExpenses,
   selectIsLoadingExpenses,
   selectTrip,
+  selectShouldShowTripStatsModal,
+  setShouldShowTripStatsModal,
 } from "@/store/slices/tripData";
 import format from "date-fns/format";
 import { useCallback, useEffect, useMemo } from "react";
@@ -27,6 +30,9 @@ export default function TripData() {
   const hasFailedToLoadData = useAppSelector(selectHasFailedToTripData);
   const shouldShowAddExpenseModal = useAppSelector(
     selectShouldShowAddExpenseModal
+  );
+  const shouldShowTripStatsModal = useAppSelector(
+    selectShouldShowTripStatsModal
   );
   const shouldShowSyncButton = useAppSelector(selectCanShowSyncButton);
   const isSavingExpense = useAppSelector(selectIsAddingExpense);
@@ -50,6 +56,10 @@ export default function TripData() {
 
   const onClickSync = () => {
     dispatch(syncUnsavedExpenses());
+  };
+
+  const onClickViewStats = () => {
+    dispatch(setShouldShowTripStatsModal(true));
   };
 
   const tripStartDate = useMemo(() => {
@@ -109,6 +119,12 @@ export default function TripData() {
             >
               Back
             </button>
+            <button
+              className="btn btn-accent font-bold text-md mr-4"
+              onClick={onClickViewStats}
+            >
+              Stats
+            </button>
             {shouldShowSyncButton && (
               <button
                 className="btn btn-primary font-bold text-md mr-4"
@@ -135,6 +151,9 @@ export default function TripData() {
       {maybeRenderFailureState()}
       {maybeRenderExpenseList()}
       {shouldShowAddExpenseModal && <AddExpenseModal />}
+      {shouldShowTripStatsModal && (
+        <TripStatsModal tripId={parseInt(tripId!, 10)} />
+      )}
     </div>
   );
 }

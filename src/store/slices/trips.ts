@@ -69,7 +69,7 @@ export const tripSlice = createSlice({
 
 export const { resetState } = tripSlice.actions;
 
-const selectTripDataState = ({ trips }: { trips: TripDataState }) => trips;
+const selectTripDataState = ({ trips }: { trips: TripsState }) => trips;
 
 export const selectTrips = createSelector(
   [selectTripDataState],

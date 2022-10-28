@@ -9,6 +9,7 @@ import {
   GetExpenseCategoriesResponse,
   AddExpenseForTripBody,
   GetTripDataResponse,
+  GetTripStatsResponse,
 } from "./api.types";
 import { store } from "./store";
 import { logout } from "./store/slices/app";
@@ -71,6 +72,14 @@ export async function getTripData(tripId: number) {
 export async function getExpensesForTrip(tripId: number) {
   const { data } = await http!.get<GetExpensesForTripResponse>(
     `/trips/${tripId}/expenses`
+  );
+
+  return data;
+}
+
+export async function getTripStats(tripId: number) {
+  const { data } = await http!.get<GetTripStatsResponse>(
+    `/trips/${tripId}/stats`
   );
 
   return data;

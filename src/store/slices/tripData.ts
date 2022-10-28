@@ -38,6 +38,7 @@ const initialState: TripDataState = {
   isSyncingUnSavedExpenses: false,
   isLoadingExpenses: false,
   shouldShowAddExpenseModal: false,
+  shouldShowTripStatsModal: false,
 };
 
 export const loadTripData = createAsyncThunk(
@@ -174,6 +175,9 @@ export const expenseSlice = createSlice({
     setShouldShowAddExpenseModal(state, action: PayloadAction<boolean>) {
       state.shouldShowAddExpenseModal = action.payload;
     },
+    setShouldShowTripStatsModal(state, action: PayloadAction<boolean>) {
+      state.shouldShowTripStatsModal = action.payload;
+    },
     addUnsavedExpense(state, action: PayloadAction<ParsedTripExpense>) {
       state.unsavedExpenses.push(action.payload);
       setStorageItem(
@@ -259,6 +263,7 @@ export const {
   setShouldShowAddExpenseModal,
   addUnsavedExpense,
   loadUnsavedExpensesFromStorage,
+  setShouldShowTripStatsModal,
 } = expenseSlice.actions;
 
 const selectState = ({ tripData }: { tripData: TripDataState }) => tripData;
@@ -340,6 +345,11 @@ export const selectIsSyncingUnSavedExpenses = createSelector(
 export const selectIsLoadingExpenses = createSelector(
   [selectState],
   (state) => state.isLoadingExpenses
+);
+
+export const selectShouldShowTripStatsModal = createSelector(
+  [selectState],
+  (state) => state.shouldShowTripStatsModal
 );
 
 export default expenseSlice.reducer;

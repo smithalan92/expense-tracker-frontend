@@ -118,3 +118,25 @@ export interface GetTripDataResponse {
   currencies: Currency[];
   categories: ExpenseCategory[];
 }
+
+export interface CategoryBreakdownResult {
+  categoryName: string;
+  totalEuroAmount: number;
+}
+
+export interface UserBreakdownResult {
+  userFirstName: string;
+  totalEuroAmount: number;
+}
+
+export interface ExpensiveTripDayResult {
+  localDate: string;
+  totalEuroAmount: number;
+}
+
+export interface GetTripStatsResponse {
+  categoryBreakdown: CategoryBreakdownResult[];
+  userBreakdown: UserBreakdownResult[];
+  mostExpenseDay: ExpensiveTripDayResult;
+  leastExpensiveDay: ExpensiveTripDayResult;
+}
