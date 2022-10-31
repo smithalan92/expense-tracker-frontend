@@ -20,9 +20,10 @@ export default function Expense({ expense, onClick }: ExpenseProps) {
           <td>
             {expense.category.name}
           </td>
-          <td>{expense.city.name}</td>
-          <td align="center">{expense.amount} {expense.currency.code}</td>
           <td align="center">€{expense.euroAmount}</td>
+          <td align="center">{expense.city.name}</td>
+          <td align="center">{expense.amount} {expense.currency.code}</td>
+          
         </tr>
       )}
       {!expense.isSaved && (

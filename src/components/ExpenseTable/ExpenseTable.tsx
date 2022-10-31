@@ -17,9 +17,9 @@ export default function ExpenseTable({
           <tr>
             <th>Date</th>
             <th>Category</th>
-            <th>City</th>
-            <th align="center">Local</th>
             <th align="center">Euro</th>
+            <th align="center">City</th>
+            <th align="center">Local</th>
           </tr>
         </thead>
         <tbody>
