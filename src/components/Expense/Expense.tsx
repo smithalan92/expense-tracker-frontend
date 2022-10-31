@@ -6,7 +6,7 @@ import { ExpenseProps } from "./Expense.types";
 
 export default function Expense({ expense, onClick }: ExpenseProps) {
   const formattedDate = useMemo(() => {
-    return format(new Date(expense.localDateTime), "dd-MM-yyyy");
+    return format(new Date(expense.localDateTime), "dd-MM-yyyy HH:mm");
   }, [expense]);
 
   return (
@@ -17,10 +17,11 @@ export default function Expense({ expense, onClick }: ExpenseProps) {
           onClick={() => onClick(expense.id)}
         >
           <td>{formattedDate}</td>
-          <td className="text-ellipsis overflow-hidden">
+          <td>
             {expense.category.name}
           </td>
-          <td className="text-ellipsis overflow-hidden">{expense.city.name}</td>
+          <td>{expense.city.name}</td>
+          <td align="center">{expense.amount} {expense.currency.code}</td>
           <td align="center">€{expense.euroAmount}</td>
         </tr>
       )}

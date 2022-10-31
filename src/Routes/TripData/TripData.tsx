@@ -123,7 +123,9 @@ export default function TripData() {
           <div className="text-center ml-2 text-md mb-6">
             {tripStartDate} to {tripEndDate}
           </div>
+          <div className="overflow-x-auto">
           <ExpenseTable onClickExpense={onClickExpense} />
+          </div>
           <div className="flex justify-end mt-6">
             <button
               className="btn btn-secondary font-bold text-md mr-4"

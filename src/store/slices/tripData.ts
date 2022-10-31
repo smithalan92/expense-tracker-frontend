@@ -339,7 +339,15 @@ export const selectCountries = createSelector(
 );
 
 export const selectExpenses = createSelector([selectState], (state) => {
-  return [...state.expenses, ...state.unsavedExpenses].sort((a, b) => {
+  const exp = [...state.expenses, ...state.unsavedExpenses]
+  .map((exp) => {
+    return {
+      ...exp,
+      localDateTime: exp.localDateTime.replace(' ', 'T').replace('.000Z', ''),
+    }
+  });
+
+  return exp.sort((a, b) => {
     return (
       new Date(b.localDateTime).getTime() - new Date(a.localDateTime).getTime()
     );

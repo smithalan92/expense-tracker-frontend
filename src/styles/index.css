@@ -15,11 +15,6 @@ html {
   @apply w-full h-full flex flex-col items-center;
 }
 
-.table td {
-  max-width: 0;
-  @apply py-4;
-}
-
 input[type="number"] {
   -moz-appearance: textfield;
 }
