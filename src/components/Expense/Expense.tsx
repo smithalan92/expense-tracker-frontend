@@ -16,6 +16,7 @@ export default function Expense({ expense, onClick }: ExpenseProps) {
           className="hover cursor-pointer select-none"
           onClick={() => onClick(expense.id)}
         >
+          <td></td>
           <td>{formattedDate}</td>
           <td>
             {expense.category.name}
@@ -23,7 +24,7 @@ export default function Expense({ expense, onClick }: ExpenseProps) {
           <td align="center">€{expense.euroAmount}</td>
           <td align="center">{expense.city.name}</td>
           <td align="center">{expense.amount} {expense.currency.code}</td>
-          
+          <td className="px-4">{expense.user.firstName}</td>
         </tr>
       )}
       {!expense.isSaved && (

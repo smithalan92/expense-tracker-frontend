@@ -15,11 +15,13 @@ export default function ExpenseTable({
       <table className="table table-compact w-full border-collapse">
         <thead className="sticky top-0">
           <tr>
+            <th></th>
             <th>Date</th>
             <th>Category</th>
-            <th align="center">Euro</th>
+            <th align="center">Euro Amount</th>
             <th align="center">City</th>
-            <th align="center">Local</th>
+            <th align="center">Local Amount</th>
+            <th align="center" className="px-4">Who</th>
           </tr>
         </thead>
         <tbody>
