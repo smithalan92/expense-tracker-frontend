@@ -32,16 +32,19 @@ export default function Expense({ expense, onClick }: ExpenseProps) {
           className="hover cursor-pointer select-none"
           onClick={() => onClick(expense.id)}
         >
+          <td className="bg-rose-900"></td>
           <td className="bg-rose-900">{formattedDate}</td>
           <td className="text-ellipsis overflow-hidden bg-rose-900">
             {expense.category.name}
           </td>
-          <td className="text-ellipsis overflow-hidden bg-rose-900">
-            {expense.city.name}
-          </td>
           <td align="center" className=" bg-rose-900">
             {expense.euroAmount}
           </td>
+          <td className="text-ellipsis overflow-hidden bg-rose-900">
+            {expense.city.name}
+          </td>
+          <td align="center" className="bg-rose-900">{expense.amount} {expense.currency.code}</td>
+          <td className="px-4 bg-rose-900">{expense.user.firstName}</td>
         </tr>
       )}
     </>
