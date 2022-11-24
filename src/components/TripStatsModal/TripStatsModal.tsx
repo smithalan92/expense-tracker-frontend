@@ -6,6 +6,7 @@ import { formatDateForStoring } from "@/utils/date";
 import format from "date-fns/format";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Spinner from "../Spinner";
+import CategoryBreakdown from "./CategoryBreakDown/CategoryBreakdown";
 
 export default function TripStatsModal({ tripId }: { tripId: number }) {
   const dispatch = useAppDispatch();
@@ -48,7 +49,7 @@ export default function TripStatsModal({ tripId }: { tripId: number }) {
     return (
       <div>
         <div className="flex flex-col py-4 border-t border-solid border-neutral-focus">
-          <span className="font-bold text-xl">Most Expense Day</span>
+          <span className="font-bold text-xl">Most Expensive Day</span>
           <span className="mt-2">
             {format(new Date(mostExpenseDay.localDate), "dd MMM yyyy")} spent{" "}
             <span className="text-red-500">
@@ -57,7 +58,7 @@ export default function TripStatsModal({ tripId }: { tripId: number }) {
           </span>
         </div>
         <div className="flex flex-col py-4 border-t border-solid border-neutral-focus">
-          <span className="font-bold text-xl">Least Expense Day</span>
+          <span className="font-bold text-xl">Least Expensive Day</span>
           <span className="mt-2">
             {format(new Date(leastExpensiveDay.localDate), "dd MMM yyyy")} spent{" "}
             <span className="text-green-500">
@@ -95,28 +96,7 @@ export default function TripStatsModal({ tripId }: { tripId: number }) {
         <div className="flex flex-col py-4 border-t border-solid border-neutral-focus">
           <span className="font-bold text-xl">Expense Category Breakdown</span>
           <div className="mt-2">
-            <table className="table table-compact w-full border-collapse">
-              <colgroup>
-                <col width="50%" />
-                <col width="50%" />
-              </colgroup>
-              <thead>
-                <tr>
-                  <th>Category</th>
-                  <th align="center">Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                {categoryBreakdown.map((cb) => {
-                  return (
-                    <tr key={cb.categoryName}>
-                      <td>{cb.categoryName}</td>
-                      <td align="center">€{cb.totalEuroAmount}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+            <CategoryBreakdown categoryBreakdown={categoryBreakdown} />
           </div>
         </div>
       </div>

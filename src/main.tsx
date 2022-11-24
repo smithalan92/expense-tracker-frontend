@@ -9,6 +9,8 @@ import { Provider } from "react-redux";
 import router from "@/router";
 import "@/styles/index.css";
 import { restoreLocalStorage } from "@/store/slices/app";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 store.dispatch(restoreLocalStorage());
 
