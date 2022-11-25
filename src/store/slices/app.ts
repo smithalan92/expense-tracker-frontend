@@ -42,7 +42,6 @@ export const appSlice = createSlice({
   reducers: {
     restoreLocalStorage: (state) => {
       const data = getStorageItem(LOCALSTORAGE_AUTH_KEY);
-      console.log(data);
       if (data) {
         const { user, token } = data as any;
         state.user = user;

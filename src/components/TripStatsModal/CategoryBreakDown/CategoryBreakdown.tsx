@@ -39,7 +39,7 @@ export default function CategoryBreakdown({
           Table
         </a>
       </div>
-      <div className="p-4">
+      <div className="mt-4">
         {activeTab === "chart" && (
           <CategoryPieChart categoryBreakdown={categoryBreakdown} />
         )}

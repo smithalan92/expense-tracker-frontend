@@ -131,8 +131,8 @@ export default function TripStatsModal({ tripId }: { tripId: number }) {
   }, [isLoading]);
 
   return (
-    <div className="flex w-full h-full absolute top-0 left-0 justify-center items-center bg-black/50">
-      <div className="modal-box overflow-hidden absolute bottom-[-32px] md:relative box-content">
+    <div className="et-modal-backdrop overflow-hidden">
+      <div className="animate-slide-in-bottom et-modal overflow-hidden absolute bottom-0 md:relative box-content w-[350px] md:w-full">
         <span
           className="btn btn-md btn-circle absolute right-4 top-4 text-lg"
           onClick={onClickClose}

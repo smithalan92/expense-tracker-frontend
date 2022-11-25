@@ -25,6 +25,38 @@ module.exports = {
       spacing: {
         100: "400px",
       },
+      keyframes: {
+        slideIn: {
+          "0%": {
+            transform: "translateY(800px)",
+            "animation-timing-function": "ease-in",
+          },
+          "60%": {
+            transform: "translateY(-30px)",
+            "animation-timing-function": "ease-in",
+          },
+          "80%": {
+            transform: "translateY(-10px)",
+            "animation-timing-function": "ease-out",
+          },
+          "100%": {
+            transform: "translateY(0)",
+            "animation-timing-function": "ease-in",
+          },
+        },
+        fadeIn: {
+          "0%": {
+            opacity: 0.3,
+          },
+          "100%": {
+            opacity: 1,
+          },
+        },
+      },
+      animation: {
+        "slide-in-bottom": "fadeIn 0.3s, slideIn 0.4s linear",
+        "fade-in": "fadeIn 0.4s",
+      },
     },
   },
   plugins: [require("@tailwindcss/line-clamp"), require("daisyui")],

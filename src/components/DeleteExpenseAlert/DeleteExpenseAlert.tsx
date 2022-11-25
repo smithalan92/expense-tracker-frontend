@@ -81,30 +81,34 @@ export function DeleteExpenseAlert({
 
     return (
       <>
-        <div className="pt-6 px-4">
+        <div className="mb-2">
           Are you sure you want to delete this expense?
         </div>
-        <div className="flex flex-col px-4 pt-2 pb-6">
-          <div>
-            <span className="font-bold mr-2">Date:</span>
-            <span>{format(new Date(expense.localDateTime), "dd-MM-yyyy")}</span>
-          </div>
-          <div>
-            <span className="font-bold mr-2">Category:</span>
-            <span>{expense.category.name}</span>
-          </div>
-          <div>
-            <span className="font-bold mr-2">Amount:</span>
-            <span>{expense.euroAmount}</span>
-          </div>
+        <div className="flex flex-col">
+          <table>
+            <tr>
+              <td className="font-bold">Date:</td>
+              <td>
+                {format(new Date(expense.localDateTime), "dd-MM-yyyy HH:mm")}
+              </td>
+            </tr>
+            <tr>
+              <td className="font-bold">Category:</td>
+              <td>{expense.category.name}</td>
+            </tr>
+            <tr>
+              <td className="font-bold">Amount:</td>
+              <td>€{expense.euroAmount}</td>
+            </tr>
+          </table>
         </div>
       </>
     );
   }, [isDeletingExpense, hasDeletingExpenseFailed, didDeleteExpense]);
 
   return (
-    <div className="flex w-full h-full absolute top-0 left-0 justify-center items-center bg-black/50">
-      <div className="modal-box overflow-hidden box-content">
+    <div className="et-modal-backdrop">
+      <div className="animate-fade-in et-modal overflow-hidden box-content">
         {maybeRenderLoader()}
         {maybeRenderFailedState()}
         {maybeRenderContent()}

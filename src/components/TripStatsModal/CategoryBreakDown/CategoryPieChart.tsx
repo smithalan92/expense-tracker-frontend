@@ -86,7 +86,7 @@ export default function App({ categoryBreakdown }: CategoryPieChartProps) {
   }, [labels, values]);
 
   return (
-    <div className="flex items-center justify-center p-4">
+    <div className="flex items-center justify-center">
       <Doughnut data={chartData} options={CHART_OPTIONS} />
     </div>
   );

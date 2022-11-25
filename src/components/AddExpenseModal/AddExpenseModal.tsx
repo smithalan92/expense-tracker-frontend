@@ -54,10 +54,10 @@ export default function AddExpenseModal() {
   };
 
   return (
-    <div className="flex w-full h-full absolute top-0 left-0 justify-center items-center bg-black/50">
-      <div className="modal-box overflow-hidden absolute bottom-[-32px] md:relative box-content">
+    <div className="et-modal-backdrop overflow-hidden">
+      <div className="animate-slide-in-bottom et-modal overflow-hidden absolute bottom-0 md:relative box-content w-[350px] md:w-full">
         <h2 className="font-bold text-2xl mb-2">Add Expense</h2>
-        <div className="h-[550px] overflow-y-scroll pr-4">
+        <div className="h-[450px] overflow-y-scroll pr-4">
           <div className="flex items-center py-4">
             <div className="w-24 mb-4">When</div>
             <CustomDatePicker value={date} onChange={setDate} />

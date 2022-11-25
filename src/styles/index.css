@@ -5,6 +5,26 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .et-modal-backdrop {
+    @apply flex w-full h-full absolute top-0 left-0 justify-center items-center bg-black/50 px-2;
+  }
+
+  .et-modal {
+    @apply bg-base-100;
+    max-height: calc(100vh - 4em);
+    padding: 1.5rem;
+    max-width: 32rem;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
+
 body,
 html {
   @apply w-full h-full bg-neutral;
