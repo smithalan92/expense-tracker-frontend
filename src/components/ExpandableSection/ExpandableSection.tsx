@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ReactComponent as CaretIcon } from "@/assets/caret.svg";
 import { ExpandableSectionProps } from "./ExpandableSection.types";
 
@@ -7,6 +7,22 @@ export default function ExpandableSection({
   children,
 }: ExpandableSectionProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const contentRef = useRef(null);
+  const [timeoutRef, setTimeoutRef] = useState<ReturnType<typeof setTimeout>>();
+
+  useEffect(() => {
+    if (timeoutRef) clearTimeout(timeoutRef);
+    if (isExpanded && contentRef) {
+      setTimeoutRef(
+        setTimeout(() => {
+          (contentRef.current! as HTMLElement).scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        }, 0)
+      );
+    }
+  }, [isExpanded]);
 
   return (
     <>
@@ -21,7 +37,9 @@ export default function ExpandableSection({
           }`}
         />
       </div>
-      {isExpanded && <div className="mt-2">{children}</div>}
+      <div ref={contentRef}>
+        {isExpanded && <div className="mt-2">{children}</div>}
+      </div>
     </>
   );
 }

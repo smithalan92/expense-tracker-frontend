@@ -9,6 +9,8 @@ import CategoryBreakdown from "./CategoryBreakDown/CategoryBreakdown";
 import UserBreakdown from "./UserBreakdown/UserBreakdown";
 import ExpandableSection from "@/components/ExpandableSection/ExpandableSection";
 import DayBreakdown from "./DayBreakdown/DayBreakdown";
+import CountryBreakdown from "./CountryBreakdown/CountryBreakdown";
+import CityBreakdown from "./CityBreakdown/CityBreakdown";
 
 export default function TripStatsModal({ tripId }: { tripId: number }) {
   const dispatch = useAppDispatch();
@@ -47,6 +49,8 @@ export default function TripStatsModal({ tripId }: { tripId: number }) {
       categoryBreakdown,
       userBreakdown,
       dailyCostBreakdown,
+      countryBreakdown,
+      cityBreakdown,
     } = stats!;
 
     return (
@@ -77,6 +81,12 @@ export default function TripStatsModal({ tripId }: { tripId: number }) {
         </div>
         <div className="flex flex-col py-4 border-t border-solid border-neutral-focus">
           <CategoryBreakdown categoryBreakdown={categoryBreakdown} />
+        </div>
+        <div className="flex flex-col py-4 border-t border-solid border-neutral-focus">
+          <CountryBreakdown countryBreakdown={countryBreakdown} />
+        </div>
+        <div className="flex flex-col py-4 border-t border-solid border-neutral-focus">
+          <CityBreakdown cityBreakdown={cityBreakdown} />
         </div>
         <div className="flex flex-col py-4 border-t border-solid border-neutral-focus">
           <DayBreakdown dailyCostBreakdown={dailyCostBreakdown} />

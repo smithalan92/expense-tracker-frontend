@@ -141,7 +141,10 @@ export interface CountryBreakdownResult {
   localCurrency: string;
 }
 
-export type CityBreakdownResult = CountryBreakdownResult;
+export interface CityBreakdownResult
+  extends Omit<CountryBreakdownResult, "localTotal"> {
+  localAmount: number;
+}
 
 export interface DailyCostBreakdownResult {
   localDate: string;
