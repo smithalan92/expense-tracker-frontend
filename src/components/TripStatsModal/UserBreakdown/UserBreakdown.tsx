@@ -2,6 +2,7 @@ import { useState } from "react";
 import { UserBreakdownProps, UserBreakdownView } from "./UserBreakdown.types";
 import UserBreakdownTable from "./UserBreakdownTable";
 import UserBreakdownBarChart from "./UserBreakdownBarChart";
+import ExpandableSection from "@/components/ExpandableSection/ExpandableSection";
 
 export default function UserBreakdown({ userBreakdown }: UserBreakdownProps) {
   const [activeTab, setActiveTab] = useState<UserBreakdownView>("chart");
@@ -15,7 +16,7 @@ export default function UserBreakdown({ userBreakdown }: UserBreakdownProps) {
   };
 
   return (
-    <>
+    <ExpandableSection title="Expense Breakdown By User">
       <div className="tabs">
         <a
           className={`tab tab-bordered px-8 ${
@@ -42,6 +43,6 @@ export default function UserBreakdown({ userBreakdown }: UserBreakdownProps) {
           <UserBreakdownTable userBreakdown={userBreakdown} />
         )}
       </div>
-    </>
+    </ExpandableSection>
   );
 }

@@ -7,6 +7,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Spinner from "../Spinner";
 import CategoryBreakdown from "./CategoryBreakDown/CategoryBreakdown";
 import UserBreakdown from "./UserBreakdown/UserBreakdown";
+import ExpandableSection from "@/components/ExpandableSection/ExpandableSection";
 
 export default function TripStatsModal({ tripId }: { tripId: number }) {
   const dispatch = useAppDispatch();
@@ -49,34 +50,31 @@ export default function TripStatsModal({ tripId }: { tripId: number }) {
     return (
       <div>
         <div className="flex flex-col py-4 border-t border-solid border-neutral-focus">
-          <span className="font-bold text-xl">Most Expensive Day</span>
-          <span className="mt-2">
-            {format(new Date(mostExpenseDay.localDate), "dd MMM yyyy")} spent{" "}
-            <span className="text-red-500">
-              €{mostExpenseDay.totalEuroAmount}
+          <ExpandableSection title="Most expense Day">
+            <span>
+              {format(new Date(mostExpenseDay.localDate), "dd MMM yyyy")} spent{" "}
+              <span className="text-red-500">
+                €{mostExpenseDay.totalEuroAmount}
+              </span>
             </span>
-          </span>
+          </ExpandableSection>
         </div>
         <div className="flex flex-col py-4 border-t border-solid border-neutral-focus">
-          <span className="font-bold text-xl">Least Expensive Day</span>
-          <span className="mt-2">
-            {format(new Date(leastExpensiveDay.localDate), "dd MMM yyyy")} spent{" "}
-            <span className="text-green-500">
-              €{leastExpensiveDay.totalEuroAmount}
+          <ExpandableSection title="Least Expensive Day">
+            <span>
+              {format(new Date(leastExpensiveDay.localDate), "dd MMM yyyy")}{" "}
+              spent{" "}
+              <span className="text-green-500">
+                €{leastExpensiveDay.totalEuroAmount}
+              </span>
             </span>
-          </span>
+          </ExpandableSection>
         </div>
         <div className="flex flex-col py-4 border-t border-solid border-neutral-focus">
-          <span className="font-bold text-xl">Expense Breakdown By User</span>
-          <div className="mt-2">
-            <UserBreakdown userBreakdown={userBreakdown} />
-          </div>
+          <UserBreakdown userBreakdown={userBreakdown} />
         </div>
         <div className="flex flex-col py-4 border-t border-solid border-neutral-focus">
-          <span className="font-bold text-xl">Expense Category Breakdown</span>
-          <div className="mt-2">
-            <CategoryBreakdown categoryBreakdown={categoryBreakdown} />
-          </div>
+          <CategoryBreakdown categoryBreakdown={categoryBreakdown} />
         </div>
       </div>
     );

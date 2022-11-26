@@ -26,7 +26,7 @@ module.exports = {
         100: "400px",
       },
       keyframes: {
-        slideIn: {
+        slideInBottom: {
           "0%": {
             transform: "translateY(800px)",
             "animation-timing-function": "ease-in",
@@ -46,7 +46,7 @@ module.exports = {
         },
         fadeIn: {
           "0%": {
-            opacity: 0.3,
+            opacity: 0,
           },
           "100%": {
             opacity: 1,
@@ -54,7 +54,7 @@ module.exports = {
         },
       },
       animation: {
-        "slide-in-bottom": "fadeIn 0.3s, slideIn 0.4s linear",
+        "slide-in-bottom": "fadeIn 0.3s, slideInBottom 0.4s linear",
         "fade-in": "fadeIn 0.4s",
       },
     },
