@@ -14,9 +14,9 @@ export default function ExpandableSection({
         className="font-bold text-xl flex items-center cursor-pointer"
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        {title}
+        <div className="flex-1">{title}</div>
         <CaretIcon
-          className={`ease-in-out duration-100 w-6 ml-2 mt-1 ${
+          className={`ease-in-out duration-100 w-4 ml-2 ${
             isExpanded && "rotate-180"
           }`}
         />

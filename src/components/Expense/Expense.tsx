@@ -6,7 +6,7 @@ import { ExpenseProps } from "./Expense.types";
 
 export default function Expense({ expense, onClick }: ExpenseProps) {
   const formattedDate = useMemo(() => {
-    return format(new Date(expense.localDateTime), "dd-MM-yyyy HH:mm");
+    return format(new Date(expense.localDateTime), "do MMM HH:mm");
   }, [expense]);
 
   return (
@@ -18,12 +18,12 @@ export default function Expense({ expense, onClick }: ExpenseProps) {
         >
           <td></td>
           <td>{formattedDate}</td>
-          <td>
-            {expense.category.name}
-          </td>
+          <td>{expense.category.name}</td>
           <td align="center">€{expense.euroAmount}</td>
           <td align="center">{expense.city.name}</td>
-          <td align="center">{expense.amount} {expense.currency.code}</td>
+          <td align="center">
+            {expense.amount} {expense.currency.code}
+          </td>
           <td className="px-4">{expense.user.firstName}</td>
         </tr>
       )}
@@ -43,7 +43,9 @@ export default function Expense({ expense, onClick }: ExpenseProps) {
           <td className="text-ellipsis overflow-hidden bg-rose-900">
             {expense.city.name}
           </td>
-          <td align="center" className="bg-rose-900">{expense.amount} {expense.currency.code}</td>
+          <td align="center" className="bg-rose-900">
+            {expense.amount} {expense.currency.code}
+          </td>
           <td className="px-4 bg-rose-900">{expense.user.firstName}</td>
         </tr>
       )}

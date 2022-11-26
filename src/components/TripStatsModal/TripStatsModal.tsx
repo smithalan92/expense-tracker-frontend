@@ -8,6 +8,7 @@ import Spinner from "../Spinner";
 import CategoryBreakdown from "./CategoryBreakDown/CategoryBreakdown";
 import UserBreakdown from "./UserBreakdown/UserBreakdown";
 import ExpandableSection from "@/components/ExpandableSection/ExpandableSection";
+import DayBreakdown from "./DayBreakdown/DayBreakdown";
 
 export default function TripStatsModal({ tripId }: { tripId: number }) {
   const dispatch = useAppDispatch();
@@ -45,6 +46,7 @@ export default function TripStatsModal({ tripId }: { tripId: number }) {
       leastExpensiveDay,
       categoryBreakdown,
       userBreakdown,
+      dailyCostBreakdown,
     } = stats!;
 
     return (
@@ -75,6 +77,9 @@ export default function TripStatsModal({ tripId }: { tripId: number }) {
         </div>
         <div className="flex flex-col py-4 border-t border-solid border-neutral-focus">
           <CategoryBreakdown categoryBreakdown={categoryBreakdown} />
+        </div>
+        <div className="flex flex-col py-4 border-t border-solid border-neutral-focus">
+          <DayBreakdown dailyCostBreakdown={dailyCostBreakdown} />
         </div>
       </div>
     );
@@ -111,7 +116,7 @@ export default function TripStatsModal({ tripId }: { tripId: number }) {
     <div className="et-modal-backdrop overflow-hidden">
       <div className="animate-slide-in-bottom et-modal overflow-hidden absolute bottom-0 md:relative box-content w-[350px] md:w-full">
         <span
-          className="btn btn-md btn-circle absolute right-4 top-4 text-lg"
+          className="cursor-pointer px-2 absolute hover:bg-blue-200 hover:rounded-full hover:text-gray-700 right-4 top-4 text-lg"
           onClick={onClickClose}
         >
           ✕
