@@ -134,9 +134,26 @@ export interface ExpensiveTripDayResult {
   totalEuroAmount: number;
 }
 
+export interface CountryBreakdownResult {
+  name: string;
+  euroTotal: number;
+  localTotal: number;
+  localCurrency: string;
+}
+
+export type CityBreakdownResult = CountryBreakdownResult;
+
+export interface DailyCostBreakdownResult {
+  localDate: string;
+  euroTotal: number;
+}
+
 export interface GetTripStatsResponse {
   categoryBreakdown: CategoryBreakdownResult[];
   userBreakdown: UserBreakdownResult[];
   mostExpenseDay: ExpensiveTripDayResult;
   leastExpensiveDay: ExpensiveTripDayResult;
+  countryBreakdown: CountryBreakdownResult[];
+  cityBreakdown: CityBreakdownResult[];
+  dailyCostBreakdown: DailyCostBreakdownResult[];
 }

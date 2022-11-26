@@ -1,6 +1,6 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { Doughnut } from "react-chartjs-2";
-import { CategoryPieChartProps } from "./CategoryPieChart.types";
+import { CategoryBreakDownPieChartProps } from "./CategoryBreakDownPieChart.types";
 
 function makeChartData(labels: string[], values: (string | number)[]) {
   return {
@@ -72,7 +72,9 @@ const CHART_OPTIONS = {
   },
 };
 
-export default function App({ categoryBreakdown }: CategoryPieChartProps) {
+export default function CategoryBreakDownPieChart({
+  categoryBreakdown,
+}: CategoryBreakDownPieChartProps) {
   const labels = useMemo(() => {
     return categoryBreakdown.map((c) => c.categoryName);
   }, [categoryBreakdown]);

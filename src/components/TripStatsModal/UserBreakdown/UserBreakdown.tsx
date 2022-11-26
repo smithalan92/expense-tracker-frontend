@@ -1,15 +1,10 @@
 import { useState } from "react";
-import {
-  CategoryBreakdownProps,
-  CategoryBreakdownView,
-} from "./CategoryBreakdown.types";
-import CategoryBreakdownTable from "./CategoryBreakdownTable";
-import CategoryBreakDownPieChart from "./CategoryBreakDownPieChart";
+import { UserBreakdownProps, UserBreakdownView } from "./UserBreakdown.types";
+import UserBreakdownTable from "./UserBreakdownTable";
+import UserBreakdownBarChart from "./UserBreakdownBarChart";
 
-export default function CategoryBreakdown({
-  categoryBreakdown,
-}: CategoryBreakdownProps) {
-  const [activeTab, setActiveTab] = useState<CategoryBreakdownView>("chart");
+export default function UserBreakdown({ userBreakdown }: UserBreakdownProps) {
+  const [activeTab, setActiveTab] = useState<UserBreakdownView>("chart");
 
   const onClickChartTab = () => {
     setActiveTab("chart");
@@ -41,10 +36,10 @@ export default function CategoryBreakdown({
       </div>
       <div className="mt-4">
         {activeTab === "chart" && (
-          <CategoryBreakDownPieChart categoryBreakdown={categoryBreakdown} />
+          <UserBreakdownBarChart userBreakdown={userBreakdown} />
         )}
         {activeTab === "table" && (
-          <CategoryBreakdownTable categoryBreakdown={categoryBreakdown} />
+          <UserBreakdownTable userBreakdown={userBreakdown} />
         )}
       </div>
     </>

@@ -2,11 +2,11 @@ import { getTripStats } from "@/api";
 import { GetTripStatsResponse } from "@/api.types";
 import { useAppDispatch } from "@/store";
 import { setShouldShowTripStatsModal } from "@/store/slices/tripData";
-import { formatDateForStoring } from "@/utils/date";
 import format from "date-fns/format";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Spinner from "../Spinner";
 import CategoryBreakdown from "./CategoryBreakDown/CategoryBreakdown";
+import UserBreakdown from "./UserBreakdown/UserBreakdown";
 
 export default function TripStatsModal({ tripId }: { tripId: number }) {
   const dispatch = useAppDispatch();
@@ -69,28 +69,7 @@ export default function TripStatsModal({ tripId }: { tripId: number }) {
         <div className="flex flex-col py-4 border-t border-solid border-neutral-focus">
           <span className="font-bold text-xl">Expense Breakdown By User</span>
           <div className="mt-2">
-            <table className="table table-compact w-full border-collapse">
-              <colgroup>
-                <col width="50%" />
-                <col width="50%" />
-              </colgroup>
-              <thead>
-                <tr>
-                  <th>User</th>
-                  <th align="center">Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                {userBreakdown.map((bd) => {
-                  return (
-                    <tr key={bd.userFirstName}>
-                      <td>{bd.userFirstName}</td>
-                      <td align="center">€{bd.totalEuroAmount}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+            <UserBreakdown userBreakdown={userBreakdown} />
           </div>
         </div>
         <div className="flex flex-col py-4 border-t border-solid border-neutral-focus">

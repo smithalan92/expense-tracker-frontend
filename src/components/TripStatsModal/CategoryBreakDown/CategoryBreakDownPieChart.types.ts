@@ -1,5 +1,5 @@
 import { CategoryBreakdownResult } from "@/api.types";
 
-export interface CategoryPieChartProps {
+export interface CategoryBreakDownPieChartProps {
   categoryBreakdown: CategoryBreakdownResult[];
 }
