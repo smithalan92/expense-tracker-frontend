@@ -86,20 +86,22 @@ export function DeleteExpenseAlert({
         </div>
         <div className="flex flex-col">
           <table>
-            <tr>
-              <td className="font-bold">Date:</td>
-              <td>
-                {format(new Date(expense.localDateTime), "dd-MM-yyyy HH:mm")}
-              </td>
-            </tr>
-            <tr>
-              <td className="font-bold">Category:</td>
-              <td>{expense.category.name}</td>
-            </tr>
-            <tr>
-              <td className="font-bold">Amount:</td>
-              <td>€{expense.euroAmount}</td>
-            </tr>
+            <tbody>
+              <tr>
+                <td className="font-bold">Date:</td>
+                <td>
+                  {format(new Date(expense.localDateTime), "dd-MM-yyyy HH:mm")}
+                </td>
+              </tr>
+              <tr>
+                <td className="font-bold">Category:</td>
+                <td>{expense.category.name}</td>
+              </tr>
+              <tr>
+                <td className="font-bold">Amount:</td>
+                <td>€{expense.euroAmount}</td>
+              </tr>
+            </tbody>
           </table>
         </div>
       </>
