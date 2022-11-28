@@ -19,9 +19,9 @@ export default function AppContainer() {
   }, [location]);
 
   return (
-    <div className="w-full max-w-3xl min-w-[390px] flex flex-col h-full overflow-hidden">
+    <div className="w-full flex flex-col h-full overflow-hidden items-center">
       {isLoggedIn && <Header />}
-      <div className="px-4 w-full h-full">
+      <div className="px-4 w-full max-w-3xl min-w-[390px] flex flex-col h-full overflow-hidden">
         <div className="pb-12">
           <Outlet />
         </div>
