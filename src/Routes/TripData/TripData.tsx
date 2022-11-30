@@ -94,7 +94,7 @@ export default function TripData() {
       return null;
 
     return (
-      <div className="absolute w-screen h-screen bg-black/30 z-10 flex items-center justify-center top-0 left-0">
+      <div className="absolute w-screen h-screen bg-base-100/30 z-10 flex items-center justify-center top-0 left-0">
         <Spinner />
       </div>
     );
@@ -117,9 +117,7 @@ export default function TripData() {
     return (
       <>
         <div className="h-full overflow-hidden pt-4 flex flex-col">
-          <div className="text-center font-bold text-2xl mb-2 text-white">
-            {trip.name}
-          </div>
+          <div className="text-center font-bold text-2xl mb-2">{trip.name}</div>
           <div className="text-center text-md mb-6">
             {tripStartDate} to {tripEndDate}
           </div>
@@ -128,19 +126,19 @@ export default function TripData() {
           </div>
           <div className="flex justify-center py-6">
             <button
-              className="btn btn-secondary font-bold text-md mr-4"
+              className="btn btn-accent font-bold text-md mr-4"
               onClick={onClickGoBack}
             >
               Back
             </button>
             <button
-              className="btn btn-accent font-bold text-md mr-4"
+              className="btn btn-secondary font-bold text-md mr-4"
               onClick={onClickRefresh}
             >
               <RefreshIcon className="w-6 h-6 fill-black" />
             </button>
             <button
-              className="btn btn-accent font-bold text-md mr-4"
+              className="btn btn-secondary font-bold text-md mr-4"
               onClick={onClickViewStats}
             >
               Stats

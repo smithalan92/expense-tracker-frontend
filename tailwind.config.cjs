@@ -4,6 +4,9 @@ module.exports = {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      colors: {
+        "logo-dark-blue": "#0284c7",
+      },
       minWidth: {
         xs: "20rem;",
         sm: "24rem;",
@@ -61,6 +64,6 @@ module.exports = {
   },
   plugins: [require("@tailwindcss/line-clamp"), require("daisyui")],
   daisyui: {
-    themes: ["night"],
+    themes: ["cupcake"],
   },
 };

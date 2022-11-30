@@ -11,17 +11,23 @@ export default function ExpenseTable({
   const expenses = useAppSelector(selectExpenses)!;
 
   return (
-    <div className="overflow-y-scroll overflow-x-auto w-full h-full">
+    <div className="overflow-y-scroll overflow-x-auto w-full h-full pr-2">
       <table className="table table-compact w-full border-collapse">
         <thead className="sticky top-0">
           <tr>
-            <th></th>
-            <th>Date</th>
-            <th>Category</th>
-            <th align="center">Euro Amount</th>
-            <th align="center">City</th>
-            <th align="center">Local Amount</th>
-            <th align="center" className="px-4">
+            <th className="pb-[12px]"></th>
+            <th className="pb-[12px]">Date</th>
+            <th className="pb-[12px]">Category</th>
+            <th align="center" className="pb-[12px]">
+              Euro Amount
+            </th>
+            <th align="center" className="pb-[12px]">
+              City
+            </th>
+            <th align="center" className="pb-[12px]">
+              Local Amount
+            </th>
+            <th align="center" className="px-4 pb-[12px]">
               Who
             </th>
           </tr>
@@ -38,7 +44,7 @@ export default function ExpenseTable({
           })}
           {expenses.length === 0 && (
             <tr>
-              <td colSpan={4} style={{ textAlign: "center" }}>
+              <td colSpan={7} style={{ textAlign: "center" }}>
                 No expenses available.
               </td>
             </tr>

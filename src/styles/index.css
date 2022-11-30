@@ -1,5 +1,5 @@
 @import "animate.css";
-@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap");
 @import "./reset.css";
 @tailwind base;
 @tailwind components;
@@ -27,8 +27,9 @@
 
 body,
 html {
-  @apply w-full h-full bg-neutral;
+  @apply w-full h-full;
   font-family: "Open Sans", sans-serif;
+  background-color: #e9e4e4 !important;
 }
 
 #root {

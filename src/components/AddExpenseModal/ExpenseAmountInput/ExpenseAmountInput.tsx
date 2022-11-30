@@ -25,7 +25,7 @@ export default function ExpenseAmountInput({
       placeholder="0.00"
       value={value ?? ""}
       onChange={onChangeAmount}
-      className={`flex-1 input input-md input-bordered w-32 bg-white text-black ${
+      className={`flex-1 input input-md input-bordered rounded-md w-32 bg-white text-black ${
         showError ? "border-4 border-red-700" : ""
       }`}
     />

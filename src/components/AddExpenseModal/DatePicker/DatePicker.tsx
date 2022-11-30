@@ -14,7 +14,7 @@ export default function CustomDatePicker({ value, onChange }: DatePickerProps) {
   return (
     <div className="flex-1">
       <DatePicker
-        className="px-4 w-full h-12 rounded rounded-lg text-black"
+        className="px-4 w-full h-12 rounded rounded-lg text-base border border-solid border-gray-300"
         onChange={(date) => onChangeDate(date)}
         showTimeSelect
         selected={selectedDate}

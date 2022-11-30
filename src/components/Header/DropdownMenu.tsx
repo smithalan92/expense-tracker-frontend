@@ -31,24 +31,24 @@ export default function Dropdown() {
   return (
     <div className="relative">
       <button
-        className="focus:ring-4 text-md font-bold px-4 mx-2 rounded-full bg-base-content text-base-100 w-8 h-8 flex items-center justify-center"
+        className="focus:ring-4 text-md font-bold px-4 mx-2 rounded-full bg-logo-dark-blue text-white w-10 h-10 flex items-center justify-center"
         onClick={() => setIsDropdownVisible(!isDropdownVisible)}
       >
         {user!.firstName.substring(0, 1).toUpperCase()}
       </button>
       {isDropdownVisible && (
         <div
-          className="absolute top-[40px] right-0 z-10 w-44 bg-white rounded divide-y shadow bg-gray-700 divide-gray-600"
+          className="absolute top-[48px] right-0 z-10 w-44 rounded divide-y shadow bg-base-300 divide-base-200"
           ref={dropdownRef}
         >
-          <div className="py-3 px-4 text-sm text-white border-b border-solid border-gray-500">
+          <div className="py-3 px-4 text-sm border-b border-solid border-base-100">
             <div>Hey {user!.firstName}!</div>
           </div>
-          <ul className="py-1 text-sm text-gray-200">
+          <ul className="py-1 text-sm base-content">
             <li>
               <span
                 onClick={onClickLogout}
-                className="cursor-pointer block py-2 px-4 hover:bg-gray-600"
+                className="cursor-pointer block py-2 px-4 hover:bg-base-200"
               >
                 Logout
               </span>

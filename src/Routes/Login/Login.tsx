@@ -49,7 +49,7 @@ export default function Login() {
         <input
           type="text"
           placeholder="Email"
-          className="input input-bordered input-primary w-72 max-w-lg"
+          className="input input-bordered rounded-md input-primary w-72 max-w-lg"
           autoFocus={true}
           value={email}
           onChange={onChangeEmail}
@@ -57,13 +57,13 @@ export default function Login() {
         <input
           type="password"
           placeholder="Password"
-          className="mt-4 input input-bordered input-primary w-72 max-w-lg"
+          className="mt-4 input input-bordered rounded-md input-primary w-72 max-w-lg"
           value={password}
           onChange={onChangePassword}
         />
         <div className="mt-8 flex w-full">
           <button
-            className="btn btn-primary w-full"
+            className="btn btn-primary rounded-lg w-full"
             disabled={isLoggingIn || (!email && !password)}
             onClick={onClickLogin}
           >

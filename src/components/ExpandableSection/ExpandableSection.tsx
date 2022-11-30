@@ -27,7 +27,7 @@ export default function ExpandableSection({
   return (
     <>
       <div
-        className="font-bold text-xl flex items-center cursor-pointer"
+        className="font-semibold text-xl flex items-center cursor-pointer"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <div className="flex-1">{title}</div>
