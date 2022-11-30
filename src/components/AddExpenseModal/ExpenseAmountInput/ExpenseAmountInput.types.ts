@@ -1,4 +1,4 @@
 export interface ExpenseAmountInputProps {
-  value: number | null;
-  onChange: (newAmount: number) => void;
+  value: string | null;
+  onChange: (newAmount: string) => void;
 }

@@ -9,7 +9,6 @@ export default function CustomDatePicker({ value, onChange }: DatePickerProps) {
     const stringDate = formatDateForStoring(date!);
     onChange(stringDate);
   };
-  console.log(value)
   const selectedDate = useMemo(() => new Date(value), [value]);
 
   return (

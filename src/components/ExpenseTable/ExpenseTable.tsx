@@ -11,7 +11,7 @@ export default function ExpenseTable({
   const expenses = useAppSelector(selectExpenses)!;
 
   return (
-    <div className="overflow-y-scroll overflow-x-auto w-full h-100">
+    <div className="overflow-y-scroll overflow-x-auto w-full h-full">
       <table className="table table-compact w-full border-collapse">
         <thead className="sticky top-0">
           <tr>
@@ -21,7 +21,9 @@ export default function ExpenseTable({
             <th align="center">Euro Amount</th>
             <th align="center">City</th>
             <th align="center">Local Amount</th>
-            <th align="center" className="px-4">Who</th>
+            <th align="center" className="px-4">
+              Who
+            </th>
           </tr>
         </thead>
         <tbody>

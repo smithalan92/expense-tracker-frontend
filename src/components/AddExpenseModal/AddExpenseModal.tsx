@@ -19,18 +19,19 @@ export default function AddExpenseModal() {
   const [date, setDate] = useState(formatDateForStoring(new Date()));
   const [countryId, setCountryId] = useState<number | null>(null);
   const [cityId, setCityId] = useState<number | null>(null);
-  const [amount, setAmount] = useState<number | null>(null);
+  const [amount, setAmount] = useState<string | null>(null);
   const [currencyId, setCurrencyId] = useState<number | null>(null);
   const [categoryId, setCategoryId] = useState<number | null>(null);
   const [description, setDescription] = useState("");
 
   const canSaveExpense = useMemo(() => {
+    const parsedAmount = parseFloat(amount ?? "-1");
     return (
       date &&
       countryId &&
       cityId &&
       amount &&
-      amount > 0 &&
+      parsedAmount > 0 &&
       currencyId &&
       categoryId
     );
@@ -44,7 +45,7 @@ export default function AddExpenseModal() {
     dispatch(
       addExpense({
         date,
-        amount: amount!,
+        amount: parseFloat(amount!),
         cityId: cityId!,
         currencyId: currencyId!,
         categoryId: categoryId!,

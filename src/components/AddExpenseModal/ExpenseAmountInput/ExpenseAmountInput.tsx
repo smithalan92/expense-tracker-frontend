@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { ExpenseAmountInputProps } from "./ExpenseAmountInput.types";
 
 export default function ExpenseAmountInput({
@@ -7,11 +7,17 @@ export default function ExpenseAmountInput({
 }: ExpenseAmountInputProps) {
   const onChangeAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const amount = parseFloat(e.target.value);
+      const amount = e.target.value;
       onChange(amount);
     },
     [onChange]
   );
+
+  const showError = useMemo(() => {
+    if (value === null) return false;
+    const num = parseFloat(value);
+    return num <= 0;
+  }, [value]);
 
   return (
     <input
@@ -19,7 +25,9 @@ export default function ExpenseAmountInput({
       placeholder="0.00"
       value={value ?? ""}
       onChange={onChangeAmount}
-      className="flex-1 input input-md input-bordered w-32 bg-white text-black"
+      className={`flex-1 input input-md input-bordered w-32 bg-white text-black ${
+        showError ? "border-4 border-red-700" : ""
+      }`}
     />
   );
 }

@@ -71,8 +71,8 @@ export default function TripData() {
   };
 
   const onClickRefresh = () => {
-    dispatch(loadTripData(trip.id))
-  }
+    dispatch(loadTripData(trip.id));
+  };
 
   const tripStartDate = useMemo(() => {
     if (!trip.startDate) return "";
@@ -116,25 +116,28 @@ export default function TripData() {
 
     return (
       <>
-        <div className="h-160 pt-4">
-          <div className="text-center ml-2 font-bold text-2xl mb-2 text-white">
+        <div className="h-full overflow-hidden pt-4 flex flex-col">
+          <div className="text-center font-bold text-2xl mb-2 text-white">
             {trip.name}
           </div>
-          <div className="text-center ml-2 text-md mb-6">
+          <div className="text-center text-md mb-6">
             {tripStartDate} to {tripEndDate}
           </div>
-          <div className="overflow-x-auto">
-          <ExpenseTable onClickExpense={onClickExpense} />
+          <div className="overflow-x-auto flex-1">
+            <ExpenseTable onClickExpense={onClickExpense} />
           </div>
-          <div className="flex justify-end mt-6">
+          <div className="flex justify-center py-6">
             <button
               className="btn btn-secondary font-bold text-md mr-4"
               onClick={onClickGoBack}
             >
               Back
             </button>
-            <button className="btn btn-accent font-bold text-md mr-4" onClick={onClickRefresh}>
-              <RefreshIcon className="w-6 h-6 fill-black"/>
+            <button
+              className="btn btn-accent font-bold text-md mr-4"
+              onClick={onClickRefresh}
+            >
+              <RefreshIcon className="w-6 h-6 fill-black" />
             </button>
             <button
               className="btn btn-accent font-bold text-md mr-4"
