@@ -5,6 +5,7 @@ export interface CityPickerProps {
 }
 
 export interface CityPickerOption {
+  countryId: number;
   value: number;
   label: string;
 }
