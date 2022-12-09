@@ -30,6 +30,9 @@ export default function CurrencyPicker({
     return currencyOptions.find((c) => c.value === value);
   }, [value]);
 
+  // TODO - This messes up if you select a currency
+  // that isnt the standard currency in your selected country
+  // and change country or edit it, the currency then gets changed.
   useEffect(() => {
     if (selectedCountry) {
       onChange(selectedCountry.currencyId);

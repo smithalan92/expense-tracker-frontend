@@ -5,7 +5,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        "logo-dark-blue": "#0284c7",
+        "expensr-blue": "#0284c7",
       },
       minWidth: {
         xs: "20rem;",

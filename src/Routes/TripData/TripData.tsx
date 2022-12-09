@@ -1,6 +1,6 @@
 import AddExpenseModal from "@/components/AddExpenseModal/AddExpenseModal";
-import { DeleteExpenseAlert } from "@/components/DeleteExpenseAlert/DeleteExpenseAlert";
 import ExpenseTable from "@/components/ExpenseTable/ExpenseTable";
+import EditExpenseModal from "@/components/EditExpenseModal/EditExpenseModal";
 import Spinner from "@/components/Spinner";
 import TripStatsModal from "@/components/TripStatsModal/TripStatsModal";
 import { useAppDispatch, useAppSelector } from "@/store";
@@ -18,11 +18,14 @@ import {
   selectTrip,
   selectShouldShowTripStatsModal,
   setShouldShowTripStatsModal,
+  selectShouldShowEditExpenseModal,
+  setShouldShowEditExpenseModal,
 } from "@/store/slices/tripData";
 import format from "date-fns/format";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ReactComponent as RefreshIcon } from "@/assets/refresh.svg";
+import { ReactComponent as BackIcon } from "@/assets/back.svg";
 
 export default function TripData() {
   const { tripId } = useParams();
@@ -36,6 +39,9 @@ export default function TripData() {
   const shouldShowTripStatsModal = useAppSelector(
     selectShouldShowTripStatsModal
   );
+  const shouldShowEditExpenseModal = useAppSelector(
+    selectShouldShowEditExpenseModal
+  );
   const shouldShowSyncButton = useAppSelector(selectCanShowSyncButton);
   const isSavingExpense = useAppSelector(selectIsAddingExpense);
   const isSyncingUnsavedExpenses = useAppSelector(
@@ -44,10 +50,16 @@ export default function TripData() {
   const isLoadingExpenses = useAppSelector(selectIsLoadingExpenses);
   const trip = useAppSelector(selectTrip);
 
-  const [expenseToDelete, setExpenseToDelete] = useState<null | number>(null);
+  const [expenseToEdit, _setExpenseToEdit] = useState<null | number>(null);
 
   const onClickExpense = (expenseId: number) => {
-    setExpenseToDelete(expenseId);
+    setExpenseToEdit(expenseId);
+    dispatch(setShouldShowEditExpenseModal(true));
+  };
+
+  const setExpenseToEdit = (expenseId: number) => {
+    _setExpenseToEdit(expenseId);
+    dispatch(setShouldShowEditExpenseModal(true));
   };
 
   useEffect(() => {
@@ -72,6 +84,10 @@ export default function TripData() {
 
   const onClickRefresh = () => {
     dispatch(loadTripData(trip.id));
+  };
+
+  const onCloseEditExpenseModal = () => {
+    dispatch(setShouldShowEditExpenseModal(false));
   };
 
   const tripStartDate = useMemo(() => {
@@ -126,26 +142,26 @@ export default function TripData() {
           </div>
           <div className="flex justify-center py-6">
             <button
-              className="btn btn-accent font-bold text-md mr-4"
+              className="btn btn-accent font-bold text-md mr-2"
               onClick={onClickGoBack}
             >
-              Back
+              <BackIcon className="w-4" />
             </button>
             <button
-              className="btn btn-secondary font-bold text-md mr-4"
+              className="btn btn-secondary font-bold text-md mr-2"
               onClick={onClickRefresh}
             >
               <RefreshIcon className="w-6 h-6 fill-black" />
             </button>
             <button
-              className="btn btn-secondary font-bold text-md mr-4"
+              className="btn btn-secondary font-bold text-md mr-2"
               onClick={onClickViewStats}
             >
               Stats
             </button>
             {shouldShowSyncButton && (
               <button
-                className="btn btn-primary font-bold text-md mr-4"
+                className="btn btn-primary font-bold text-md mr-2"
                 onClick={onClickSync}
               >
                 Sync
@@ -172,10 +188,10 @@ export default function TripData() {
       {shouldShowTripStatsModal && (
         <TripStatsModal tripId={parseInt(tripId!, 10)} />
       )}
-      {expenseToDelete! !== null && (
-        <DeleteExpenseAlert
-          expenseId={expenseToDelete!}
-          onClose={() => setExpenseToDelete(null)}
+      {shouldShowEditExpenseModal && (
+        <EditExpenseModal
+          expenseId={expenseToEdit!}
+          onClose={onCloseEditExpenseModal}
         />
       )}
     </div>

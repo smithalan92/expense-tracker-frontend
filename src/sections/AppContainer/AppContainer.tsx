@@ -4,6 +4,7 @@ import { PATHS } from "@/router";
 import { useAppSelector } from "@/store";
 import { selectIsLoggedIn } from "@/store/slices/app";
 import Header from "@/components/Header/Header";
+import { ToastContainer } from "react-toastify";
 
 export default function AppContainer() {
   const location = useLocation();
@@ -24,6 +25,14 @@ export default function AppContainer() {
       <div className="px-4 w-full max-w-3xl min-w-[390px] flex flex-col h-full overflow-hidden">
         <Outlet />
       </div>
+      <ToastContainer
+        autoClose={4000}
+        position="top-center"
+        theme="light"
+        toastClassName="drop-shadow-md my-4 mx-2 bg-base-100 text-center rounded text-black"
+        progressStyle={{ background: "#0284c7" }}
+        limit={1}
+      />
     </div>
   );
 }

@@ -8,13 +8,14 @@ import * as api from "@/api";
 import {
   AddExpenseParams,
   DeleteExpenseFufilledActionParams,
+  EditExpenseParams,
   ParsedTripExpense,
 } from "./tripData.types";
 import {
   AddExpenseForTripBody,
+  EditExpenseForTripBody,
   GetExpensesForTripResponse,
   GetTripDataResponse,
-  TripExpense,
 } from "@/api.types";
 import {
   getStorageItem,
@@ -42,10 +43,12 @@ const initialState: TripDataState = {
   isSyncingUnSavedExpenses: false,
   isLoadingExpenses: false,
   shouldShowAddExpenseModal: false,
+  shouldShowEditExpenseModal: false,
   shouldShowTripStatsModal: false,
   isDeletingExpense: false,
   didDeleteExpense: false,
   didDeletingExpenseFail: false,
+  isEditingExpense: false,
 };
 
 export const loadTripData = createAsyncThunk(
@@ -98,6 +101,38 @@ export const addExpense = createAsyncThunk<
   }
 
   thunkApi.dispatch(setShouldShowAddExpenseModal(false));
+});
+
+export const editExpense = createAsyncThunk<
+  void,
+  EditExpenseParams,
+  { state: RootState }
+>("tripData/editExpense", async (params, thunkApi) => {
+  const state = thunkApi.getState();
+  const { tripId, expenseId } = params;
+
+  const payload: EditExpenseForTripBody = {
+    localDateTime: params.date,
+    cityId: params.cityId,
+    amount: params.amount,
+    currencyId: params.currencyId,
+    categoryId: params.categoryId,
+    description: params.description,
+  };
+
+  // TODO - handle failure/no network connection etc..
+
+  // try {
+  await api.editExpenseForTrip(tripId, expenseId, payload);
+  await thunkApi.dispatch(loadTripData(tripId));
+  // } catch (err) {
+  //   console.log(err);
+  //   const tempExpense = getTempExpense(state.tripData, params);
+
+  //   thunkApi.dispatch(addUnsavedExpense(tempExpense));
+  // }
+
+  thunkApi.dispatch(setShouldShowEditExpenseModal(false));
 });
 
 export const loadExpenses = createAsyncThunk<
@@ -208,6 +243,9 @@ export const expenseSlice = createSlice({
     setShouldShowAddExpenseModal(state, action: PayloadAction<boolean>) {
       state.shouldShowAddExpenseModal = action.payload;
     },
+    setShouldShowEditExpenseModal(state, action: PayloadAction<boolean>) {
+      state.shouldShowEditExpenseModal = action.payload;
+    },
     setShouldShowTripStatsModal(state, action: PayloadAction<boolean>) {
       state.shouldShowTripStatsModal = action.payload;
     },
@@ -258,6 +296,14 @@ export const expenseSlice = createSlice({
 
     builder.addCase(addExpense.fulfilled, (state) => {
       state.isAddingExpense = false;
+    });
+
+    builder.addCase(editExpense.pending, (state) => {
+      state.isEditingExpense = true;
+    });
+
+    builder.addCase(editExpense.fulfilled, (state) => {
+      state.isEditingExpense = false;
     });
 
     builder.addCase(syncUnsavedExpenses.pending, (state) => {
@@ -329,6 +375,7 @@ export const {
   loadUnsavedExpensesFromStorage,
   setShouldShowTripStatsModal,
   resetDeleteStates,
+  setShouldShowEditExpenseModal,
 } = expenseSlice.actions;
 
 const selectState = ({ tripData }: { tripData: TripDataState }) => tripData;
@@ -368,6 +415,11 @@ export const selectTrip = createSelector([selectState], (state) => state.trip);
 export const selectShouldShowAddExpenseModal = createSelector(
   [selectState],
   (state) => state.shouldShowAddExpenseModal
+);
+
+export const selectShouldShowEditExpenseModal = createSelector(
+  [selectState],
+  (state) => state.shouldShowEditExpenseModal
 );
 
 export const selectCanShowSyncButton = createSelector(
@@ -434,7 +486,7 @@ export const selectIsDeletingExpense = createSelector(
   (state) => state.isDeletingExpense
 );
 
-export const selectDidDeletingExpense = createSelector(
+export const selectDidDeleteExpense = createSelector(
   [selectState],
   (state) => state.didDeleteExpense
 );
@@ -442,6 +494,11 @@ export const selectDidDeletingExpense = createSelector(
 export const selectDidDeletingExpenseFail = createSelector(
   [selectState],
   (state) => state.didDeletingExpenseFail
+);
+
+export const selectIsEditingExpense = createSelector(
+  [selectState],
+  (state) => state.isEditingExpense
 );
 
 export default expenseSlice.reducer;

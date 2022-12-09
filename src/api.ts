@@ -6,6 +6,7 @@ import {
   AddExpenseForTripBody,
   GetTripDataResponse,
   GetTripStatsResponse,
+  EditExpenseForTripBody,
 } from "./api.types";
 import { store } from "./store";
 import { logout } from "./store/slices/app";
@@ -86,6 +87,16 @@ export async function addExpenseToTrip(
 ) {
   await http!.post(`/trips/${tripId}/expense`, {
     ...expense,
+  });
+}
+
+export async function editExpenseForTrip(
+  tripId: number,
+  expenseId: number,
+  expenseData: EditExpenseForTripBody
+) {
+  await http!.patch(`/trips/${tripId}/expense/${expenseId}`, {
+    ...expenseData,
   });
 }
 

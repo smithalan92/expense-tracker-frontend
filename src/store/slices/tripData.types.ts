@@ -26,10 +26,12 @@ export interface TripDataState {
   isSyncingUnSavedExpenses: boolean;
   isLoadingExpenses: boolean;
   shouldShowAddExpenseModal: boolean;
+  shouldShowEditExpenseModal: boolean;
   shouldShowTripStatsModal: boolean;
   isDeletingExpense: boolean;
   didDeleteExpense: boolean;
   didDeletingExpenseFail: boolean;
+  isEditingExpense: boolean;
 }
 
 export interface AddExpenseParams {
@@ -39,6 +41,12 @@ export interface AddExpenseParams {
   currencyId: number;
   categoryId: number;
   description: string;
+}
+
+export interface EditExpenseParams extends Partial<AddExpenseParams> {
+  tripId: number;
+  expenseId: number;
+  countryId?: number;
 }
 
 export interface DeleteExpenseFufilledActionParams {
