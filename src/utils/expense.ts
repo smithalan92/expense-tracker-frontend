@@ -16,6 +16,8 @@ export function getTempExpense(
   )!;
   const city = tripDataState.cities.find((c) => c.id === params.cityId)!;
 
+  const country = tripDataState.countries.find((c) => c.id === city.countryId)!;
+
   const expense: ParsedTripExpense = {
     id: Math.random() * -1,
     amount: `${params.amount}`,
@@ -28,10 +30,7 @@ export function getTempExpense(
       ...city,
       timezone: "",
     },
-    country: {
-      id: 0,
-      name: "",
-    },
+    country,
     user: {
       id: 0,
       firstName: "",

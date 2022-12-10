@@ -40,7 +40,10 @@ export default function Expense({ expense, onClick }: ExpenseProps) {
           <td align="center" className=" bg-rose-400">
             {expense.euroAmount}
           </td>
-          <td className="text-ellipsis overflow-hidden bg-rose-400">
+          <td
+            align="center"
+            className="text-ellipsis overflow-hidden bg-rose-400"
+          >
             {expense.city.name}
           </td>
           <td align="center" className="bg-rose-400">

@@ -57,7 +57,6 @@ export const loadTripData = createAsyncThunk(
     try {
       const result = await api.getTripData(tripId);
       setStorageItem(getTripDataKey(tripId), result);
-      thunkApi.dispatch(loadUnsavedExpensesFromStorage(tripId));
       return result;
     } catch (err) {
       if (axios.isAxiosError(err) && err.code === "ERR_NETWORK") {
@@ -69,6 +68,8 @@ export const loadTripData = createAsyncThunk(
       }
 
       throw err;
+    } finally {
+      thunkApi.dispatch(loadUnsavedExpensesFromStorage(tripId));
     }
   }
 );
@@ -120,17 +121,30 @@ export const editExpense = createAsyncThunk<
     description: params.description,
   };
 
-  // TODO - handle failure/no network connection etc..
+  const tempExp = state.tripData.unsavedExpenses.find(
+    (e) => e.id === expenseId
+  );
 
-  // try {
-  await api.editExpenseForTrip(tripId, expenseId, payload);
-  await thunkApi.dispatch(loadTripData(tripId));
-  // } catch (err) {
-  //   console.log(err);
-  //   const tempExpense = getTempExpense(state.tripData, params);
+  // No api call if its local;
+  if (tempExp) {
+    const updatedExpense = {
+      ...getTempExpense(state.tripData, {
+        date: params.date ?? tempExp.localDateTime,
+        amount: params.amount ?? parseFloat(tempExp.amount),
+        cityId: params.cityId ?? tempExp.city.id,
+        currencyId: params.currencyId ?? tempExp.currency.id,
+        categoryId: params.categoryId ?? tempExp.category.id,
+        description: params.description ?? tempExp.description,
+      }),
+      id: tempExp.id,
+    };
 
-  //   thunkApi.dispatch(addUnsavedExpense(tempExpense));
-  // }
+    thunkApi.dispatch(editUnsavedExpense(updatedExpense));
+  } else {
+    // TODO - handle failure/no network connection etc..
+    await api.editExpenseForTrip(tripId, expenseId, payload);
+    await thunkApi.dispatch(loadTripData(tripId));
+  }
 
   thunkApi.dispatch(setShouldShowEditExpenseModal(false));
 });
@@ -256,6 +270,17 @@ export const expenseSlice = createSlice({
         state.unsavedExpenses
       );
     },
+    editUnsavedExpense(state, action: PayloadAction<ParsedTripExpense>) {
+      const updatedExpense = action.payload;
+      state.unsavedExpenses = state.unsavedExpenses.filter(
+        ({ id }) => id !== updatedExpense.id
+      );
+      state.unsavedExpenses.push(updatedExpense);
+      setStorageItem(
+        getUnsavedExpensesForTripKey(state.trip.id),
+        state.unsavedExpenses
+      );
+    },
     resetDeleteStates(state) {
       state.isDeletingExpense = false;
       state.didDeleteExpense = false;
@@ -376,6 +401,7 @@ export const {
   setShouldShowTripStatsModal,
   resetDeleteStates,
   setShouldShowEditExpenseModal,
+  editUnsavedExpense,
 } = expenseSlice.actions;
 
 const selectState = ({ tripData }: { tripData: TripDataState }) => tripData;
