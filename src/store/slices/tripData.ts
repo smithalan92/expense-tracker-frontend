@@ -8,13 +8,14 @@ import * as api from "@/api";
 import {
   AddExpenseParams,
   DeleteExpenseFufilledActionParams,
+  EditExpenseParams,
   ParsedTripExpense,
 } from "./tripData.types";
 import {
   AddExpenseForTripBody,
+  EditExpenseForTripBody,
   GetExpensesForTripResponse,
   GetTripDataResponse,
-  TripExpense,
 } from "@/api.types";
 import {
   getStorageItem,
@@ -26,6 +27,7 @@ import axios from "axios";
 import { RootState } from "..";
 import { TripDataState } from "./tripData.types";
 import { getTempExpense } from "@/utils/expense";
+import { showToast } from "@/utils/toast";
 
 const initialState: TripDataState = {
   trip: {},
@@ -42,10 +44,12 @@ const initialState: TripDataState = {
   isSyncingUnSavedExpenses: false,
   isLoadingExpenses: false,
   shouldShowAddExpenseModal: false,
+  shouldShowEditExpenseModal: false,
   shouldShowTripStatsModal: false,
   isDeletingExpense: false,
   didDeleteExpense: false,
   didDeletingExpenseFail: false,
+  isEditingExpense: false,
 };
 
 export const loadTripData = createAsyncThunk(
@@ -54,7 +58,6 @@ export const loadTripData = createAsyncThunk(
     try {
       const result = await api.getTripData(tripId);
       setStorageItem(getTripDataKey(tripId), result);
-      thunkApi.dispatch(loadUnsavedExpensesFromStorage(tripId));
       return result;
     } catch (err) {
       if (axios.isAxiosError(err) && err.code === "ERR_NETWORK") {
@@ -66,6 +69,8 @@ export const loadTripData = createAsyncThunk(
       }
 
       throw err;
+    } finally {
+      thunkApi.dispatch(loadUnsavedExpensesFromStorage(tripId));
     }
   }
 );
@@ -98,6 +103,60 @@ export const addExpense = createAsyncThunk<
   }
 
   thunkApi.dispatch(setShouldShowAddExpenseModal(false));
+});
+
+export const editExpense = createAsyncThunk<
+  void,
+  EditExpenseParams,
+  { state: RootState }
+>("tripData/editExpense", async (params, thunkApi) => {
+  const state = thunkApi.getState();
+  const { tripId, expenseId } = params;
+
+  const payload: EditExpenseForTripBody = {
+    localDateTime: params.date,
+    cityId: params.cityId,
+    amount: params.amount,
+    currencyId: params.currencyId,
+    categoryId: params.categoryId,
+    description: params.description,
+  };
+
+  const tempExp = state.tripData.unsavedExpenses.find(
+    (e) => e.id === expenseId
+  );
+
+  // No api call if its local;
+  if (tempExp) {
+    const updatedExpense = {
+      ...getTempExpense(state.tripData, {
+        date: params.date ?? tempExp.localDateTime,
+        amount: params.amount ?? parseFloat(tempExp.amount),
+        cityId: params.cityId ?? tempExp.city.id,
+        currencyId: params.currencyId ?? tempExp.currency.id,
+        categoryId: params.categoryId ?? tempExp.category.id,
+        description: params.description ?? tempExp.description,
+      }),
+      id: tempExp.id,
+    };
+
+    thunkApi.dispatch(editUnsavedExpense(updatedExpense));
+  } else {
+    try {
+      await api.editExpenseForTrip(tripId, expenseId, payload);
+      await thunkApi.dispatch(loadTripData(tripId));
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.code === "ERR_NETWORK") {
+        showToast(
+          "You can't edit expenses when your not connected to the internet. Try again when you have an internet connection",
+          { type: "error" }
+        );
+      }
+      throw err;
+    }
+  }
+
+  thunkApi.dispatch(setShouldShowEditExpenseModal(false));
 });
 
 export const loadExpenses = createAsyncThunk<
@@ -208,11 +267,26 @@ export const expenseSlice = createSlice({
     setShouldShowAddExpenseModal(state, action: PayloadAction<boolean>) {
       state.shouldShowAddExpenseModal = action.payload;
     },
+    setShouldShowEditExpenseModal(state, action: PayloadAction<boolean>) {
+      state.shouldShowEditExpenseModal = action.payload;
+      state.isEditingExpense = false;
+    },
     setShouldShowTripStatsModal(state, action: PayloadAction<boolean>) {
       state.shouldShowTripStatsModal = action.payload;
     },
     addUnsavedExpense(state, action: PayloadAction<ParsedTripExpense>) {
       state.unsavedExpenses.push(action.payload);
+      setStorageItem(
+        getUnsavedExpensesForTripKey(state.trip.id),
+        state.unsavedExpenses
+      );
+    },
+    editUnsavedExpense(state, action: PayloadAction<ParsedTripExpense>) {
+      const updatedExpense = action.payload;
+      state.unsavedExpenses = state.unsavedExpenses.filter(
+        ({ id }) => id !== updatedExpense.id
+      );
+      state.unsavedExpenses.push(updatedExpense);
       setStorageItem(
         getUnsavedExpensesForTripKey(state.trip.id),
         state.unsavedExpenses
@@ -258,6 +332,18 @@ export const expenseSlice = createSlice({
 
     builder.addCase(addExpense.fulfilled, (state) => {
       state.isAddingExpense = false;
+    });
+
+    builder.addCase(editExpense.pending, (state) => {
+      state.isEditingExpense = true;
+    });
+
+    builder.addCase(editExpense.fulfilled, (state) => {
+      state.isEditingExpense = false;
+    });
+
+    builder.addCase(editExpense.rejected, (state) => {
+      state.isEditingExpense = false;
     });
 
     builder.addCase(syncUnsavedExpenses.pending, (state) => {
@@ -329,6 +415,8 @@ export const {
   loadUnsavedExpensesFromStorage,
   setShouldShowTripStatsModal,
   resetDeleteStates,
+  setShouldShowEditExpenseModal,
+  editUnsavedExpense,
 } = expenseSlice.actions;
 
 const selectState = ({ tripData }: { tripData: TripDataState }) => tripData;
@@ -368,6 +456,11 @@ export const selectTrip = createSelector([selectState], (state) => state.trip);
 export const selectShouldShowAddExpenseModal = createSelector(
   [selectState],
   (state) => state.shouldShowAddExpenseModal
+);
+
+export const selectShouldShowEditExpenseModal = createSelector(
+  [selectState],
+  (state) => state.shouldShowEditExpenseModal
 );
 
 export const selectCanShowSyncButton = createSelector(
@@ -434,7 +527,7 @@ export const selectIsDeletingExpense = createSelector(
   (state) => state.isDeletingExpense
 );
 
-export const selectDidDeletingExpense = createSelector(
+export const selectDidDeleteExpense = createSelector(
   [selectState],
   (state) => state.didDeleteExpense
 );
@@ -442,6 +535,11 @@ export const selectDidDeletingExpense = createSelector(
 export const selectDidDeletingExpenseFail = createSelector(
   [selectState],
   (state) => state.didDeletingExpenseFail
+);
+
+export const selectIsEditingExpense = createSelector(
+  [selectState],
+  (state) => state.isEditingExpense
 );
 
 export default expenseSlice.reducer;

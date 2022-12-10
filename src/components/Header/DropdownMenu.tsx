@@ -31,7 +31,7 @@ export default function Dropdown() {
   return (
     <div className="relative">
       <button
-        className="focus:ring-4 text-md font-bold px-4 mx-2 rounded-full bg-logo-dark-blue text-white w-10 h-10 flex items-center justify-center"
+        className="focus:ring-4 text-md font-bold px-4 mx-2 rounded-full bg-expensr-blue text-white w-10 h-10 flex items-center justify-center"
         onClick={() => setIsDropdownVisible(!isDropdownVisible)}
       >
         {user!.firstName.substring(0, 1).toUpperCase()}

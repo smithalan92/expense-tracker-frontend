@@ -22,6 +22,7 @@ export default function CityPicker({
 
   const cityOptions = useMemo(() => {
     return cities.map<CityPickerOption>((city) => ({
+      countryId: city.countryId,
       value: city.id,
       label: city.name,
     }));
@@ -32,8 +33,9 @@ export default function CityPicker({
     return cityOptions.find((c) => c.value === value);
   }, [cityOptions, value]);
 
+  // This ensures the city is reset when the country changes after picking a city
   useEffect(() => {
-    if (selectedCountryId && value) {
+    if (selectedCountryId && selectedCity?.countryId !== selectedCountryId) {
       onChange(null);
     }
   }, [selectedCountryId]);

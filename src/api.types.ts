@@ -110,6 +110,8 @@ export interface AddExpenseForTripBody {
   description: string;
 }
 
+export type EditExpenseForTripBody = Partial<AddExpenseForTripBody>;
+
 export interface GetTripDataResponse {
   expenses: TripExpense[];
   trip: Trip;
