@@ -27,6 +27,7 @@ import axios from "axios";
 import { RootState } from "..";
 import { TripDataState } from "./tripData.types";
 import { getTempExpense } from "@/utils/expense";
+import { showToast } from "@/utils/toast";
 
 const initialState: TripDataState = {
   trip: {},
@@ -141,9 +142,18 @@ export const editExpense = createAsyncThunk<
 
     thunkApi.dispatch(editUnsavedExpense(updatedExpense));
   } else {
-    // TODO - handle failure/no network connection etc..
-    await api.editExpenseForTrip(tripId, expenseId, payload);
-    await thunkApi.dispatch(loadTripData(tripId));
+    try {
+      await api.editExpenseForTrip(tripId, expenseId, payload);
+      await thunkApi.dispatch(loadTripData(tripId));
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.code === "ERR_NETWORK") {
+        showToast(
+          "You can't edit expenses when your not connected to the internet. Try again when you have an internet connection",
+          { type: "error" }
+        );
+      }
+      throw err;
+    }
   }
 
   thunkApi.dispatch(setShouldShowEditExpenseModal(false));
@@ -259,6 +269,7 @@ export const expenseSlice = createSlice({
     },
     setShouldShowEditExpenseModal(state, action: PayloadAction<boolean>) {
       state.shouldShowEditExpenseModal = action.payload;
+      state.isEditingExpense = false;
     },
     setShouldShowTripStatsModal(state, action: PayloadAction<boolean>) {
       state.shouldShowTripStatsModal = action.payload;
@@ -328,6 +339,10 @@ export const expenseSlice = createSlice({
     });
 
     builder.addCase(editExpense.fulfilled, (state) => {
+      state.isEditingExpense = false;
+    });
+
+    builder.addCase(editExpense.rejected, (state) => {
       state.isEditingExpense = false;
     });
 

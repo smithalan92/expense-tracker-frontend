@@ -27,11 +27,13 @@ export default function AppContainer() {
       </div>
       <ToastContainer
         autoClose={4000}
+        pauseOnHover={false}
+        pauseOnFocusLoss={false}
         position="top-center"
         theme="light"
         toastClassName="drop-shadow-md my-4 mx-2 bg-base-100 text-center rounded text-black"
         progressStyle={{ background: "#0284c7" }}
-        limit={1}
+        limit={3}
       />
     </div>
   );
