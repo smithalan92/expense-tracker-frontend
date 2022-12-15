@@ -5,6 +5,7 @@ import { useAppSelector } from "@/store";
 import { selectIsLoggedIn } from "@/store/slices/app";
 import Header from "@/components/Header/Header";
 import { ToastContainer } from "react-toastify";
+import PWAPrompt from "./PWAPrompt";
 
 export default function AppContainer() {
   const location = useLocation();
@@ -35,6 +36,7 @@ export default function AppContainer() {
         progressStyle={{ background: "#0284c7" }}
         limit={3}
       />
+      <PWAPrompt />
     </div>
   );
 }

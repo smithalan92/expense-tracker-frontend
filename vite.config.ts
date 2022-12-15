@@ -32,10 +32,10 @@ const pwaOptions: Partial<VitePWAOptions> = {
     ],
   },
   devOptions: {
-    enabled: true,
+    enabled: false,
   },
   strategies: "generateSW",
-  registerType: "autoUpdate",
+  registerType: "prompt",
   injectRegister: "script",
   workbox: {
     globPatterns: ["**/*.{js,css,html}", "**/*.{svg,png,jpg,gif}"],
