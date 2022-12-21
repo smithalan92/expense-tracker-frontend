@@ -1,4 +1,4 @@
-import ExpandableSection from "@/components/ExpandableSection/ExpandableSection";
+import StatSection from "@/components/StatSection/StatSection";
 import { useState } from "react";
 import { DayBreakdownProps, DayBreakdownView } from "./DayBreakdown.types";
 import DayBreakdownChart from "./DayBreakdownChart/DayBreakdownChart";
@@ -17,7 +17,7 @@ export default function DayBreakdown({
     setActiveTab("table");
   };
   return (
-    <ExpandableSection title="Daily Expense Totals">
+    <StatSection title="Daily Expense Totals">
       <div className="tabs">
         <a
           className={`tab tab-bordered px-8 ${
@@ -48,6 +48,6 @@ export default function DayBreakdown({
           <DayBreakdownTable dailyCostBreakdown={dailyCostBreakdown} />
         )}
       </div>
-    </ExpandableSection>
+    </StatSection>
   );
 }

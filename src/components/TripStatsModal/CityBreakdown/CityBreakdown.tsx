@@ -2,7 +2,7 @@ import { useState } from "react";
 import { CityBreakdownProps, CityBreakdownView } from "./CityBreakdown.types";
 import CityBreakdownTable from "./CityBreakdownTable";
 import CityBreakdownPieChart from "./CityBreakdownPieChart";
-import ExpandableSection from "@/components/ExpandableSection/ExpandableSection";
+import StatSection from "@/components/StatSection/StatSection";
 
 export default function CityBreakdown({ cityBreakdown }: CityBreakdownProps) {
   const [activeTab, setActiveTab] = useState<CityBreakdownView>("chart");
@@ -16,7 +16,7 @@ export default function CityBreakdown({ cityBreakdown }: CityBreakdownProps) {
   };
 
   return (
-    <ExpandableSection title="Expense City Breakdown">
+    <StatSection title="Expense City Breakdown">
       <div className="tabs">
         <a
           className={`tab tab-bordered px-8 ${
@@ -43,6 +43,6 @@ export default function CityBreakdown({ cityBreakdown }: CityBreakdownProps) {
           <CityBreakdownTable cityBreakdown={cityBreakdown} />
         )}
       </div>
-    </ExpandableSection>
+    </StatSection>
   );
 }

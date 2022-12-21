@@ -5,7 +5,7 @@ import {
 } from "./CountryBreakdown.types";
 import CountryBreakdownTable from "./CountryBreakdownTable";
 import CountryBreakdownPieChart from "./CountryBreakdownPieChart";
-import ExpandableSection from "@/components/ExpandableSection/ExpandableSection";
+import StatSection from "@/components/StatSection/StatSection";
 
 export default function CountryBreakdown({
   countryBreakdown,
@@ -21,7 +21,7 @@ export default function CountryBreakdown({
   };
 
   return (
-    <ExpandableSection title="Expense Country Breakdown">
+    <StatSection title="Expense Country Breakdown">
       <div className="tabs">
         <a
           className={`tab tab-bordered px-8 ${
@@ -48,6 +48,6 @@ export default function CountryBreakdown({
           <CountryBreakdownTable countryBreakdown={countryBreakdown} />
         )}
       </div>
-    </ExpandableSection>
+    </StatSection>
   );
 }

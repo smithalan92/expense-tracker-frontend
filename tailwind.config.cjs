@@ -47,6 +47,14 @@ module.exports = {
             "animation-timing-function": "ease-in",
           },
         },
+        slideOutBottom: {
+          "0%": {
+            transform: "translateY(1000px)",
+          },
+          "100%": {
+            transform: "translateY(0)",
+          },
+        },
         fadeIn: {
           "0%": {
             opacity: 0,
@@ -55,10 +63,19 @@ module.exports = {
             opacity: 1,
           },
         },
+        fadeOut: {
+          "0%": {
+            opacity: 1,
+          },
+          "100%": {
+            opacity: 0,
+          },
+        },
       },
       animation: {
         "slide-in-bottom": "fadeIn 0.3s, slideInBottom 0.4s linear",
         "fade-in": "fadeIn 0.4s",
+        "fade-out": "fadeOut 0.35s",
       },
     },
   },

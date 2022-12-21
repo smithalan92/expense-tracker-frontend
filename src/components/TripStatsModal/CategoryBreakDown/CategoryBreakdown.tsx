@@ -5,7 +5,7 @@ import {
 } from "./CategoryBreakdown.types";
 import CategoryBreakdownTable from "./CategoryBreakdownTable";
 import CategoryBreakDownPieChart from "./CategoryBreakDownPieChart";
-import ExpandableSection from "@/components/ExpandableSection/ExpandableSection";
+import StatSection from "@/components/StatSection/StatSection";
 
 export default function CategoryBreakdown({
   categoryBreakdown,
@@ -21,7 +21,7 @@ export default function CategoryBreakdown({
   };
 
   return (
-    <ExpandableSection title="Expense Category Breakdown">
+    <StatSection title="Expense Category Breakdown">
       <div className="tabs">
         <a
           className={`tab tab-bordered px-8 ${
@@ -48,6 +48,6 @@ export default function CategoryBreakdown({
           <CategoryBreakdownTable categoryBreakdown={categoryBreakdown} />
         )}
       </div>
-    </ExpandableSection>
+    </StatSection>
   );
 }
