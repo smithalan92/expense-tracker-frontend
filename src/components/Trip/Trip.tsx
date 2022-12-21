@@ -10,7 +10,7 @@ export default function Trip({ trip }: TripProps) {
           backgroundImage: `url(${trip.image})`,
         }}
       ></div>
-      <div className="card-body p-4 pb-6">
+      <div className="card-body px-4 py-2">
         <h2 className="card-title">{trip.name}</h2>
         <p>
           {trip.startDate} to {trip.endDate}
@@ -19,7 +19,7 @@ export default function Trip({ trip }: TripProps) {
           <span className="font-bold">Expenses: </span> €
           {trip.totalExpenseAmount}
         </p>
-        <div className="card-actions justify-center mt-4 mb-4">
+        <div className="card-actions justify-end mt-4 mb-4">
           <Link className="btn btn-sm btn-accent" to={`/trips/${trip.id}`}>
             View expenses
           </Link>

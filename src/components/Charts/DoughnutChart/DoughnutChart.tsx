@@ -19,7 +19,11 @@ export default function DoughnutChart({
   );
 
   return useMemo(
-    () => <Doughnut data={data} options={options} />,
+    () => (
+      <div className="max-h-[500px]">
+        <Doughnut data={data} options={options} />
+      </div>
+    ),
     [data, options]
   );
 }

@@ -133,7 +133,7 @@ export default function TripStatsModal({ tripId }: { tripId: number }) {
         isClosing ? "animate-fade-out" : ""
       }`}
     >
-      <div className="animate-slide-in-bottom bg-base-100 h-full md:h-[450px] overflow-y-scroll absolute bottom-0 md:relative w-full md:w-[750px] md:rounded-lg">
+      <div className="animate-slide-in-bottom bg-base-100 h-full md:h-[80%] overflow-y-scroll absolute bottom-0 md:relative w-full md:w-[750px] md:rounded-lg">
         <div className="flex items-center bg-expensr-blue px-8 text-white h-16 sticky top-0 w-full z-20">
           <h2 className="font-bold text-2xl flex-1">Trip Stats</h2>
           <span

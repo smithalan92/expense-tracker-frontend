@@ -90,12 +90,6 @@ export function makeDoughnutChartOptions(isCurrencyValue: boolean) {
       legend: {
         display: true,
         position: "bottom" as const,
-        labels: {
-          padding: 16,
-          font: {
-            size: 14,
-          },
-        },
       },
     },
   };

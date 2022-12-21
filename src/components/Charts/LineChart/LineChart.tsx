@@ -18,5 +18,12 @@ export default function LineChart({
     [isCurrencyValue]
   );
 
-  return useMemo(() => <Line data={data} options={options} />, [data, options]);
+  return useMemo(
+    () => (
+      <div className="max-h-[500px]">
+        <Line data={data} options={options} />
+      </div>
+    ),
+    [data, options]
+  );
 }
