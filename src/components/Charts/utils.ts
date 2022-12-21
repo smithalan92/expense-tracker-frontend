@@ -26,7 +26,8 @@ const COLOR_OPTIONS = [
 export function makeChartData(
   labels: (string | number)[],
   values: (string | number)[],
-  dataTitle: string
+  dataTitle: string,
+  useSingleColour?: boolean
 ) {
   return {
     labels,
@@ -34,7 +35,7 @@ export function makeChartData(
       {
         label: dataTitle,
         data: values,
-        backgroundColor: COLOR_OPTIONS,
+        backgroundColor: useSingleColour ? COLOR_OPTIONS[3] : COLOR_OPTIONS,
         borderWidth: 1,
       },
     ],

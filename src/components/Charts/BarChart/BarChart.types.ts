@@ -4,4 +4,5 @@ export interface BarChartProps {
   isCurrencyValue: boolean;
   isVerticalChart: boolean;
   dataLabel: string;
+  useSingleColor?: boolean;
 }

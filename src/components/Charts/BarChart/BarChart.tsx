@@ -9,9 +9,10 @@ export default function BarChart({
   isCurrencyValue,
   isVerticalChart,
   dataLabel,
+  useSingleColor,
 }: BarChartProps) {
   const data = useMemo(
-    () => makeChartData(labels, values, dataLabel),
+    () => makeChartData(labels, values, dataLabel, useSingleColor),
     [labels, values, dataLabel]
   );
   const options = useMemo(

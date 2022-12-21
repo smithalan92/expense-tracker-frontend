@@ -153,6 +153,11 @@ export interface DailyCostBreakdownResult {
   euroTotal: number;
 }
 
+export interface HourlySpendingResult {
+  hour: string;
+  total: number;
+}
+
 export interface GetTripStatsResponse {
   categoryBreakdown: CategoryBreakdownResult[];
   userBreakdown: UserBreakdownResult[];
@@ -161,4 +166,5 @@ export interface GetTripStatsResponse {
   countryBreakdown: CountryBreakdownResult[];
   cityBreakdown: CityBreakdownResult[];
   dailyCostBreakdown: DailyCostBreakdownResult[];
+  hourlySpendingBreakdown: HourlySpendingResult[];
 }

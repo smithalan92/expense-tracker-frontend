@@ -11,6 +11,7 @@ import StatSection from "@/components/StatSection/StatSection";
 import DayBreakdown from "./DayBreakdown/DayBreakdown";
 import CountryBreakdown from "./CountryBreakdown/CountryBreakdown";
 import CityBreakdown from "./CityBreakdown/CityBreakdown";
+import HourlySpendingBreakdown from "./HourlySpendingBreakdown/HourlySpendingBreakdown";
 import { ReactComponent as CloseIcon } from "@/assets/close.svg";
 
 export default function TripStatsModal({ tripId }: { tripId: number }) {
@@ -56,6 +57,7 @@ export default function TripStatsModal({ tripId }: { tripId: number }) {
       dailyCostBreakdown,
       countryBreakdown,
       cityBreakdown,
+      hourlySpendingBreakdown,
     } = stats!;
 
     return (
@@ -95,6 +97,11 @@ export default function TripStatsModal({ tripId }: { tripId: number }) {
         </div>
         <div className="flex flex-col py-4 border-t border-solid border-gray-300">
           <DayBreakdown dailyCostBreakdown={dailyCostBreakdown} />
+        </div>
+        <div className="flex flex-col py-4 border-t border-solid border-gray-300">
+          <HourlySpendingBreakdown
+            hourlySpendingBreakdown={hourlySpendingBreakdown}
+          />
         </div>
       </div>
     );
