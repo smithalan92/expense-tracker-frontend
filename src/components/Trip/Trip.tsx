@@ -3,7 +3,7 @@ import { TripProps } from "./Trip.types";
 
 export default function Trip({ trip }: TripProps) {
   return (
-    <div className="card card-side w-full bg-base-100 shadow-xl border border-solid border-base-200 h-52 mb-4">
+    <div className="card card-side w-full bg-base-100 shadow-md border border-solid border-base-200 h-52 mb-4">
       <div
         className="w-44 bg-cover h-52"
         style={{
