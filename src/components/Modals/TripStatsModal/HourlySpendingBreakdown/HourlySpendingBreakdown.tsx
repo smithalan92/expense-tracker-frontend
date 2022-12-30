@@ -1,4 +1,4 @@
-import StatSection from "@/components/StatSection/StatSection";
+import StatSection from "@/components/sections/StatSection/StatSection";
 import { useState } from "react";
 import {
   HourlySpendingBreakdownProps,

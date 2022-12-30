@@ -1,5 +1,5 @@
 import { createBrowserRouter, useNavigate } from "react-router-dom";
-import AppContainer from "@/sections/AppContainer/AppContainer";
+import AppContainer from "@/components/sections/AppContainer/AppContainer";
 import ErrorPage from "@/Routes/ErrorPage/ErrorPage";
 import Login from "@/Routes/Login/Login";
 import TripData from "@/Routes/TripData/TripData";

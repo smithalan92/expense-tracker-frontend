@@ -3,7 +3,7 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { PATHS } from "@/router";
 import { useAppSelector } from "@/store";
 import { selectIsLoggedIn } from "@/store/slices/app";
-import Header from "@/components/Header/Header";
+import Header from "@/components/sections/Header/Header";
 import { ToastContainer } from "react-toastify";
 import PWAPrompt from "./PWAPrompt";
 

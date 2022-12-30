@@ -2,7 +2,7 @@ import { useState } from "react";
 import { CityBreakdownProps, CityBreakdownView } from "./CityBreakdown.types";
 import CityBreakdownTable from "./CityBreakdownTable";
 import CityBreakdownPieChart from "./CityBreakdownPieChart";
-import StatSection from "@/components/StatSection/StatSection";
+import StatSection from "@/components/sections/StatSection/StatSection";
 
 export default function CityBreakdown({ cityBreakdown }: CityBreakdownProps) {
   const [activeTab, setActiveTab] = useState<CityBreakdownView>("chart");

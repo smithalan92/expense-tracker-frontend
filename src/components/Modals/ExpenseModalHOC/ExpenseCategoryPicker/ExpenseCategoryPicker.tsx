@@ -1,4 +1,4 @@
-import CustomSelect from "@/components/CustomSelect/CustomSelect";
+import CustomSelect from "@/components/widgets/CustomSelect/CustomSelect";
 import { useAppSelector } from "@/store";
 import { selectCategories } from "@/store/slices/tripData";
 import { useCallback, useMemo } from "react";

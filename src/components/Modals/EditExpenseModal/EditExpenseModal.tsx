@@ -15,7 +15,7 @@ import ExpenseModalHOC from "../ExpenseModalHOC/ExpenseModalHOC";
 import { ExpenseData } from "../ExpenseModalHOC/ExpenseModalHOC.types";
 import { DeleteExpenseAlert } from "./DeleteExpenseAlert/DeleteExpenseAlert";
 import { EditExpenseModalProps } from "./EditExpenseModal.types";
-import SpinnerOverlay from "../../SpinnerOverlay";
+import SpinnerOverlay from "@/components/widgets/SpinnerOverlay";
 import { showToast } from "@/utils/toast";
 import { EditExpenseParams } from "@/store/slices/tripData.types";
 

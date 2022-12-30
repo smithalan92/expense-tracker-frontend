@@ -3,7 +3,7 @@ import { useCallback, useMemo } from "react";
 import { useAppSelector } from "@/store";
 import { selectCountries } from "@/store/slices/tripData";
 import { CountryPickerOption, CountryPickerProps } from "./CountryPicker.types";
-import CustomSelect from "@/components/CustomSelect/CustomSelect";
+import CustomSelect from "@/components/widgets/CustomSelect/CustomSelect";
 
 export default function CountryPicker({ value, onChange }: CountryPickerProps) {
   const countries = useAppSelector(selectCountries);

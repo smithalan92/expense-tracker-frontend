@@ -1,4 +1,4 @@
-import DoughnutChart from "@/components/Charts/DoughnutChart/DoughnutChart";
+import DoughnutChart from "@/components/widgets/Charts/DoughnutChart/DoughnutChart";
 import { useMemo } from "react";
 import { CityBreakdownPieChartProps } from "./CityBreakdownPieChart.types";
 

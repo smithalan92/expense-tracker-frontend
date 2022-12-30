@@ -1,8 +1,8 @@
 import AddExpenseModal from "@/components/Modals/AddExpenseModal/AddExpenseModal";
-import ExpenseTable from "@/components/ExpenseTable/ExpenseTable";
+import ExpenseTable from "@/components/sections/ExpenseTable/ExpenseTable";
 import EditExpenseModal from "@/components/Modals/EditExpenseModal/EditExpenseModal";
-import Spinner from "@/components/Spinner";
-import TripStatsModal from "@/components/TripStatsModal/TripStatsModal";
+import Spinner from "@/components/widgets/Spinner";
+import TripStatsModal from "@/components/Modals/TripStatsModal/TripStatsModal";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
   loadTripData,

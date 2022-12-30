@@ -1,6 +1,6 @@
 import { DayBreakdownChartProps } from "./DayBreakdownChart.types";
 import { useMemo } from "react";
-import LineChart from "@/components/Charts/LineChart/LineChart";
+import LineChart from "@/components/widgets/Charts/LineChart/LineChart";
 import format from "date-fns/format";
 
 export default function DayBreakdownChart({

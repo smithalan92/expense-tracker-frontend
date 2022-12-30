@@ -1,16 +1,13 @@
+import StatSection from "@/components/sections/StatSection/StatSection";
 import { useState } from "react";
-import {
-  CategoryBreakdownProps,
-  CategoryBreakdownView,
-} from "./CategoryBreakdown.types";
-import CategoryBreakdownTable from "./CategoryBreakdownTable";
-import CategoryBreakDownPieChart from "./CategoryBreakDownPieChart";
-import StatSection from "@/components/StatSection/StatSection";
+import { DayBreakdownProps, DayBreakdownView } from "./DayBreakdown.types";
+import DayBreakdownChart from "./DayBreakdownChart/DayBreakdownChart";
+import DayBreakdownTable from "./DayBreakdownTable";
 
-export default function CategoryBreakdown({
-  categoryBreakdown,
-}: CategoryBreakdownProps) {
-  const [activeTab, setActiveTab] = useState<CategoryBreakdownView>("chart");
+export default function DayBreakdown({
+  dailyCostBreakdown,
+}: DayBreakdownProps) {
+  const [activeTab, setActiveTab] = useState<DayBreakdownView>("chart");
 
   const onClickChartTab = () => {
     setActiveTab("chart");
@@ -19,9 +16,8 @@ export default function CategoryBreakdown({
   const onClickTableTab = () => {
     setActiveTab("table");
   };
-
   return (
-    <StatSection title="Expense Category Breakdown">
+    <StatSection title="Daily Expense Totals">
       <div className="tabs">
         <a
           className={`tab tab-bordered px-8 ${
@@ -42,10 +38,14 @@ export default function CategoryBreakdown({
       </div>
       <div className="mt-4">
         {activeTab === "chart" && (
-          <CategoryBreakDownPieChart categoryBreakdown={categoryBreakdown} />
+          <div className="overflow-scroll">
+            <div className="w-[600px]">
+              <DayBreakdownChart dailyCostBreakdown={dailyCostBreakdown} />
+            </div>
+          </div>
         )}
         {activeTab === "table" && (
-          <CategoryBreakdownTable categoryBreakdown={categoryBreakdown} />
+          <DayBreakdownTable dailyCostBreakdown={dailyCostBreakdown} />
         )}
       </div>
     </StatSection>

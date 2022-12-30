@@ -5,4 +5,5 @@ export interface TripsState {
   isLoadingTrips: boolean;
   hasLoadedTrips: boolean;
   hasFailedToLoadTrips: boolean;
+  shouldShowAddTripModal: boolean;
 }

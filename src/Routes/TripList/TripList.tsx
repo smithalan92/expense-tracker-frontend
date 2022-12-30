@@ -1,5 +1,6 @@
-import Spinner from "@/components/Spinner";
-import Trip from "@/components/Trip/Trip";
+import AddTripModal from "@/components/Modals/AddTripModal/AddTripModal";
+import Spinner from "@/components/widgets/Spinner";
+import Trip from "@/components/sections/Trip/Trip";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
   loadTrips,
@@ -7,6 +8,8 @@ import {
   selectIsLoadingTrips,
   selectTrips,
   selectHasFailedToLoadTrips,
+  selectShouldShowAddTripModal,
+  setShouldShowAddTripModal,
 } from "@/store/slices/trips";
 import { useCallback, useEffect } from "react";
 
@@ -16,12 +19,17 @@ export default function TripList() {
   const isLoadingTrips = useAppSelector(selectIsLoadingTrips);
   const hasLoadedTrips = useAppSelector(selectHasLoadedTrips);
   const hasFailedToLoadTrips = useAppSelector(selectHasFailedToLoadTrips);
+  const shouldShowAddTripModal = useAppSelector(selectShouldShowAddTripModal);
 
   useEffect(() => {
     if (!hasLoadedTrips) {
       dispatch(loadTrips());
     }
   }, [hasLoadedTrips]);
+
+  const openAddTripModal = () => {
+    dispatch(setShouldShowAddTripModal(true));
+  };
 
   const maybeRenderLoader = useCallback(() => {
     if (!isLoadingTrips) return null;
@@ -52,9 +60,18 @@ export default function TripList() {
       );
     }
 
-    return trips.map((trip) => {
-      return <Trip key={trip.id} trip={trip} />;
-    });
+    return (
+      <>
+        <div className="w-full flex justify-end px-4 mb-2">
+          <button className="btn btn-link" onClick={openAddTripModal}>
+            Add Trip
+          </button>
+        </div>
+        {trips.map((trip) => {
+          return <Trip key={trip.id} trip={trip} />;
+        })}
+      </>
+    );
   }, [isLoadingTrips, hasFailedToLoadTrips, trips]);
 
   return (
@@ -63,6 +80,7 @@ export default function TripList() {
         {maybeRenderLoader()}
         {maybeRenderFailureState()}
         {maybeRenderTripList()}
+        {shouldShowAddTripModal && <AddTripModal />}
       </>
     </div>
   );

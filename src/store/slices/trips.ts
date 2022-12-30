@@ -19,6 +19,7 @@ const initialState: TripsState = {
   isLoadingTrips: false,
   hasLoadedTrips: false,
   hasFailedToLoadTrips: false,
+  shouldShowAddTripModal: false,
 };
 
 export const loadTrips = createAsyncThunk("trips/loadTrips", async () => {
@@ -44,6 +45,10 @@ export const tripSlice = createSlice({
       state.isLoadingTrips = false;
       state.hasFailedToLoadTrips = false;
       state.hasLoadedTrips = false;
+      state.shouldShowAddTripModal = false;
+    },
+    setShouldShowAddTripModal: (state, action: PayloadAction<boolean>) => {
+      state.shouldShowAddTripModal = action.payload;
     },
   },
   extraReducers(builder) {
@@ -67,7 +72,7 @@ export const tripSlice = createSlice({
   },
 });
 
-export const { resetState } = tripSlice.actions;
+export const { resetState, setShouldShowAddTripModal } = tripSlice.actions;
 
 const selectTripDataState = ({ trips }: { trips: TripsState }) => trips;
 
@@ -89,6 +94,11 @@ export const selectHasLoadedTrips = createSelector(
 export const selectHasFailedToLoadTrips = createSelector(
   [selectTripDataState],
   (TripDataState) => TripDataState.hasFailedToLoadTrips
+);
+
+export const selectShouldShowAddTripModal = createSelector(
+  [selectTripDataState],
+  (TripDataState) => TripDataState.shouldShowAddTripModal
 );
 
 export default tripSlice.reducer;

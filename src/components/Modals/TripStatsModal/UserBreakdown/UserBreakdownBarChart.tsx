@@ -1,4 +1,4 @@
-import BarChart from "@/components/Charts/BarChart/BarChart";
+import BarChart from "@/components/widgets/Charts/BarChart/BarChart";
 import { useMemo } from "react";
 import { UserBreakdownBarChartProps } from "./UserBreakdownBarChart.types";
 

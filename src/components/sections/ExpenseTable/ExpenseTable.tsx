@@ -1,7 +1,7 @@
-import Expense from "@/components/Expense/Expense";
+import Expense from "@/components/sections/Expense/Expense";
 import { useAppSelector } from "@/store";
 import { selectExpenses } from "@/store/slices/tripData";
-import ExpenseTableFooter from "@/components/ExpenseTableFooter/ExpenseTableFooter";
+import ExpenseTableFooter from "@/components/sections/ExpenseTableFooter/ExpenseTableFooter";
 
 export default function ExpenseTable({
   onClickExpense,

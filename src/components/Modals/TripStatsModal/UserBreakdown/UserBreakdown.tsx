@@ -2,7 +2,7 @@ import { useState } from "react";
 import { UserBreakdownProps, UserBreakdownView } from "./UserBreakdown.types";
 import UserBreakdownTable from "./UserBreakdownTable";
 import UserBreakdownBarChart from "./UserBreakdownBarChart";
-import StatSection from "@/components/StatSection/StatSection";
+import StatSection from "@/components/sections/StatSection/StatSection";
 
 export default function UserBreakdown({ userBreakdown }: UserBreakdownProps) {
   const [activeTab, setActiveTab] = useState<UserBreakdownView>("chart");

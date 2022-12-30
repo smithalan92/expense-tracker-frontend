@@ -5,7 +5,7 @@ import {
 } from "./CountryBreakdown.types";
 import CountryBreakdownTable from "./CountryBreakdownTable";
 import CountryBreakdownPieChart from "./CountryBreakdownPieChart";
-import StatSection from "@/components/StatSection/StatSection";
+import StatSection from "@/components/sections/StatSection/StatSection";
 
 export default function CountryBreakdown({
   countryBreakdown,

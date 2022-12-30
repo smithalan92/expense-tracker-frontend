@@ -1,6 +1,6 @@
 import { HourlySpendingBreakdownChartProps } from "./HourlySpendingBreakdownChart.types";
 import { useMemo } from "react";
-import BarChart from "@/components/Charts/BarChart/BarChart";
+import BarChart from "@/components/widgets/Charts/BarChart/BarChart";
 
 export default function HourlySpendingBreakdownChart({
   hourlySpendingBreakdown,

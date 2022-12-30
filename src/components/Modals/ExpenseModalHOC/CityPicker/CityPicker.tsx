@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from "react";
 import { useAppSelector } from "@/store";
 import { CityPickerOption, CityPickerProps } from "./CityPicker.types";
-import CustomSelect from "@/components/CustomSelect/CustomSelect";
+import CustomSelect from "@/components/widgets/CustomSelect/CustomSelect";
 import { selectCitiesForCountryId } from "@/store/slices/tripData";
 
 export default function CityPicker({
