@@ -6,7 +6,7 @@ import {
   selectHasLoggingInFailed,
   selectIsLoggedIn,
 } from "@/store/slices/app";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PATHS } from "@/router";
 
@@ -31,11 +31,35 @@ export default function Login() {
     dispatch(login({ email, password }));
   };
 
+  const canLogin = useMemo(() => {
+    return (
+      !isLoggingIn && email.trim().length > 0 && password.trim().length > 0
+    );
+  }, [email, password, isLoggingIn]);
+
   useEffect(() => {
     if (isLoggedIn) {
       navigate(PATHS.TRIPS);
     }
   }, [isLoggedIn]);
+
+  const onEnterPress = useCallback(
+    (e: KeyboardEvent) => {
+      if (!canLogin) return;
+      if (e.code === "Enter" || e.code === "NumpadEnter") {
+        onClickLogin();
+      }
+    },
+    [canLogin, email, password]
+  );
+
+  useEffect(() => {
+    document.addEventListener("keydown", onEnterPress);
+
+    return () => {
+      document.removeEventListener("keydown", onEnterPress);
+    };
+  }, [onEnterPress]);
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center p-12">
@@ -64,7 +88,7 @@ export default function Login() {
         <div className="mt-8 flex w-full">
           <button
             className="btn btn-primary rounded-lg w-full"
-            disabled={isLoggingIn || (!email && !password)}
+            disabled={!canLogin}
             onClick={onClickLogin}
           >
             Log In

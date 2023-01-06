@@ -15,7 +15,7 @@ export default function AddTripModal() {
 
   return (
     <TripModalHOC
-      title="Add Expense"
+      title="Add Trip"
       onChangeData={() => {
         /* */
       }}

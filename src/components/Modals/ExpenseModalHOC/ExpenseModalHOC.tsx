@@ -1,11 +1,11 @@
 import { useAppSelector } from "@/store";
 import { selectExpenseById } from "@/store/slices/tripData";
-import { formatDateForStoring } from "@/utils/date";
+import { formatDateForExpense } from "@/utils/date";
 import { useEffect, useState } from "react";
 import CityPicker from "./CityPicker/CityPicker";
-import CountryPicker from "./CountryPicker/CountryPicker";
+import CountryPicker from "../../widgets/CountryPicker/CountryPicker";
 import CurrencyPicker from "./CurrencyPicker/CurrencyPicker";
-import CustomDatePicker from "./DatePicker/DatePicker";
+import CustomDatePicker from "../../widgets/DatePicker/DatePicker";
 import ExpenseAmountInput from "./ExpenseAmountInput/ExpenseAmountInput";
 import ExpenseCategoryPicker from "./ExpenseCategoryPicker/ExpenseCategoryPicker";
 import ExpenseDescription from "./ExpenseDescription/ExpenseDescription";
@@ -22,7 +22,7 @@ export default function ExpenseModalHOC({
   )!;
 
   const [date, setDate] = useState(
-    formatDateForStoring(expense ? new Date(expense.localDateTime) : new Date())
+    formatDateForExpense(expense ? new Date(expense.localDateTime) : new Date())
   );
   const [countryId, setCountryId] = useState<number | null>(
     expense?.country.id ?? null
@@ -56,7 +56,11 @@ export default function ExpenseModalHOC({
         <div className="h-[450px] overflow-y-scroll pr-4">
           <div className="flex items-center py-4">
             <div className="w-24 mb-4">When</div>
-            <CustomDatePicker value={date} onChange={setDate} />
+            <CustomDatePicker
+              value={date}
+              dateStringFormatter={formatDateForExpense}
+              onChange={setDate}
+            />
           </div>
           <div className="flex items-center py-4">
             <div className="w-24">Country</div>
