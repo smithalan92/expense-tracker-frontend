@@ -12,6 +12,7 @@ import {
   setShouldShowAddTripModal,
 } from "@/store/slices/trips";
 import { useCallback, useEffect } from "react";
+import { ReactComponent as PlusIcon } from "@/assets/plus.svg";
 
 export default function TripList() {
   const dispatch = useAppDispatch();
@@ -60,22 +61,21 @@ export default function TripList() {
       );
     }
 
-    return (
-      <>
-        <div className="w-full flex justify-end px-4 mb-2">
-          <button className="btn btn-link" onClick={openAddTripModal}>
-            Add Trip
-          </button>
-        </div>
-        {trips.map((trip) => {
-          return <Trip key={trip.id} trip={trip} />;
-        })}
-      </>
-    );
+    return trips.map((trip) => {
+      return <Trip key={trip.id} trip={trip} />;
+    });
   }, [isLoadingTrips, hasFailedToLoadTrips, trips]);
 
   return (
-    <div className="w-full h-full pt-8 pr-4 overflow-y-scroll">
+    <div className="pr-4 overflow-scroll">
+      <div className="w-full flex justify-end px-4 pb-4 sticky top-0 z-[1] bg-base-100">
+        <button
+          className="btn btn-sm gap-2 btn-primary text-white"
+          onClick={openAddTripModal}
+        >
+          <PlusIcon className="w-4 h-4" /> Add Trip
+        </button>
+      </div>
       <>
         {maybeRenderLoader()}
         {maybeRenderFailureState()}

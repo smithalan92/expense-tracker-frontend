@@ -6,7 +6,7 @@ import {
 } from "@reduxjs/toolkit";
 import { CreateTripThunkPayload, TripsState } from "./trips.types";
 import * as api from "@/api";
-import { CreateTripPayload, Trip } from "@/api.types";
+import { Trip } from "@/api.types";
 import {
   getStorageItem,
   LOCALSTORAGE_TRIPS_KEY,
@@ -109,27 +109,37 @@ const selectTripDataState = ({ trips }: { trips: TripsState }) => trips;
 
 export const selectTrips = createSelector(
   [selectTripDataState],
-  (TripDataState) => TripDataState.trips
+  (state) => state.trips
 );
 
 export const selectIsLoadingTrips = createSelector(
   [selectTripDataState],
-  (TripDataState) => TripDataState.isLoadingTrips
+  (state) => state.isLoadingTrips
 );
 
 export const selectHasLoadedTrips = createSelector(
   [selectTripDataState],
-  (TripDataState) => TripDataState.hasLoadedTrips
+  (state) => state.hasLoadedTrips
 );
 
 export const selectHasFailedToLoadTrips = createSelector(
   [selectTripDataState],
-  (TripDataState) => TripDataState.hasFailedToLoadTrips
+  (state) => state.hasFailedToLoadTrips
 );
 
 export const selectShouldShowAddTripModal = createSelector(
   [selectTripDataState],
-  (TripDataState) => TripDataState.shouldShowAddTripModal
+  (state) => state.shouldShowAddTripModal
+);
+
+export const selectIsAddingTrip = createSelector(
+  [selectTripDataState],
+  (state) => state.isAddingTrip
+);
+
+export const selectHasAddingTripFailed = createSelector(
+  [selectTripDataState],
+  (state) => state.hasAddingTripFailed
 );
 
 export default tripSlice.reducer;
