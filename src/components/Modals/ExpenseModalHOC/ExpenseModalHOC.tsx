@@ -3,7 +3,7 @@ import { selectExpenseById } from "@/store/slices/tripData";
 import { formatDateForExpense } from "@/utils/date";
 import { useEffect, useState } from "react";
 import CityPicker from "./CityPicker/CityPicker";
-import CountryPicker from "../../widgets/CountryPicker/CountryPicker";
+import ExpenseCountryPicker from "./ExpenseCountryPicker/ExpenseCountryPicker";
 import CurrencyPicker from "./CurrencyPicker/CurrencyPicker";
 import CustomDatePicker from "../../widgets/DatePicker/DatePicker";
 import ExpenseAmountInput from "./ExpenseAmountInput/ExpenseAmountInput";
@@ -64,7 +64,7 @@ export default function ExpenseModalHOC({
           </div>
           <div className="flex items-center py-4">
             <div className="w-24">Country</div>
-            <CountryPicker value={countryId} onChange={setCountryId} />
+            <ExpenseCountryPicker value={countryId} onChange={setCountryId} />
           </div>
           <div className="flex items-center py-4">
             <div className="w-24">City</div>

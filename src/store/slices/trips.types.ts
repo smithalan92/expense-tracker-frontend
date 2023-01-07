@@ -1,4 +1,4 @@
-import { Trip } from "@/api.types";
+import { CreateTripPayload, Trip } from "@/api.types";
 
 export interface TripsState {
   trips: Trip[];
@@ -6,4 +6,11 @@ export interface TripsState {
   hasLoadedTrips: boolean;
   hasFailedToLoadTrips: boolean;
   shouldShowAddTripModal: boolean;
+  isAddingTrip: boolean;
+  hasAddingTripFailed: boolean;
+}
+
+export interface CreateTripThunkPayload
+  extends Omit<CreateTripPayload, "file"> {
+  file?: File;
 }

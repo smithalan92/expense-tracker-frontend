@@ -4,9 +4,9 @@ import {
   createSelector,
   createAsyncThunk,
 } from "@reduxjs/toolkit";
-import { TripsState } from "./trips.types";
+import { CreateTripThunkPayload, TripsState } from "./trips.types";
 import * as api from "@/api";
-import { Trip } from "@/api.types";
+import { CreateTripPayload, Trip } from "@/api.types";
 import {
   getStorageItem,
   LOCALSTORAGE_TRIPS_KEY,
@@ -20,6 +20,8 @@ const initialState: TripsState = {
   hasLoadedTrips: false,
   hasFailedToLoadTrips: false,
   shouldShowAddTripModal: false,
+  isAddingTrip: false,
+  hasAddingTripFailed: false,
 };
 
 export const loadTrips = createAsyncThunk("trips/loadTrips", async () => {
@@ -36,6 +38,21 @@ export const loadTrips = createAsyncThunk("trips/loadTrips", async () => {
   }
 });
 
+export const addTrip = createAsyncThunk(
+  "trips/addTrip",
+  async (payload: CreateTripThunkPayload) => {
+    let file;
+    if (payload.file) {
+      file = await api.uploadFile(payload.file);
+    }
+
+    return api.createTrip({
+      ...payload,
+      file,
+    });
+  }
+);
+
 export const tripSlice = createSlice({
   name: "trips",
   initialState,
@@ -46,6 +63,8 @@ export const tripSlice = createSlice({
       state.hasFailedToLoadTrips = false;
       state.hasLoadedTrips = false;
       state.shouldShowAddTripModal = false;
+      state.isAddingTrip = false;
+      state.hasAddingTripFailed = false;
     },
     setShouldShowAddTripModal: (state, action: PayloadAction<boolean>) => {
       state.shouldShowAddTripModal = action.payload;
@@ -68,6 +87,18 @@ export const tripSlice = createSlice({
     builder.addCase(loadTrips.rejected, (state) => {
       state.hasFailedToLoadTrips = true;
       state.isLoadingTrips = false;
+    });
+    builder.addCase(addTrip.pending, (state) => {
+      state.isAddingTrip = true;
+    });
+    builder.addCase(addTrip.fulfilled, (state, action) => {
+      state.trips.push(action.payload);
+      state.isAddingTrip = false;
+      state.shouldShowAddTripModal = false;
+    });
+    builder.addCase(addTrip.rejected, (state) => {
+      state.isAddingTrip = false;
+      state.hasAddingTripFailed = true;
     });
   },
 });

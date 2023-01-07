@@ -8,7 +8,6 @@ export default function CustomSelect<
 >(props: Props<Option, IsMulti, Group>) {
   const customStyles = {
     control: (): React.CSSProperties => ({
-      height: "48px",
       display: "flex",
       alignItems: "center",
       backgroundColor: "hsl(0, 0%, 100%)",
@@ -19,7 +18,7 @@ export default function CustomSelect<
       cursor: "default",
       flexWrap: "wrap",
       justifyContent: "space-between",
-      minHeight: "38px",
+      minHeight: "48px",
       outline: "0!important",
       position: "relative",
       transition: "all 100ms",

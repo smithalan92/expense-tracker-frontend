@@ -47,7 +47,7 @@ export interface ExpenseCity {
   timezone: string;
 }
 
-export interface ExpenseCountry {
+export interface Country {
   id: number;
   name: string;
 }
@@ -66,7 +66,7 @@ export interface TripExpense {
   description: string;
   category: ExpenseCategory;
   city: ExpenseCity;
-  country: ExpenseCountry;
+  country: Country;
   user: ExpenseUser;
   createdAt: string;
   updatedAt: string;
@@ -167,4 +167,35 @@ export interface GetTripStatsResponse {
   cityBreakdown: CityBreakdownResult[];
   dailyCostBreakdown: DailyCostBreakdownResult[];
   hourlySpendingBreakdown: HourlySpendingResult[];
+}
+
+export interface LoadCountriesResponse {
+  countries: Country[];
+}
+
+export interface User {
+  id: number;
+  firstName: string;
+  lastName: string;
+}
+
+export interface LoadUsersResponse {
+  users: User[];
+}
+
+export interface UploadFileResponse {
+  file: string;
+}
+
+export interface CreateTripPayload {
+  name: string;
+  startDate: string;
+  endDate: string;
+  file?: string;
+  countryIds: number[];
+  userIds: number[];
+}
+
+export interface CreateTripResponse {
+  trip: Trip;
 }

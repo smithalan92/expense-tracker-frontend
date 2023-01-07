@@ -7,6 +7,11 @@ import {
   GetTripDataResponse,
   GetTripStatsResponse,
   EditExpenseForTripBody,
+  LoadCountriesResponse,
+  LoadUsersResponse,
+  UploadFileResponse,
+  CreateTripPayload,
+  CreateTripResponse,
 } from "./api.types";
 import { store } from "./store";
 import { logout } from "./store/slices/app";
@@ -102,4 +107,39 @@ export async function editExpenseForTrip(
 
 export async function deleteExpense(tripId: number, expenseId: number) {
   return http!.delete(`/trips/${tripId}/expense/${expenseId}`);
+}
+
+export async function loadCountries() {
+  const { data } = await http!.get<LoadCountriesResponse>("/countries");
+
+  return data.countries;
+}
+
+export async function loadUsers() {
+  const { data } = await http!.get<LoadUsersResponse>("/users");
+
+  return data.users;
+}
+
+export async function uploadFile(file: File) {
+  const formData = new FormData();
+  formData.append("image", file);
+
+  const { data } = await http!.post<UploadFileResponse>(
+    "/files/upload",
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+
+  return data.file;
+}
+
+export async function createTrip(payload: CreateTripPayload) {
+  const { data } = await http!.post<CreateTripResponse>("/trips", payload);
+
+  return data.trip;
 }
