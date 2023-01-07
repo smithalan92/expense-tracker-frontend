@@ -22,6 +22,8 @@ const initialState: TripsState = {
   shouldShowAddTripModal: false,
   isAddingTrip: false,
   hasAddingTripFailed: false,
+  isDeletingTrip: false,
+  hasDeletingTripFailed: false,
 };
 
 export const loadTrips = createAsyncThunk("trips/loadTrips", async () => {
@@ -53,6 +55,15 @@ export const addTrip = createAsyncThunk(
   }
 );
 
+export const deleteTrip = createAsyncThunk(
+  "trips/deleteTrip",
+  async (tripId: number) => {
+    await api.deleteTrip(tripId);
+
+    return tripId;
+  }
+);
+
 export const tripSlice = createSlice({
   name: "trips",
   initialState,
@@ -65,6 +76,8 @@ export const tripSlice = createSlice({
       state.shouldShowAddTripModal = false;
       state.isAddingTrip = false;
       state.hasAddingTripFailed = false;
+      state.isDeletingTrip = false;
+      state.hasDeletingTripFailed = false;
     },
     setShouldShowAddTripModal: (state, action: PayloadAction<boolean>) => {
       state.shouldShowAddTripModal = action.payload;
@@ -99,6 +112,17 @@ export const tripSlice = createSlice({
     builder.addCase(addTrip.rejected, (state) => {
       state.isAddingTrip = false;
       state.hasAddingTripFailed = true;
+    });
+    builder.addCase(deleteTrip.pending, (state) => {
+      state.isDeletingTrip = true;
+    });
+    builder.addCase(deleteTrip.fulfilled, (state, action) => {
+      state.trips = state.trips.filter(({ id }) => id !== action.payload);
+      state.isDeletingTrip = false;
+    });
+    builder.addCase(deleteTrip.rejected, (state) => {
+      state.isDeletingTrip = false;
+      state.hasDeletingTripFailed = true;
     });
   },
 });
@@ -140,6 +164,16 @@ export const selectIsAddingTrip = createSelector(
 export const selectHasAddingTripFailed = createSelector(
   [selectTripDataState],
   (state) => state.hasAddingTripFailed
+);
+
+export const selectIsDeletingTrip = createSelector(
+  [selectTripDataState],
+  (state) => state.isDeletingTrip
+);
+
+export const selectHasDeletingTripFailed = createSelector(
+  [selectTripDataState],
+  (state) => state.hasDeletingTripFailed
 );
 
 export default tripSlice.reducer;

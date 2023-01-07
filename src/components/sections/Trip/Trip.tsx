@@ -1,7 +1,11 @@
 import { Link } from "react-router-dom";
 import { TripProps } from "./Trip.types";
 
-export default function Trip({ trip }: TripProps) {
+export default function Trip({ trip, onClickDelete }: TripProps) {
+  const onClickDeleteButton = () => {
+    onClickDelete(trip.id);
+  };
+
   return (
     <div className="card card-side w-full bg-base-100 shadow-md border border-solid border-base-200 h-52 mb-4">
       <div
@@ -19,10 +23,16 @@ export default function Trip({ trip }: TripProps) {
           <span className="font-bold">Expenses: </span> €
           {trip.totalExpenseAmount}
         </p>
-        <div className="card-actions justify-end mt-4 mb-4">
+        <div className="flex justify-end mt-4 mb-4">
           <Link className="btn btn-sm btn-accent" to={`/trips/${trip.id}`}>
-            View expenses
+            Expenses
           </Link>
+          <button
+            className="btn btn-sm btn-error ml-4"
+            onClick={onClickDeleteButton}
+          >
+            Delete
+          </button>
         </div>
       </div>
     </div>

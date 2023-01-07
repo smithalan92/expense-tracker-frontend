@@ -8,6 +8,8 @@ export interface TripsState {
   shouldShowAddTripModal: boolean;
   isAddingTrip: boolean;
   hasAddingTripFailed: boolean;
+  isDeletingTrip: boolean;
+  hasDeletingTripFailed: boolean;
 }
 
 export interface CreateTripThunkPayload

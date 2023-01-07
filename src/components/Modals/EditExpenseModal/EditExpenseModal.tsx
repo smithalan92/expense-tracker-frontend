@@ -13,7 +13,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import ExpenseModalHOC from "../ExpenseModalHOC/ExpenseModalHOC";
 import { ExpenseData } from "../ExpenseModalHOC/ExpenseModalHOC.types";
-import { DeleteExpenseAlert } from "./DeleteExpenseAlert/DeleteExpenseAlert";
+import { DeleteExpenseAlert } from "../DeleteExpenseAlert/DeleteExpenseAlert";
 import { EditExpenseModalProps } from "./EditExpenseModal.types";
 import SpinnerOverlay from "@/components/widgets/SpinnerOverlay";
 import { showToast } from "@/utils/toast";

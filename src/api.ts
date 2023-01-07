@@ -18,10 +18,11 @@ import { logout } from "./store/slices/app";
 
 let http: AxiosInstance | null = null;
 
+const PRODUCTION_API_URL = "https://expense-tracker-api.smithy.dev";
+const LOCAL_API_URL = "http://localhost:3520";
+
 const API_URL =
-  process.env.NODE_ENV !== "development"
-    ? "http://localhost:3520"
-    : "https://expense-tracker-api.smithy.dev";
+  process.env.NODE_ENV === "development" ? LOCAL_API_URL : PRODUCTION_API_URL;
 
 export function createInstance(authToken: string) {
   http = axios.create({
@@ -125,12 +126,14 @@ export async function uploadFile(file: File) {
   const formData = new FormData();
   formData.append("image", file);
 
-  const { data } = await http!.post<UploadFileResponse>(
-    "/files/upload",
+  // We always want to hit the production API URL for file uploads
+  const { data } = await axios.post<UploadFileResponse>(
+    `${PRODUCTION_API_URL}/files/upload`,
     formData,
     {
       headers: {
         "Content-Type": "multipart/form-data",
+        Authorization: store.getState().app.authToken,
       },
     }
   );
@@ -139,7 +142,13 @@ export async function uploadFile(file: File) {
 }
 
 export async function createTrip(payload: CreateTripPayload) {
+  // Note if running locally and after uploading a file, this route
+  // will fail if hitting a local API as files are always uploaded via prod
   const { data } = await http!.post<CreateTripResponse>("/trips", payload);
 
   return data.trip;
+}
+
+export async function deleteTrip(tripId: number) {
+  return http!.delete(`/trips/${tripId}`);
 }

@@ -20,6 +20,7 @@ const initialState: AppState = {
   user: null,
   isLoggingIn: false,
   hasFailedToLogin: false,
+  authToken: "",
 };
 
 export const login = createAsyncThunk(
@@ -45,6 +46,7 @@ export const appSlice = createSlice({
       if (data) {
         const { user, token } = data as any;
         state.user = user;
+        state.authToken = token.token;
         api.createInstance(token.token);
       }
     },
@@ -63,6 +65,7 @@ export const appSlice = createSlice({
       login.fulfilled,
       (state, action: PayloadAction<LoginResponse>) => {
         setStorageItem(LOCALSTORAGE_AUTH_KEY, action.payload);
+        state.authToken = action.payload.token.token;
         api.createInstance(action.payload.token.token);
 
         state.user = action.payload.user;
