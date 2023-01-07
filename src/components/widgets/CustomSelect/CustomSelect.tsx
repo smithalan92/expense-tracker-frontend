@@ -28,6 +28,10 @@ export default function CustomSelect<
       ...provided,
       color: state.isSelected ? "#fff" : "#000",
     }),
+    menuPortal: (base: any) => ({
+      ...base,
+      zIndex: 10,
+    }),
   };
 
   return (

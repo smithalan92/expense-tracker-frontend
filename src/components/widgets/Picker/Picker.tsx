@@ -3,7 +3,7 @@ import { useCallback, useMemo } from "react";
 import { OnChangeValue } from "react-select";
 import { PickerOption, PickerProps } from "./Picker.types";
 
-export default function CountryPicker({
+export default function Picker({
   options,
   value,
   isMulti,
