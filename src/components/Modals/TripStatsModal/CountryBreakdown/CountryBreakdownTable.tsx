@@ -1,4 +1,3 @@
-import { cv } from "chart.js/dist/chunks/helpers.core";
 import { CountryBreakdownTableProps } from "./CountryBreakdownTable.types";
 
 export default function CountryBreakdownTable({

@@ -1,15 +1,19 @@
 import { useAppSelector } from "@/store";
-import { selectExpenseById } from "@/store/slices/tripData";
+import {
+  selectCategories,
+  selectCountries,
+  selectExpenseById,
+} from "@/store/slices/tripData";
 import { formatDateForExpense } from "@/utils/date";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import CityPicker from "./CityPicker/CityPicker";
-import ExpenseCountryPicker from "./ExpenseCountryPicker/ExpenseCountryPicker";
 import CurrencyPicker from "./CurrencyPicker/CurrencyPicker";
 import CustomDatePicker from "../../widgets/DatePicker/DatePicker";
 import ExpenseAmountInput from "./ExpenseAmountInput/ExpenseAmountInput";
-import ExpenseCategoryPicker from "./ExpenseCategoryPicker/ExpenseCategoryPicker";
 import ExpenseDescription from "./ExpenseDescription/ExpenseDescription";
 import { ExpenseModalHOCProps } from "./ExpenseModalHOC.types";
+import Picker from "@/components/widgets/Picker/Picker";
+import { PickerOption } from "@/components/widgets/Picker/Picker.types";
 
 export default function ExpenseModalHOC({
   expenseId,
@@ -20,6 +24,21 @@ export default function ExpenseModalHOC({
   const expense = useAppSelector((state) =>
     selectExpenseById(state, expenseId ?? 0)
   )!;
+  const countries = useAppSelector(selectCountries);
+  const countryOptions = useMemo(() => {
+    return countries.map<PickerOption>((c) => ({
+      label: c.name,
+      value: c.id,
+    }));
+  }, [countries]);
+
+  const categories = useAppSelector(selectCategories);
+  const categoryOptions = useMemo(() => {
+    return categories.map<PickerOption>((category) => ({
+      value: category.id,
+      label: category.name,
+    }));
+  }, [categories]);
 
   const [date, setDate] = useState(
     formatDateForExpense(expense ? new Date(expense.localDateTime) : new Date())
@@ -40,8 +59,8 @@ export default function ExpenseModalHOC({
   useEffect(() => {
     onChangeData({
       date,
-      cityId,
       countryId,
+      cityId,
       amount,
       currencyId,
       categoryId,
@@ -64,7 +83,12 @@ export default function ExpenseModalHOC({
           </div>
           <div className="flex items-center py-4">
             <div className="w-24">Country</div>
-            <ExpenseCountryPicker value={countryId} onChange={setCountryId} />
+            <Picker
+              options={countryOptions}
+              value={countryId}
+              onChange={setCountryId}
+              isMulti={false}
+            />
           </div>
           <div className="flex items-center py-4">
             <div className="w-24">City</div>
@@ -88,9 +112,11 @@ export default function ExpenseModalHOC({
           </div>
           <div className="flex items-center py-4">
             <div className="w-24">Category</div>
-            <ExpenseCategoryPicker
+            <Picker
+              options={categoryOptions}
               value={categoryId}
               onChange={setCategoryId}
+              isMulti={false}
             />
           </div>
           <div className="flex flex-col py-4">

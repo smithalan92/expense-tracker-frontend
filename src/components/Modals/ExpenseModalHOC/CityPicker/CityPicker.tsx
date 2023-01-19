@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useAppSelector } from "@/store";
 import { CityPickerOption, CityPickerProps } from "./CityPicker.types";
-import CustomSelect from "@/components/widgets/CustomSelect/CustomSelect";
 import { selectCitiesForCountryId } from "@/store/slices/tripData";
+import Picker from "@/components/widgets/Picker/Picker";
 
 export default function CityPicker({
   value,
@@ -11,13 +11,6 @@ export default function CityPicker({
 }: CityPickerProps) {
   const cities = useAppSelector((state) =>
     selectCitiesForCountryId(state, selectedCountryId)
-  );
-
-  const onSelectCity = useCallback(
-    (option: CityPickerOption | null) => {
-      onChange(option!.value);
-    },
-    [onChange]
   );
 
   const cityOptions = useMemo(() => {
@@ -41,14 +34,12 @@ export default function CityPicker({
   }, [selectedCountryId]);
 
   return (
-    <CustomSelect
-      className="flex-1"
-      name="city"
+    <Picker
       options={cityOptions}
-      isSearchable={true}
-      value={selectedCity}
-      onChange={onSelectCity}
-      isDisabled={!selectedCountryId}
+      value={value}
+      onChange={onChange}
+      isMulti={false}
+      // isDisabled={!selectedCountryId}
     />
   );
 }

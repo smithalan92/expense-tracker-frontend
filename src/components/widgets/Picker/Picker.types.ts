@@ -5,6 +5,7 @@ export interface PickerOption {
 
 export interface PickerBaseProps {
   options: PickerOption[];
+  isDisabled?: boolean;
 }
 
 export interface PickerSingleProps extends PickerBaseProps {

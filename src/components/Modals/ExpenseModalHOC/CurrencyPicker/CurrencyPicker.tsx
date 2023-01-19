@@ -1,7 +1,7 @@
-import CustomSelect from "@/components/widgets/CustomSelect/CustomSelect";
+import Picker from "@/components/widgets/Picker/Picker";
 import { useAppSelector } from "@/store";
 import { selectCurrencies, selectCountryById } from "@/store/slices/tripData";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import {
   CurrencyPickerOption,
   CurrencyPickerProps,
@@ -25,12 +25,6 @@ export default function CurrencyPicker({
     }));
   }, [currencies]);
 
-  const selectedCurrency = useMemo(() => {
-    if (!value) return null;
-
-    return currencyOptions.find((c) => c.value === value);
-  }, [value]);
-
   // TODO - This messes up if you select a currency
   // that isnt the standard currency in your selected country
   // and change country or edit it, the currency then gets changed.
@@ -41,22 +35,12 @@ export default function CurrencyPicker({
     }
   }, [selectedCountryId]);
 
-  const onSelectCurrency = useCallback(
-    (option: CurrencyPickerOption | null) => {
-      onChange(option!.value);
-    },
-    [onChange]
-  );
-
   return (
-    <CustomSelect
-      className="flex-1"
-      menuPlacement="top"
-      name="currency"
+    <Picker
       options={currencyOptions}
-      isSearchable={true}
-      value={selectedCurrency}
-      onChange={onSelectCurrency}
+      value={value}
+      onChange={onChange}
+      isMulti={false}
     />
   );
 }
