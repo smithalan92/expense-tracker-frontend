@@ -68,6 +68,13 @@ export default function ExpenseModalHOC({
     });
   }, [date, cityId, amount, countryId, currencyId, categoryId, description]);
 
+  useEffect(() => {
+    if (!expenseId && countries.length === 1) {
+      const firstCountryId = countries[0].id;
+      setCountryId(firstCountryId);
+    }
+  }, []);
+
   return (
     <div className="et-modal-backdrop overflow-hidden">
       <div className="animate-slide-in-bottom et-modal overflow-hidden absolute bottom-0 md:relative box-content w-[350px] md:w-full">
