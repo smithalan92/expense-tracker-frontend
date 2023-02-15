@@ -33,7 +33,7 @@ export default function Picker({
       onChange={onSelect}
       value={selected}
       menuPortalTarget={document.body}
-      isMulti={true}
+      isMulti={isMulti}
     />
   );
 }
