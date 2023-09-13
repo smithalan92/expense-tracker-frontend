@@ -1,9 +1,15 @@
+import { CreateTripCountry } from "@/api.types";
+
+export interface TripModalCountry extends CreateTripCountry {
+  name: string;
+}
+
 export interface TripModalData {
   file?: File;
   name: string;
   startDate: string;
   endDate: string;
-  countryIds: number[];
+  countries: TripModalCountry[];
   userIds: number[];
 }
 

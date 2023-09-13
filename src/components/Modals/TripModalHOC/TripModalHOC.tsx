@@ -1,14 +1,16 @@
+import * as api from "@/api";
+import { ReactComponent as XIcon } from "@/assets/close.svg";
 import ImagePicker from "@/components/widgets/ImagePicker/ImagePicker";
-import React, { ChangeEvent, useEffect, useState } from "react";
-import { TripModalHOCProps } from "./TripModalHOC.types";
-import CustomDatePicker from "../../widgets/DatePicker/DatePicker";
-import { formatDateForTrip } from "@/utils/date";
-import { addDays } from "date-fns";
 import Picker from "@/components/widgets/Picker/Picker";
 import { PickerOption } from "@/components/widgets/Picker/Picker.types";
-import * as api from "@/api";
 import { useAppSelector } from "@/store";
 import { selectUser } from "@/store/slices/app";
+import { formatDateForTrip } from "@/utils/date";
+import { addDays } from "date-fns";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import CustomDatePicker from "../../widgets/DatePicker/DatePicker";
+import AddCountryModal from "../AddCountryModal/AddCountryModal";
+import { TripModalCountry, TripModalHOCProps } from "./TripModalHOC.types";
 
 export default function ExpenseModalHOC({
   title,
@@ -22,34 +24,65 @@ export default function ExpenseModalHOC({
   const [endDate, setEndDate] = useState(
     formatDateForTrip(addDays(new Date(), 1))
   );
-  const [countryPickerOptions, setCountryPickerOptions] = useState<
-    PickerOption[]
-  >([]);
 
-  const [selectedCountryIds, setSelectedCountryIds] = useState<number[]>([]);
+  const [selectedCountries, setSelectedCountries] = useState<
+    TripModalCountry[]
+  >([]);
 
   const [userPickerOptions, setUserPickerOptions] = useState<PickerOption[]>(
     []
   );
   const [selectedUserIds, setSelectedUserIds] = useState<number[]>([]);
 
+  const [countryModalData, setCountryModalData] =
+    useState<TripModalCountry | null>(null);
+  const [isCountryPickerOpen, setIsCountryPickerOpen] = useState(false);
+
   const onChangeName = (e: ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
   };
 
+  const openAddCountryPicker = useCallback(() => {
+    setIsCountryPickerOpen(true);
+  }, []);
+
+  const onSaveCountry = useCallback(
+    (country: TripModalCountry) => {
+      const newCountries = selectedCountries.filter(
+        (c) => c.countryId !== country.countryId
+      );
+      setSelectedCountries([...newCountries, country]);
+    },
+    [selectedCountries]
+  );
+
+  const onClickOpenCountry = useCallback(
+    (countryId: number) => {
+      const country = selectedCountries.find((c) => c.countryId === countryId)!;
+      setCountryModalData(country);
+      openAddCountryPicker();
+    },
+    [openAddCountryPicker, selectedCountries]
+  );
+
+  const onClickDeleteCountry = useCallback(
+    (countryId: number) => {
+      setSelectedCountries(
+        selectedCountries.filter((c) => c.countryId !== countryId)
+      );
+    },
+    [selectedCountries]
+  );
+
+  const onCloseCountryModal = useCallback(() => {
+    setIsCountryPickerOpen(false);
+    setCountryModalData(null);
+  }, []);
+
   useEffect(() => {
     const loadData = async () => {
-      const [countries, users] = await Promise.all([
-        api.loadCountries(),
-        api.loadUsers(),
-      ]);
+      const users = await api.loadUsers();
 
-      setCountryPickerOptions(
-        countries.map((c) => ({
-          value: c.id,
-          label: c.name,
-        }))
-      );
       setUserPickerOptions(
         users
           .filter((u) => u.id !== currentUser.id)
@@ -61,6 +94,7 @@ export default function ExpenseModalHOC({
     };
 
     loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -69,7 +103,7 @@ export default function ExpenseModalHOC({
       name,
       startDate,
       endDate,
-      countryIds: selectedCountryIds,
+      countries: selectedCountries,
       userIds: selectedUserIds,
     });
   }, [
@@ -77,8 +111,9 @@ export default function ExpenseModalHOC({
     name,
     startDate,
     endDate,
-    selectedCountryIds,
+    selectedCountries,
     selectedUserIds,
+    onChangeData,
   ]);
 
   return (
@@ -119,12 +154,30 @@ export default function ExpenseModalHOC({
           </div>
           <div className="flex items-center py-4">
             <span className="w-24">Countries</span>
-            <Picker
-              options={countryPickerOptions}
-              value={selectedCountryIds}
-              onChange={setSelectedCountryIds}
-              isMulti={true}
-            />
+            <div className="ml-2 flex flex-wrap">
+              {selectedCountries.map((country) => {
+                return (
+                  <div
+                    className="flex select-none items-center ml-1 bg-blue-400 rounded text-white mr-2"
+                    key={country.countryId}
+                  >
+                    <button
+                      className="p-2 "
+                      onClick={() => onClickOpenCountry(country.countryId)}
+                    >
+                      {country.name}
+                    </button>
+                    <button
+                      className="p-2 hover:opacity-60 cursor-pointer"
+                      onClick={() => onClickDeleteCountry(country.countryId)}
+                    >
+                      <XIcon className="w-2 ml-2" />
+                    </button>
+                  </div>
+                );
+              })}
+              <button onClick={openAddCountryPicker}>Add Country</button>
+            </div>
           </div>
           <div className="flex items-center py-4">
             <span className="w-24">Users</span>
@@ -138,6 +191,13 @@ export default function ExpenseModalHOC({
         </div>
         <div>{footer}</div>
       </div>
+      {isCountryPickerOpen && (
+        <AddCountryModal
+          initalData={countryModalData}
+          onSave={onSaveCountry}
+          onClose={onCloseCountryModal}
+        />
+      )}
     </div>
   );
 }

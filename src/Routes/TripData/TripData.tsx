@@ -1,31 +1,31 @@
+import { ReactComponent as BackIcon } from "@/assets/back.svg";
+import { ReactComponent as RefreshIcon } from "@/assets/refresh.svg";
 import AddExpenseModal from "@/components/Modals/AddExpenseModal/AddExpenseModal";
-import ExpenseTable from "@/components/sections/ExpenseTable/ExpenseTable";
 import EditExpenseModal from "@/components/Modals/EditExpenseModal/EditExpenseModal";
-import Spinner from "@/components/widgets/Spinner";
 import TripStatsModal from "@/components/Modals/TripStatsModal/TripStatsModal";
+import ExpenseTable from "@/components/sections/ExpenseTable/ExpenseTable";
+import Spinner from "@/components/widgets/Spinner";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
   loadTripData,
-  selectIsLoadingTripData,
-  selectHasFailedToTripData,
-  syncUnsavedExpenses,
-  selectShouldShowAddExpenseModal,
-  setShouldShowAddExpenseModal,
   selectCanShowSyncButton,
+  selectHasFailedToTripData,
   selectIsAddingExpense,
-  selectIsSyncingUnSavedExpenses,
   selectIsLoadingExpenses,
-  selectTrip,
-  selectShouldShowTripStatsModal,
-  setShouldShowTripStatsModal,
+  selectIsLoadingTripData,
+  selectIsSyncingUnSavedExpenses,
+  selectShouldShowAddExpenseModal,
   selectShouldShowEditExpenseModal,
+  selectShouldShowTripStatsModal,
+  selectTrip,
+  setShouldShowAddExpenseModal,
   setShouldShowEditExpenseModal,
+  setShouldShowTripStatsModal,
+  syncUnsavedExpenses,
 } from "@/store/slices/tripData";
 import format from "date-fns/format";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ReactComponent as RefreshIcon } from "@/assets/refresh.svg";
-import { ReactComponent as BackIcon } from "@/assets/back.svg";
 
 export default function TripData() {
   const { tripId } = useParams();
@@ -64,7 +64,7 @@ export default function TripData() {
 
   useEffect(() => {
     dispatch(loadTripData(parseInt(tripId!, 10)));
-  }, [tripId]);
+  }, [dispatch, tripId]);
 
   const onClickGoBack = () => {
     navigate(-1);

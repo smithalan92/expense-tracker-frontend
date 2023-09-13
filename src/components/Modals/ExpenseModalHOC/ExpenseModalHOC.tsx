@@ -1,3 +1,5 @@
+import Picker from "@/components/widgets/Picker/Picker";
+import { PickerOption } from "@/components/widgets/Picker/Picker.types";
 import { useAppSelector } from "@/store";
 import {
   selectCategories,
@@ -6,14 +8,12 @@ import {
 } from "@/store/slices/tripData";
 import { formatDateForExpense } from "@/utils/date";
 import { useEffect, useMemo, useState } from "react";
+import CustomDatePicker from "../../widgets/DatePicker/DatePicker";
 import CityPicker from "./CityPicker/CityPicker";
 import CurrencyPicker from "./CurrencyPicker/CurrencyPicker";
-import CustomDatePicker from "../../widgets/DatePicker/DatePicker";
 import ExpenseAmountInput from "./ExpenseAmountInput/ExpenseAmountInput";
 import ExpenseDescription from "./ExpenseDescription/ExpenseDescription";
 import { ExpenseModalHOCProps } from "./ExpenseModalHOC.types";
-import Picker from "@/components/widgets/Picker/Picker";
-import { PickerOption } from "@/components/widgets/Picker/Picker.types";
 
 export default function ExpenseModalHOC({
   expenseId,
@@ -66,13 +66,23 @@ export default function ExpenseModalHOC({
       categoryId,
       description,
     });
-  }, [date, cityId, amount, countryId, currencyId, categoryId, description]);
+  }, [
+    date,
+    cityId,
+    amount,
+    countryId,
+    currencyId,
+    categoryId,
+    description,
+    onChangeData,
+  ]);
 
   useEffect(() => {
     if (!expenseId && countries.length === 1) {
       const firstCountryId = countries[0].id;
       setCountryId(firstCountryId);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

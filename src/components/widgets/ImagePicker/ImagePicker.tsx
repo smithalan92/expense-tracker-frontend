@@ -1,3 +1,4 @@
+import { ReactComponent as DeleteIcon } from "@/assets/close.svg";
 import { ChangeEvent, useState } from "react";
 import { ImagePickerProps, SelectedFile } from "./ImagePicker.types";
 
@@ -9,8 +10,13 @@ export default function ImagePicker({ onChange }: ImagePickerProps) {
     onChange(e.target.files![0]);
   };
 
+  const onRemoveFile = () => {
+    setSelectedImage(null);
+    onChange(null);
+  };
+
   return (
-    <div className="flex-1">
+    <div className="flex-1 relative">
       <label htmlFor="imagepicker" className="cursor-pointer">
         {selectedImage && (
           <img src={selectedImage} className="h-48 w-full object-cover" />
@@ -28,6 +34,16 @@ export default function ImagePicker({ onChange }: ImagePickerProps) {
           onChange={onSelectFile}
         />
       </label>
+      {selectedImage && (
+        <button
+          className="absolute bottom-0 right-0 p-1"
+          onClick={onRemoveFile}
+        >
+          <div className="bg-gray-100 rounded-full p-2 hover:bg-gray-300">
+            <DeleteIcon className="w-4 h-4 text-red-500" />
+          </div>
+        </button>
+      )}
     </div>
   );
 }

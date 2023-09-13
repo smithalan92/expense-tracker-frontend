@@ -1,8 +1,9 @@
-import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import svgr from "vite-plugin-svgr";
 import path from "path";
+import { defineConfig } from "vite";
+import checker from "vite-plugin-checker";
 import { VitePWA, VitePWAOptions } from "vite-plugin-pwa";
+import svgr from "vite-plugin-svgr";
 
 const pwaOptions: Partial<VitePWAOptions> = {
   mode: "development",
@@ -52,6 +53,9 @@ export default defineConfig({
         expandProps: "start",
         dimensions: false,
       },
+    }),
+    checker({
+      typescript: true,
     }),
   ],
   server: {

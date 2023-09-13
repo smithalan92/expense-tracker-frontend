@@ -6,14 +6,14 @@ import {
   selectIsAddingTrip,
   setShouldShowAddTripModal,
 } from "@/store/slices/trips";
+import { showToast } from "@/utils/toast";
 import { useEffect, useMemo, useState } from "react";
 import TripModalHOC from "../TripModalHOC/TripModalHOC";
 import { TripModalData } from "../TripModalHOC/TripModalHOC.types";
-import { showToast } from "@/utils/toast";
 
 export default function AddTripModal() {
   const dispatch = useAppDispatch();
-  const isAddingExpense = useAppSelector(selectIsAddingTrip);
+  const isAddingTrip = useAppSelector(selectIsAddingTrip);
   const hasFailedToAddTrip = useAppSelector(selectHasAddingTripFailed);
   const [data, setData] = useState<TripModalData | null>(null);
 
@@ -27,13 +27,13 @@ export default function AddTripModal() {
 
   const canSaveTrip = useMemo(() => {
     if (data === null) return false;
-    const { name, startDate, endDate, countryIds } = data;
+    const { name, startDate, endDate, countries } = data;
 
     return (
       !!name.trim().length &&
       !!startDate.trim().length &&
       !!endDate.trim().length &&
-      countryIds.length > 0
+      countries.length > 0
     );
   }, [data]);
 
@@ -68,7 +68,7 @@ export default function AddTripModal() {
           </div>
         }
       />
-      {isAddingExpense && <SpinnerOverlay />}
+      {isAddingTrip && <SpinnerOverlay />}
     </>
   );
 }

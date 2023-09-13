@@ -173,6 +173,10 @@ export interface LoadCountriesResponse {
   countries: Country[];
 }
 
+export interface LoadCitiesForCountryResponse {
+  cities: Omit<City, "timezoneName">[];
+}
+
 export interface User {
   id: number;
   firstName: string;
@@ -187,12 +191,17 @@ export interface UploadFileResponse {
   file: string;
 }
 
+export interface CreateTripCountry {
+  countryId: number;
+  cityIds?: number[];
+}
+
 export interface CreateTripPayload {
   name: string;
   startDate: string;
   endDate: string;
   file?: string;
-  countryIds: number[];
+  countries: CreateTripCountry[];
   userIds: number[];
 }
 

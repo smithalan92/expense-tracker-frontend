@@ -1,20 +1,20 @@
+import * as api from "@/api";
 import { LoginResponse } from "@/api.types";
 import {
-  createSlice,
-  PayloadAction,
-  createSelector,
-  createAsyncThunk,
-} from "@reduxjs/toolkit";
-import { AppState, LoginThunkParams } from "./app.types";
-import * as api from "@/api";
-import { resetState as resetTripsState } from "./trips";
-import { resetState as resetTripDataState } from "./tripData";
-import {
+  LOCALSTORAGE_AUTH_KEY,
   deleteAllLocalStorage,
   getStorageItem,
-  LOCALSTORAGE_AUTH_KEY,
   setStorageItem,
 } from "@/utils/localStorage";
+import {
+  PayloadAction,
+  createAsyncThunk,
+  createSelector,
+  createSlice,
+} from "@reduxjs/toolkit";
+import { AppState, LoginThunkParams } from "./app.types";
+import { resetState as resetTripDataState } from "./tripData";
+import { resetState as resetTripsState } from "./trips";
 
 const initialState: AppState = {
   user: null,

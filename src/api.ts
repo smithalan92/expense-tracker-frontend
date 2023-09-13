@@ -1,17 +1,18 @@
 import axios, { AxiosInstance } from "axios";
 import {
-  GetTripsResponse,
-  LoginResponse,
-  GetExpensesForTripResponse,
   AddExpenseForTripBody,
-  GetTripDataResponse,
-  GetTripStatsResponse,
-  EditExpenseForTripBody,
-  LoadCountriesResponse,
-  LoadUsersResponse,
-  UploadFileResponse,
   CreateTripPayload,
   CreateTripResponse,
+  EditExpenseForTripBody,
+  GetExpensesForTripResponse,
+  GetTripDataResponse,
+  GetTripStatsResponse,
+  GetTripsResponse,
+  LoadCitiesForCountryResponse,
+  LoadCountriesResponse,
+  LoadUsersResponse,
+  LoginResponse,
+  UploadFileResponse,
 } from "./api.types";
 import { store } from "./store";
 import { logout } from "./store/slices/app";
@@ -114,6 +115,14 @@ export async function loadCountries() {
   const { data } = await http!.get<LoadCountriesResponse>("/countries");
 
   return data.countries;
+}
+
+export async function loadCitiesForCountry(countryId: number) {
+  const { data } = await http!.get<LoadCitiesForCountryResponse>(
+    `/countries/${countryId}/cities`
+  );
+
+  return data.cities;
 }
 
 export async function loadUsers() {

@@ -1,18 +1,18 @@
-import {
-  createSlice,
-  PayloadAction,
-  createSelector,
-  createAsyncThunk,
-} from "@reduxjs/toolkit";
-import { CreateTripThunkPayload, TripsState } from "./trips.types";
 import * as api from "@/api";
 import { Trip } from "@/api.types";
 import {
-  getStorageItem,
   LOCALSTORAGE_TRIPS_KEY,
+  getStorageItem,
   setStorageItem,
 } from "@/utils/localStorage";
+import {
+  PayloadAction,
+  createAsyncThunk,
+  createSelector,
+  createSlice,
+} from "@reduxjs/toolkit";
 import axios from "axios";
+import { CreateTripThunkPayload, TripsState } from "./trips.types";
 
 const initialState: TripsState = {
   trips: [],
