@@ -121,6 +121,21 @@ export interface GetTripDataResponse {
   categories: ExpenseCategory[];
 }
 
+export interface CountryWithCities {
+  name: string;
+  countryId: number;
+  cityIds?: number[];
+}
+
+export interface GetTripEditDataResponse {
+  image: string | null;
+  name: string;
+  startDate: string;
+  endDate: string;
+  countries: CountryWithCities[];
+  userIds: number[];
+}
+
 export interface CategoryBreakdownResult {
   categoryName: string;
   totalEuroAmount: number;
@@ -208,3 +223,5 @@ export interface CreateTripPayload {
 export interface CreateTripResponse {
   trip: Trip;
 }
+
+export type UpdateTripPayload = Partial<CreateTripPayload>;

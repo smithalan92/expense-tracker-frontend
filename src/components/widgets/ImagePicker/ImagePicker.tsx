@@ -2,8 +2,13 @@ import { ReactComponent as DeleteIcon } from "@/assets/close.svg";
 import { ChangeEvent, useState } from "react";
 import { ImagePickerProps, SelectedFile } from "./ImagePicker.types";
 
-export default function ImagePicker({ onChange }: ImagePickerProps) {
-  const [selectedImage, setSelectedImage] = useState<SelectedFile>(null);
+export default function ImagePicker({
+  onChange,
+  initalImage,
+}: ImagePickerProps) {
+  const [selectedImage, setSelectedImage] = useState<SelectedFile>(
+    initalImage ?? null
+  );
 
   const onSelectFile = (e: ChangeEvent<HTMLInputElement>) => {
     setSelectedImage(URL.createObjectURL(e.target.files![0]));

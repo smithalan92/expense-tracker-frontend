@@ -1,9 +1,13 @@
 import { Link } from "react-router-dom";
 import { TripProps } from "./Trip.types";
 
-export default function Trip({ trip, onClickDelete }: TripProps) {
+export default function Trip({ trip, onClickDelete, onClickEdit }: TripProps) {
   const onClickDeleteButton = () => {
     onClickDelete(trip.id);
+  };
+
+  const onClickEditButton = () => {
+    onClickEdit(trip.id);
   };
 
   return (
@@ -28,7 +32,13 @@ export default function Trip({ trip, onClickDelete }: TripProps) {
             Expenses
           </Link>
           <button
-            className="btn btn-sm btn-error ml-4"
+            className="btn btn-sm btn-secondary ml-2"
+            onClick={onClickEditButton}
+          >
+            Edit
+          </button>
+          <button
+            className="btn btn-sm btn-error ml-2"
             onClick={onClickDeleteButton}
           >
             Delete

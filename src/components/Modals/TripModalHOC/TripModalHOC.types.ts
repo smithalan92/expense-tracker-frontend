@@ -1,4 +1,4 @@
-import { CreateTripCountry } from "@/api.types";
+import { CreateTripCountry, GetTripEditDataResponse } from "@/api.types";
 
 export interface TripModalCountry extends CreateTripCountry {
   name: string;
@@ -16,5 +16,6 @@ export interface TripModalData {
 export interface TripModalHOCProps {
   title: string;
   footer: JSX.Element | JSX.Element[];
+  initalData?: GetTripEditDataResponse | null;
   onChangeData: (data: TripModalData) => void;
 }

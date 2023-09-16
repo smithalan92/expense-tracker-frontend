@@ -1,5 +1,6 @@
 import * as api from "@/api";
 import { ReactComponent as XIcon } from "@/assets/close.svg";
+import { ReactComponent as PlusIcon } from "@/assets/plus.svg";
 import ImagePicker from "@/components/widgets/ImagePicker/ImagePicker";
 import Picker from "@/components/widgets/Picker/Picker";
 import { PickerOption } from "@/components/widgets/Picker/Picker.types";
@@ -12,27 +13,34 @@ import CustomDatePicker from "../../widgets/DatePicker/DatePicker";
 import AddCountryModal from "../AddCountryModal/AddCountryModal";
 import { TripModalCountry, TripModalHOCProps } from "./TripModalHOC.types";
 
-export default function ExpenseModalHOC({
+export default function TripModalHOC({
   title,
   footer,
   onChangeData,
+  initalData,
 }: TripModalHOCProps) {
   const currentUser = useAppSelector(selectUser)!;
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [name, setName] = useState("");
-  const [startDate, setStartDate] = useState(formatDateForTrip(new Date()));
+  const [name, setName] = useState(initalData?.name ?? "");
+  const [startDate, setStartDate] = useState(
+    formatDateForTrip(initalData ? new Date(initalData.startDate) : new Date())
+  );
   const [endDate, setEndDate] = useState(
-    formatDateForTrip(addDays(new Date(), 1))
+    formatDateForTrip(
+      initalData ? new Date(initalData.endDate) : addDays(new Date(), 1)
+    )
   );
 
   const [selectedCountries, setSelectedCountries] = useState<
     TripModalCountry[]
-  >([]);
+  >(initalData?.countries ?? []);
 
   const [userPickerOptions, setUserPickerOptions] = useState<PickerOption[]>(
     []
   );
-  const [selectedUserIds, setSelectedUserIds] = useState<number[]>([]);
+  const [selectedUserIds, setSelectedUserIds] = useState<number[]>(
+    initalData?.userIds ?? []
+  );
 
   const [countryModalData, setCountryModalData] =
     useState<TripModalCountry | null>(null);
@@ -123,7 +131,10 @@ export default function ExpenseModalHOC({
         <div className="h-[450px] overflow-y-scroll pr-4">
           <div className="flex items-center py-4">
             <span className="w-24">Image</span>
-            <ImagePicker onChange={setSelectedImage} />
+            <ImagePicker
+              onChange={setSelectedImage}
+              initalImage={initalData?.image}
+            />
           </div>
           <div className="flex items-center py-4">
             <span className="w-24">Name</span>
@@ -154,29 +165,38 @@ export default function ExpenseModalHOC({
           </div>
           <div className="flex items-center py-4">
             <span className="w-24">Countries</span>
-            <div className="ml-2 flex flex-wrap">
-              {selectedCountries.map((country) => {
-                return (
-                  <div
-                    className="flex select-none items-center ml-1 bg-blue-400 rounded text-white mr-2"
-                    key={country.countryId}
-                  >
-                    <button
-                      className="p-2 "
-                      onClick={() => onClickOpenCountry(country.countryId)}
+            <div className="flex flex-col flex-1">
+              <div className="flex flex-1 flex-wrap">
+                {selectedCountries.map((country) => {
+                  return (
+                    <div
+                      className="flex select-none items-center bg-blue-400 rounded text-white mr-2 mt-1"
+                      key={country.countryId}
                     >
-                      {country.name}
-                    </button>
-                    <button
-                      className="p-2 hover:opacity-60 cursor-pointer"
-                      onClick={() => onClickDeleteCountry(country.countryId)}
-                    >
-                      <XIcon className="w-2 ml-2" />
-                    </button>
-                  </div>
-                );
-              })}
-              <button onClick={openAddCountryPicker}>Add Country</button>
+                      <button
+                        className="p-2 "
+                        onClick={() => onClickOpenCountry(country.countryId)}
+                      >
+                        {country.name}
+                      </button>
+                      <button
+                        className="p-2 hover:opacity-60 cursor-pointer"
+                        onClick={() => onClickDeleteCountry(country.countryId)}
+                      >
+                        <XIcon className="w-2 ml-2" />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+              <div>
+                <button
+                  className="mt-2 p-1 bg-slate-500 text-white rounded flex items-center hover:bg-slate-400"
+                  onClick={openAddCountryPicker}
+                >
+                  <PlusIcon className="w-4 mr-1" /> <span>Add Country</span>
+                </button>
+              </div>
             </div>
           </div>
           <div className="flex items-center py-4">

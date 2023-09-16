@@ -6,6 +6,7 @@ import {
   EditExpenseForTripBody,
   GetExpensesForTripResponse,
   GetTripDataResponse,
+  GetTripEditDataResponse,
   GetTripStatsResponse,
   GetTripsResponse,
   LoadCitiesForCountryResponse,
@@ -67,6 +68,14 @@ export async function getTrips() {
 export async function getTripData(tripId: number) {
   const { data } = await http!.get<GetTripDataResponse>(
     `/trips/${tripId}/data`
+  );
+
+  return data;
+}
+
+export async function getTripForEditing(tripId: number) {
+  const { data } = await http!.get<GetTripEditDataResponse>(
+    `/trips/${tripId}/edit-data`
   );
 
   return data;
@@ -154,6 +163,20 @@ export async function createTrip(payload: CreateTripPayload) {
   // Note if running locally and after uploading a file, this route
   // will fail if hitting a local API as files are always uploaded via prod
   const { data } = await http!.post<CreateTripResponse>("/trips", payload);
+
+  return data.trip;
+}
+
+export async function updateTrip(
+  tripId: number,
+  payload: Partial<CreateTripPayload>
+) {
+  // Note if running locally and after uploading a file, this route
+  // will fail if hitting a local API as files are always uploaded via prod
+  const { data } = await http!.patch<CreateTripResponse>(
+    `/trips/${tripId}`,
+    payload
+  );
 
   return data.trip;
 }

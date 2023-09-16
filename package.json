@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore --fix src"
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore --fix src",
+    "test": "vitest run",
+    "test-watch": "vitest watch"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.8.5",
@@ -26,6 +28,7 @@
   },
   "devDependencies": {
     "@tailwindcss/line-clamp": "^0.4.2",
+    "@types/jest": "^29.5.5",
     "@types/node": "^18.7.23",
     "@types/react": "^18.0.17",
     "@types/react-datepicker": "^4.4.2",
@@ -48,6 +51,7 @@
     "vite-plugin-checker": "^0.6.2",
     "vite-plugin-pwa": "^0.14.0",
     "vite-plugin-svgr": "^2.4.0",
+    "vitest": "^0.34.4",
     "workbox-window": "^6.5.4"
   }
 }
