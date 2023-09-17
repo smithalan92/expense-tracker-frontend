@@ -18,13 +18,13 @@ export default function Picker({
         onChange((selected as PickerOption)?.value ?? null);
       }
     },
-    []
+    [isMulti, onChange]
   );
 
   const selected = useMemo(() => {
     if (!isMulti) return options.find((c) => c.value === value);
     return options.filter((o) => value.includes(o.value));
-  }, [options, value]);
+  }, [isMulti, options, value]);
 
   return (
     <CustomSelect

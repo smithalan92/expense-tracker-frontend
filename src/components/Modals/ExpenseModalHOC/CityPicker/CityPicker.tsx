@@ -1,8 +1,8 @@
-import { useEffect, useMemo } from "react";
-import { useAppSelector } from "@/store";
-import { CityPickerOption, CityPickerProps } from "./CityPicker.types";
-import { selectCitiesForCountryId } from "@/store/slices/tripData";
 import Picker from "@/components/widgets/Picker/Picker";
+import { useAppSelector } from "@/store";
+import { selectCitiesForCountryId } from "@/store/slices/tripData";
+import { useEffect, useMemo } from "react";
+import { CityPickerOption, CityPickerProps } from "./CityPicker.types";
 
 export default function CityPicker({
   value,
@@ -19,7 +19,7 @@ export default function CityPicker({
       value: city.id,
       label: city.name,
     }));
-  }, [cities, selectedCountryId]);
+  }, [cities]);
 
   const selectedCity = useMemo(() => {
     if (!value) return null;
@@ -31,7 +31,14 @@ export default function CityPicker({
     if (selectedCountryId && selectedCity?.countryId !== selectedCountryId) {
       onChange(null);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCountryId]);
+
+  useEffect(() => {
+    if (cities.length === 1) {
+      onChange(cities[0].id);
+    }
+  }, [cities, onChange]);
 
   return (
     <Picker

@@ -281,6 +281,7 @@ export const updateTrip = createAsyncThunk(
     });
 
     thunkApi.dispatch(updateTripListTrip(result));
+    thunkApi.dispatch(loadTripData(tripId));
 
     return result;
   }
@@ -481,8 +482,7 @@ export const expenseSlice = createSlice({
       state.isUpdatingTrip = true;
       state.hasUpdatingTripFailed = false;
     });
-    builder.addCase(updateTrip.fulfilled, (state, action) => {
-      state.trip = action.payload;
+    builder.addCase(updateTrip.fulfilled, (state) => {
       state.isUpdatingTrip = false;
     });
     builder.addCase(updateTrip.rejected, (state) => {
