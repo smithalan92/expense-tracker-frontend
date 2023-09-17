@@ -1,5 +1,9 @@
 import { ReactComponent as BackIcon } from "@/assets/back.svg";
+import { ReactComponent as EditIcon } from "@/assets/edit.svg";
+import { ReactComponent as PlusIcon } from "@/assets/plus.svg";
 import { ReactComponent as RefreshIcon } from "@/assets/refresh.svg";
+import { ReactComponent as StatsIcon } from "@/assets/stats.svg";
+import { ReactComponent as DeleteIcon } from "@/assets/trash.svg";
 import AddExpenseModal from "@/components/Modals/AddExpenseModal/AddExpenseModal";
 import { DeleteTripAlert } from "@/components/Modals/DeleteTripAlert/DeleteTripAlert";
 import EditExpenseModal from "@/components/Modals/EditExpenseModal/EditExpenseModal";
@@ -179,45 +183,46 @@ export default function TripData() {
           <div className="text-center text-md mb-4">
             {tripStartDate} to {tripEndDate}
           </div>
-          <div className="flex justify-end mb-4">
-            <button
-              className="btn btn-sm btn-secondary ml-2"
-              onClick={() => setIsEditTripModalOpen(true)}
-            >
-              Edit
-            </button>
-            <button
-              className="btn btn-sm btn-error ml-2"
-              onClick={() => setIsDeleteTripModalOpen(true)}
-            >
-              Delete
-            </button>
+          <div className="flex space-between mb-4">
+            <div className="flex flex-1">
+              <button className="px-1 hover:opacity-70" onClick={onClickGoBack}>
+                <BackIcon className="w-4 fill-primary" />
+              </button>
+              <button
+                className="ml-2 px-1 hover:opacity-70"
+                onClick={onClickRefresh}
+              >
+                <RefreshIcon className="w-6 fill-primary" />
+              </button>
+            </div>
+            <div className="flex">
+              <button
+                onClick={onClickViewStats}
+                className="px-1 hover:opacity-70"
+              >
+                <StatsIcon className="w-6 fill-primary" />
+              </button>
+              <button
+                className="ml-2 px-1 hover:opacity-70"
+                onClick={() => setIsEditTripModalOpen(true)}
+              >
+                <EditIcon className="w-6 fill-primary" />
+              </button>
+              <button
+                className="ml-2 px-1 hover:opacity-70"
+                onClick={() => setIsDeleteTripModalOpen(true)}
+              >
+                <DeleteIcon className="w-6 text-red-500" />
+              </button>
+            </div>
           </div>
           <div className="overflow-x-auto flex-1">
             <ExpenseTable onClickExpense={onClickExpense} />
           </div>
           <div className="flex justify-center py-6">
-            <button
-              className="btn btn-accent font-bold text-md mr-2"
-              onClick={onClickGoBack}
-            >
-              <BackIcon className="w-4" />
-            </button>
-            <button
-              className="btn btn-secondary font-bold text-md mr-2"
-              onClick={onClickRefresh}
-            >
-              <RefreshIcon className="w-6 h-6 fill-black" />
-            </button>
-            <button
-              className="btn btn-secondary font-bold text-md mr-2"
-              onClick={onClickViewStats}
-            >
-              Stats
-            </button>
             {shouldShowSyncButton && (
               <button
-                className="btn btn-primary font-bold text-md mr-2"
+                className="btn btn-secondary font-bold text-md mr-2"
                 onClick={onClickSync}
               >
                 Sync
@@ -227,7 +232,7 @@ export default function TripData() {
               className="btn btn-primary font-bold text-md"
               onClick={onClickAddExpense}
             >
-              Add
+              <PlusIcon className="w-6 mr-2" /> Expense
             </button>
           </div>
         </div>
