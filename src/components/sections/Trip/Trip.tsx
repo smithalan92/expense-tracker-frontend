@@ -1,19 +1,21 @@
-import { Link } from "react-router-dom";
+import { useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { TripProps } from "./Trip.types";
 
-export default function Trip({ trip, onClickDelete, onClickEdit }: TripProps) {
-  const onClickDeleteButton = () => {
-    onClickDelete(trip.id);
-  };
+export default function Trip({ trip }: TripProps) {
+  const navigate = useNavigate();
 
-  const onClickEditButton = () => {
-    onClickEdit(trip.id);
-  };
+  const onClickTrip = useCallback(() => {
+    navigate(`/trips/${trip.id}`);
+  }, [navigate, trip.id]);
 
   return (
-    <div className="card card-side w-full bg-base-100 shadow-md border border-solid border-base-200 h-52 mb-4">
+    <div
+      className="card card-side w-full bg-base-100 shadow-md border border-solid border-base-200 h-52 mb-4 cursor-pointer"
+      onClick={onClickTrip}
+    >
       <div
-        className="w-44 bg-cover h-52"
+        className="sm:w-48 w-32 bg-cover h-52 flex-shrink-0"
         style={{
           backgroundImage: `url(${trip.image})`,
         }}
@@ -27,7 +29,7 @@ export default function Trip({ trip, onClickDelete, onClickEdit }: TripProps) {
           <span className="font-bold">Expenses: </span> €
           {trip.totalExpenseAmount}
         </p>
-        <div className="flex justify-end mt-4 mb-4">
+        {/* <div className="flex justify-end mt-4 mb-4">
           <Link className="btn btn-sm btn-accent" to={`/trips/${trip.id}`}>
             Expenses
           </Link>
@@ -43,7 +45,7 @@ export default function Trip({ trip, onClickDelete, onClickEdit }: TripProps) {
           >
             Delete
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

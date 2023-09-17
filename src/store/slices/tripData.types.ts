@@ -3,9 +3,11 @@ import {
   Country,
   Currency,
   ExpenseCategory,
+  GetTripEditDataResponse,
   Trip,
   TripExpense,
 } from "@/api.types";
+import { TripModalData } from "@/components/Modals/TripModalHOC/TripModalHOC.types";
 
 export interface ParsedTripExpense extends TripExpense {
   isSaved: boolean;
@@ -32,6 +34,11 @@ export interface TripDataState {
   didDeleteExpense: boolean;
   didDeletingExpenseFail: boolean;
   isEditingExpense: boolean;
+  isDeletingTrip: boolean;
+  hasDeletedTrip: boolean;
+  hasDeletingTripFailed: boolean;
+  isUpdatingTrip: boolean;
+  hasUpdatingTripFailed: boolean;
 }
 
 export interface AddExpenseParams {
@@ -52,4 +59,10 @@ export interface EditExpenseParams extends Partial<AddExpenseParams> {
 export interface DeleteExpenseFufilledActionParams {
   tripId: number;
   expenseId: number;
+}
+
+export interface UpdateTripThunkPayload {
+  tripId: number;
+  newData: TripModalData;
+  oldData: GetTripEditDataResponse;
 }

@@ -1,16 +1,10 @@
 import * as api from "@/api";
-import { Trip, UpdateTripPayload } from "@/api.types";
+import { Trip } from "@/api.types";
 import {
   LOCALSTORAGE_TRIPS_KEY,
   getStorageItem,
   setStorageItem,
 } from "@/utils/localStorage";
-import {
-  areUserIdsDifferent,
-  isAnyCountryDataDifferent,
-  isDateDifferent,
-  isTripNameDifferent,
-} from "@/utils/trip";
 import {
   PayloadAction,
   createAsyncThunk,
@@ -18,11 +12,7 @@ import {
   createSlice,
 } from "@reduxjs/toolkit";
 import axios from "axios";
-import {
-  CreateTripThunkPayload,
-  TripsState,
-  UpdateTripThunkPayload,
-} from "./trips.types";
+import { CreateTripThunkPayload, TripsState } from "./trips.types";
 
 const initialState: TripsState = {
   trips: [],
@@ -32,10 +22,6 @@ const initialState: TripsState = {
   shouldShowAddTripModal: false,
   isAddingTrip: false,
   hasAddingTripFailed: false,
-  isDeletingTrip: false,
-  hasDeletingTripFailed: false,
-  isUpdatingTrip: false,
-  hasUpdatingTripFailed: false,
 };
 
 export const loadTrips = createAsyncThunk("trips/loadTrips", async () => {
@@ -67,51 +53,6 @@ export const addTrip = createAsyncThunk(
   }
 );
 
-export const updateTrip = createAsyncThunk(
-  "trips/updateTrip",
-  async ({ tripId, newData, oldData }: UpdateTripThunkPayload) => {
-    let file;
-    if (newData.file) {
-      file = await api.uploadFile(newData.file);
-    }
-
-    const updatePayload: UpdateTripPayload = {};
-
-    if (isTripNameDifferent(newData.name, oldData.name)) {
-      updatePayload.name = newData.name;
-    }
-
-    if (isDateDifferent(newData.startDate, oldData.startDate)) {
-      updatePayload.startDate = newData.startDate;
-    }
-
-    if (isDateDifferent(newData.endDate, oldData.endDate)) {
-      updatePayload.endDate = newData.endDate;
-    }
-
-    if (areUserIdsDifferent(newData.userIds, oldData.userIds)) {
-      updatePayload.userIds = newData.userIds;
-    }
-    if (isAnyCountryDataDifferent(newData.countries, oldData.countries)) {
-      updatePayload.countries = newData.countries;
-    }
-
-    return api.updateTrip(tripId, {
-      ...updatePayload,
-      file,
-    });
-  }
-);
-
-export const deleteTrip = createAsyncThunk(
-  "trips/deleteTrip",
-  async (tripId: number) => {
-    await api.deleteTrip(tripId);
-
-    return tripId;
-  }
-);
-
 export const tripSlice = createSlice({
   name: "trips",
   initialState,
@@ -124,15 +65,16 @@ export const tripSlice = createSlice({
       state.shouldShowAddTripModal = false;
       state.isAddingTrip = false;
       state.hasAddingTripFailed = false;
-      state.isDeletingTrip = false;
-      state.hasDeletingTripFailed = false;
     },
     setShouldShowAddTripModal: (state, action: PayloadAction<boolean>) => {
       state.shouldShowAddTripModal = action.payload;
     },
-    resetUpdateTripStatus: (state) => {
-      state.isUpdatingTrip = false;
-      state.hasUpdatingTripFailed = false;
+    updateTrip(state, action: PayloadAction<Trip>) {
+      state.trips = state.trips.filter(({ id }) => id !== action.payload.id);
+      state.trips.push(action.payload);
+    },
+    removeTrip(state, action: PayloadAction<number>) {
+      state.trips = state.trips.filter(({ id }) => id !== action.payload);
     },
   },
   extraReducers(builder) {
@@ -165,37 +107,10 @@ export const tripSlice = createSlice({
       state.isAddingTrip = false;
       state.hasAddingTripFailed = true;
     });
-    builder.addCase(updateTrip.pending, (state) => {
-      state.isUpdatingTrip = true;
-      state.hasUpdatingTripFailed = false;
-    });
-    builder.addCase(updateTrip.fulfilled, (state, action) => {
-      const updatedTrip = action.payload;
-
-      state.trips = state.trips.filter((t) => t.id !== updatedTrip.id);
-      state.trips.push(updatedTrip);
-
-      state.isUpdatingTrip = false;
-    });
-    builder.addCase(updateTrip.rejected, (state) => {
-      state.isUpdatingTrip = false;
-      state.hasUpdatingTripFailed = true;
-    });
-    builder.addCase(deleteTrip.pending, (state) => {
-      state.isDeletingTrip = true;
-    });
-    builder.addCase(deleteTrip.fulfilled, (state, action) => {
-      state.trips = state.trips.filter(({ id }) => id !== action.payload);
-      state.isDeletingTrip = false;
-    });
-    builder.addCase(deleteTrip.rejected, (state) => {
-      state.isDeletingTrip = false;
-      state.hasDeletingTripFailed = true;
-    });
   },
 });
 
-export const { resetState, setShouldShowAddTripModal, resetUpdateTripStatus } =
+export const { resetState, setShouldShowAddTripModal, updateTrip, removeTrip } =
   tripSlice.actions;
 
 const selectTripDataState = ({ trips }: { trips: TripsState }) => trips;
@@ -233,16 +148,6 @@ export const selectIsAddingTrip = createSelector(
 export const selectHasAddingTripFailed = createSelector(
   [selectTripDataState],
   (state) => state.hasAddingTripFailed
-);
-
-export const selectIsDeletingTrip = createSelector(
-  [selectTripDataState],
-  (state) => state.isDeletingTrip
-);
-
-export const selectHasDeletingTripFailed = createSelector(
-  [selectTripDataState],
-  (state) => state.hasDeletingTripFailed
 );
 
 export default tripSlice.reducer;

@@ -2,7 +2,7 @@ import { getTripForEditing } from "@/api";
 import { GetTripEditDataResponse } from "@/api.types";
 import SpinnerOverlay from "@/components/widgets/SpinnerOverlay";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { resetUpdateTripStatus, updateTrip } from "@/store/slices/trips";
+import { resetUpdateTripStatus, updateTrip } from "@/store/slices/tripData";
 import { showToast } from "@/utils/toast";
 import {
   areUserIdsDifferent,
@@ -23,9 +23,11 @@ export default function EditTripModal({ tripId, onClose }: EditTripModalProps) {
   const dispatch = useAppDispatch();
   const [isLoadingTrip, setIsLoadingTrip] = useState(true);
   const [hasTriedToUpdateTrip, setHasTriedToUpdateTrip] = useState(false);
-  const isUpdatingTrip = useAppSelector((state) => state.trips.isUpdatingTrip);
+  const isUpdatingTrip = useAppSelector(
+    (state) => state.tripData.isUpdatingTrip
+  );
   const hasUpdatingTripFailed = useAppSelector(
-    (state) => state.trips.hasUpdatingTripFailed
+    (state) => state.tripData.hasUpdatingTripFailed
   );
 
   const [trip, setTrip] = useState<GetTripEditDataResponse | null>(null);

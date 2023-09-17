@@ -1,25 +1,18 @@
 import { ReactComponent as PlusIcon } from "@/assets/plus.svg";
 import AddTripModal from "@/components/Modals/AddTripModal/AddTripModal";
-import { DeleteTripAlert } from "@/components/Modals/DeleteTripAlert/DeleteTripAlert";
-import EditTripModal from "@/components/Modals/EditTripModal/EditTripModal";
 import Trip from "@/components/sections/Trip/Trip";
 import Spinner from "@/components/widgets/Spinner";
-import SpinnerOverlay from "@/components/widgets/SpinnerOverlay";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
-  deleteTrip,
   loadTrips,
-  selectHasDeletingTripFailed,
   selectHasFailedToLoadTrips,
   selectHasLoadedTrips,
-  selectIsDeletingTrip,
   selectIsLoadingTrips,
   selectShouldShowAddTripModal,
   selectTrips,
   setShouldShowAddTripModal,
 } from "@/store/slices/trips";
-import { showToast } from "@/utils/toast";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 
 export default function TripList() {
   const dispatch = useAppDispatch();
@@ -28,12 +21,6 @@ export default function TripList() {
   const hasLoadedTrips = useAppSelector(selectHasLoadedTrips);
   const hasFailedToLoadTrips = useAppSelector(selectHasFailedToLoadTrips);
   const shouldShowAddTripModal = useAppSelector(selectShouldShowAddTripModal);
-  const [tripIdToEdit, setTripIdToEdit] = useState<number | null>(null);
-  const isDeletingTrip = useAppSelector(selectIsDeletingTrip);
-  const hasDeletingTripFailed = useAppSelector(selectHasDeletingTripFailed);
-  const [pendingDeleteTripId, setPendingDeleteTripId] = useState<null | number>(
-    null
-  );
 
   useEffect(() => {
     if (!hasLoadedTrips) {
@@ -44,33 +31,6 @@ export default function TripList() {
   const openAddTripModal = () => {
     dispatch(setShouldShowAddTripModal(true));
   };
-
-  const onClickEditTrip = (tripId: number) => {
-    setTripIdToEdit(tripId);
-  };
-
-  const onCloseEditTripModal = () => {
-    setTripIdToEdit(null);
-  };
-
-  const onClickDeleteTrip = (tripId: number) => {
-    setPendingDeleteTripId(tripId);
-  };
-
-  const onConfirmDeleteTrip = (shouldDelete: boolean) => {
-    if (shouldDelete) {
-      dispatch(deleteTrip(pendingDeleteTripId!));
-    }
-    setPendingDeleteTripId(null);
-  };
-
-  useEffect(() => {
-    if (hasDeletingTripFailed) {
-      showToast("Something went wrong deleting the trip. Try again", {
-        type: "error",
-      });
-    }
-  }, [hasDeletingTripFailed]);
 
   const maybeRenderLoader = useCallback(() => {
     if (!isLoadingTrips) return null;
@@ -102,14 +62,7 @@ export default function TripList() {
     }
 
     return trips.map((trip) => {
-      return (
-        <Trip
-          key={trip.id}
-          trip={trip}
-          onClickDelete={onClickDeleteTrip}
-          onClickEdit={onClickEditTrip}
-        />
-      );
+      return <Trip key={trip.id} trip={trip} />;
     });
   }, [isLoadingTrips, hasFailedToLoadTrips, trips]);
 
@@ -128,16 +81,6 @@ export default function TripList() {
         {maybeRenderFailureState()}
         {maybeRenderTripList()}
         {shouldShowAddTripModal && <AddTripModal />}
-        {tripIdToEdit && (
-          <EditTripModal tripId={tripIdToEdit} onClose={onCloseEditTripModal} />
-        )}
-        {pendingDeleteTripId && (
-          <DeleteTripAlert
-            tripId={pendingDeleteTripId}
-            onConfirm={onConfirmDeleteTrip}
-          />
-        )}
-        {isDeletingTrip && <SpinnerOverlay />}
       </>
     </div>
   );

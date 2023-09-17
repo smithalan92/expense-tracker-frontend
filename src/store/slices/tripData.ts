@@ -1,33 +1,42 @@
-import {
-  createSlice,
-  PayloadAction,
-  createSelector,
-  createAsyncThunk,
-} from "@reduxjs/toolkit";
 import * as api from "@/api";
-import {
-  AddExpenseParams,
-  DeleteExpenseFufilledActionParams,
-  EditExpenseParams,
-  ParsedTripExpense,
-} from "./tripData.types";
 import {
   AddExpenseForTripBody,
   EditExpenseForTripBody,
   GetExpensesForTripResponse,
   GetTripDataResponse,
+  UpdateTripPayload,
 } from "@/api.types";
+import { getTempExpense } from "@/utils/expense";
 import {
   getStorageItem,
   getTripDataKey,
   getUnsavedExpensesForTripKey,
   setStorageItem,
 } from "@/utils/localStorage";
+import { showToast } from "@/utils/toast";
+import {
+  areUserIdsDifferent,
+  isAnyCountryDataDifferent,
+  isDateDifferent,
+  isTripNameDifferent,
+} from "@/utils/trip";
+import {
+  PayloadAction,
+  createAsyncThunk,
+  createSelector,
+  createSlice,
+} from "@reduxjs/toolkit";
 import axios from "axios";
 import { RootState } from "..";
-import { TripDataState } from "./tripData.types";
-import { getTempExpense } from "@/utils/expense";
-import { showToast } from "@/utils/toast";
+import {
+  AddExpenseParams,
+  DeleteExpenseFufilledActionParams,
+  EditExpenseParams,
+  ParsedTripExpense,
+  TripDataState,
+  UpdateTripThunkPayload,
+} from "./tripData.types";
+import { removeTrip, updateTrip as updateTripListTrip } from "./trips";
 
 const initialState: TripDataState = {
   trip: {},
@@ -50,6 +59,11 @@ const initialState: TripDataState = {
   didDeleteExpense: false,
   didDeletingExpenseFail: false,
   isEditingExpense: false,
+  isDeletingTrip: false,
+  hasDeletedTrip: false,
+  hasDeletingTripFailed: false,
+  isUpdatingTrip: false,
+  hasUpdatingTripFailed: false,
 };
 
 export const loadTripData = createAsyncThunk(
@@ -232,6 +246,55 @@ export const deleteExpense = createAsyncThunk<
   return { tripId, expenseId };
 });
 
+export const updateTrip = createAsyncThunk(
+  "trips/updateTrip",
+  async ({ tripId, newData, oldData }: UpdateTripThunkPayload, thunkApi) => {
+    let file;
+    if (newData.file) {
+      file = await api.uploadFile(newData.file);
+    }
+
+    const updatePayload: UpdateTripPayload = {};
+
+    if (isTripNameDifferent(newData.name, oldData.name)) {
+      updatePayload.name = newData.name;
+    }
+
+    if (isDateDifferent(newData.startDate, oldData.startDate)) {
+      updatePayload.startDate = newData.startDate;
+    }
+
+    if (isDateDifferent(newData.endDate, oldData.endDate)) {
+      updatePayload.endDate = newData.endDate;
+    }
+
+    if (areUserIdsDifferent(newData.userIds, oldData.userIds)) {
+      updatePayload.userIds = newData.userIds;
+    }
+    if (isAnyCountryDataDifferent(newData.countries, oldData.countries)) {
+      updatePayload.countries = newData.countries;
+    }
+
+    const result = await api.updateTrip(tripId, {
+      ...updatePayload,
+      file,
+    });
+
+    thunkApi.dispatch(updateTripListTrip(result));
+
+    return result;
+  }
+);
+
+export const deleteTrip = createAsyncThunk(
+  "trips/deleteTrip",
+  async (tripId: number, thunkApi) => {
+    await api.deleteTrip(tripId);
+
+    thunkApi.dispatch(removeTrip(tripId));
+  }
+);
+
 export const expenseSlice = createSlice({
   name: "tripData",
   initialState,
@@ -254,6 +317,10 @@ export const expenseSlice = createSlice({
       state.isDeletingExpense = false;
       state.didDeleteExpense = false;
       state.didDeletingExpenseFail = false;
+      state.isDeletingTrip = false;
+      state.hasDeletingTripFailed = false;
+      state.isEditingExpense = false;
+      state.hasUpdatingTripFailed = false;
     },
     loadUnsavedExpensesFromStorage: (state, action: PayloadAction<number>) => {
       const unsavedExpenses = getStorageItem<ParsedTripExpense[]>(
@@ -296,6 +363,10 @@ export const expenseSlice = createSlice({
       state.isDeletingExpense = false;
       state.didDeleteExpense = false;
       state.didDeletingExpenseFail = false;
+    },
+    resetUpdateTripStatus: (state) => {
+      state.isUpdatingTrip = false;
+      state.hasUpdatingTripFailed = false;
     },
   },
   extraReducers(builder) {
@@ -405,6 +476,30 @@ export const expenseSlice = createSlice({
       state.didDeletingExpenseFail = true;
       state.isDeletingExpense = false;
     });
+
+    builder.addCase(updateTrip.pending, (state) => {
+      state.isUpdatingTrip = true;
+      state.hasUpdatingTripFailed = false;
+    });
+    builder.addCase(updateTrip.fulfilled, (state, action) => {
+      state.trip = action.payload;
+      state.isUpdatingTrip = false;
+    });
+    builder.addCase(updateTrip.rejected, (state) => {
+      state.isUpdatingTrip = false;
+      state.hasUpdatingTripFailed = true;
+    });
+    builder.addCase(deleteTrip.pending, (state) => {
+      state.isDeletingTrip = true;
+    });
+    builder.addCase(deleteTrip.fulfilled, (state) => {
+      state.isDeletingTrip = false;
+      state.hasDeletedTrip = true;
+    });
+    builder.addCase(deleteTrip.rejected, (state) => {
+      state.isDeletingTrip = false;
+      state.hasDeletingTripFailed = true;
+    });
   },
 });
 
@@ -417,6 +512,7 @@ export const {
   resetDeleteStates,
   setShouldShowEditExpenseModal,
   editUnsavedExpense,
+  resetUpdateTripStatus,
 } = expenseSlice.actions;
 
 const selectState = ({ tripData }: { tripData: TripDataState }) => tripData;
