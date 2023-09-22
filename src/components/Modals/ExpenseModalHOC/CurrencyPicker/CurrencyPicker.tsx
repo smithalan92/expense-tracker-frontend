@@ -11,6 +11,7 @@ export default function CurrencyPicker({
   value,
   selectedCountryId,
   onChange,
+  availableCurrencyIds,
 }: CurrencyPickerProps) {
   const initalCountryId = useRef(selectedCountryId);
   const currencies = useAppSelector(selectCurrencies);
@@ -19,7 +20,11 @@ export default function CurrencyPicker({
   );
 
   const currencyOptions = useMemo(() => {
-    const options = currencies
+    const baseOptions = availableCurrencyIds?.length
+      ? currencies.filter((c) => availableCurrencyIds.includes(c.id))
+      : currencies;
+
+    const options = baseOptions
       .map<CurrencyPickerOption>((currency) => ({
         value: currency.id,
         label: `${currency.code} - ${currency.name}`,
@@ -28,12 +33,14 @@ export default function CurrencyPicker({
 
     ["GBP", "USD", "EUR"].forEach((code) => {
       const optionIndex = options.findIndex((o) => o.label.startsWith(code));
-      const option = { ...options[optionIndex] };
-      options.splice(optionIndex, 1);
-      options.unshift(option);
+      if (optionIndex > 0) {
+        const option = { ...options[optionIndex] };
+        options.splice(optionIndex, 1);
+        options.unshift(option);
+      }
     });
     return options;
-  }, [currencies]);
+  }, [currencies, availableCurrencyIds]);
 
   // TODO - This messes up if you select a currency
   // that isnt the standard currency in your selected country

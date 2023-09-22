@@ -32,6 +32,18 @@ export default function ExpenseModalHOC({
     }));
   }, [countries]);
 
+  const currenciesForCountries = useMemo(() => {
+    // 149 is USD, always include it since its popular...
+    let options = [...countries.map((c) => c.currencyId), 149];
+
+    // If we're editing an expense we always need to include that currency as well;
+    if (expense?.currency.id) {
+      options = [...options, expense.currency.id];
+    }
+
+    return options;
+  }, [countries, expense]);
+
   const categories = useAppSelector(selectCategories);
   const categoryOptions = useMemo(() => {
     return categories.map<PickerOption>((category) => ({
@@ -55,6 +67,7 @@ export default function ExpenseModalHOC({
     expense?.category.id ?? null
   );
   const [description, setDescription] = useState(expense?.description ?? "");
+  const [shouldShowAllCurrencies, setShouldShowAllCurrencies] = useState(false);
 
   useEffect(() => {
     onChangeData({
@@ -119,13 +132,31 @@ export default function ExpenseModalHOC({
             <div className="w-24">Amount</div>
             <ExpenseAmountInput value={amount} onChange={setAmount} />
           </div>
-          <div className="flex items-center py-4">
+          <div className="flex items-center pt-4">
             <div className="w-24">Currency</div>
             <CurrencyPicker
               value={currencyId}
               selectedCountryId={countryId}
               onChange={setCurrencyId}
+              availableCurrencyIds={
+                shouldShowAllCurrencies ? undefined : currenciesForCountries
+              }
             />
+          </div>
+          <div className="flex items-center pt-2 pb-4">
+            <div className="w-24" />
+            <div className="flex-1 flex items-center justify-center">
+              <span className="text-xs">Display all currencies</span>
+              <input
+                className="ml-2"
+                name="showAllCurrencies"
+                type="checkbox"
+                checked={shouldShowAllCurrencies}
+                onChange={() =>
+                  setShouldShowAllCurrencies(!shouldShowAllCurrencies)
+                }
+              />
+            </div>
           </div>
           <div className="flex items-center py-4">
             <div className="w-24">Category</div>
