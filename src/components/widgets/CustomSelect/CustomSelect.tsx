@@ -1,11 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useAppSelector } from "@/store";
+import { isMobile } from "react-device-detect";
 import Select, { GroupBase, Props } from "react-select";
+import MobileSelect from "./MobileSelect";
 
 export default function CustomSelect<
   Option,
   IsMulti extends boolean = false,
   Group extends GroupBase<Option> = GroupBase<Option>
 >(props: Props<Option, IsMulti, Group>) {
+  const isNativeSelectsOnMobileDisabled = useAppSelector(
+    (state) => state.app.disableNativeSelectsOnMobile
+  );
+
   const customStyles = {
     control: (): React.CSSProperties => ({
       display: "flex",
@@ -33,6 +40,16 @@ export default function CustomSelect<
       zIndex: 10,
     }),
   };
+
+  if (isMobile && !props.isMulti && !isNativeSelectsOnMobileDisabled)
+    return (
+      <MobileSelect
+        className={props.className}
+        onChange={props.onChange}
+        value={props.value as any}
+        options={props.options as any}
+      />
+    );
 
   return (
     <Select

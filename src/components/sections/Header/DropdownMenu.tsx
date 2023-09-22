@@ -1,15 +1,27 @@
 import { useAppDispatch, useAppSelector } from "@/store";
-import { logout, selectUser } from "@/store/slices/app";
-import React, { useEffect, useRef, useState } from "react";
+import {
+  logout,
+  selectUser,
+  toggleNativeMobileSelectsDisabled,
+} from "@/store/slices/app";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export default function Dropdown() {
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const isNativeSelectsOnMobileDisabled = useAppSelector(
+    (state) => state.app.disableNativeSelectsOnMobile
+  );
 
-  const onClickLogout = () => {
+  const onClickLogout = useCallback(() => {
     dispatch(logout());
-  };
+  }, [dispatch]);
+
+  const toggleNativeMobileSelects = useCallback(() => {
+    dispatch(toggleNativeMobileSelectsDisabled());
+    setIsDropdownVisible(false);
+  }, [dispatch]);
 
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
@@ -45,6 +57,15 @@ export default function Dropdown() {
             <div>Hey {user!.firstName}!</div>
           </div>
           <ul className="py-1 text-sm base-content">
+            <li className="border-solid border-b border-gray-100">
+              <span
+                onClick={toggleNativeMobileSelects}
+                className="cursor-pointer block py-2 px-4 hover:bg-base-200"
+              >
+                {isNativeSelectsOnMobileDisabled ? "Enable" : "Disable"} native
+                mobile pickers
+              </span>
+            </li>
             <li>
               <span
                 onClick={onClickLogout}

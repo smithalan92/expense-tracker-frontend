@@ -3,6 +3,7 @@ import { LoginResponse } from "@/api.types";
 import {
   LOCALSTORAGE_AUTH_KEY,
   deleteAllLocalStorage,
+  getMobileSelectConfigKey,
   getStorageItem,
   setStorageItem,
 } from "@/utils/localStorage";
@@ -21,6 +22,8 @@ const initialState: AppState = {
   isLoggingIn: false,
   hasFailedToLogin: false,
   authToken: "",
+  disableNativeSelectsOnMobile:
+    getStorageItem<boolean>(getMobileSelectConfigKey()) ?? false,
 };
 
 export const login = createAsyncThunk(
@@ -55,6 +58,14 @@ export const appSlice = createSlice({
       state.isLoggingIn = false;
       state.hasFailedToLogin = false;
     },
+
+    toggleNativeMobileSelectsDisabled: (state) => {
+      state.disableNativeSelectsOnMobile = !state.disableNativeSelectsOnMobile;
+      setStorageItem(
+        getMobileSelectConfigKey(),
+        state.disableNativeSelectsOnMobile
+      );
+    },
   },
   extraReducers(builder) {
     builder.addCase(login.pending, (state) => {
@@ -79,7 +90,11 @@ export const appSlice = createSlice({
   },
 });
 
-export const { restoreLocalStorage, resetState } = appSlice.actions;
+export const {
+  restoreLocalStorage,
+  resetState,
+  toggleNativeMobileSelectsDisabled,
+} = appSlice.actions;
 
 const selectAppState = ({ app }: { app: AppState }) => app;
 

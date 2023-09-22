@@ -11,6 +11,10 @@ export function getUnsavedExpensesForTripKey(tripId: number) {
   return `trip-expenses-unsaved-${tripId}`;
 }
 
+export function getMobileSelectConfigKey() {
+  return "disable-native-selects-on-mobile";
+}
+
 export function setStorageItem(key: string, data: unknown) {
   const parsedData = JSON.stringify(data);
 
