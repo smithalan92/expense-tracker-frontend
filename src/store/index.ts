@@ -1,16 +1,18 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { useDispatch, useSelector } from "react-redux";
 import type { TypedUseSelectorHook } from "react-redux";
-import appReducer from "./slices/app";
-import tripsReducer from "./slices/trips";
-import tripDataReducer from "./slices/tripData";
+import { useDispatch, useSelector } from "react-redux";
 import thunkFailureMiddlewareHandler from "./middleware/thunkFailure";
+import appReducer from "./slices/app";
+import tripDataReducer from "./slices/tripData";
+import tripsReducer from "./slices/trips";
+import userSettingsReducer from "./slices/userSettings";
 
 export const store = configureStore({
   reducer: {
     app: appReducer,
     trips: tripsReducer,
     tripData: tripDataReducer,
+    userSettings: userSettingsReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(thunkFailureMiddlewareHandler),

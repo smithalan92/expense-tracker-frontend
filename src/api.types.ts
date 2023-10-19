@@ -55,6 +55,7 @@ export interface Country {
 export interface ExpenseUser {
   id: number;
   firstName: string;
+  lastName: string;
 }
 
 export interface TripExpense {

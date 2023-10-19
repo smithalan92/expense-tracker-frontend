@@ -9,7 +9,7 @@ import { DeleteTripAlert } from "@/components/Modals/DeleteTripAlert/DeleteTripA
 import EditExpenseModal from "@/components/Modals/EditExpenseModal/EditExpenseModal";
 import EditTripModal from "@/components/Modals/EditTripModal/EditTripModal";
 import TripStatsModal from "@/components/Modals/TripStatsModal/TripStatsModal";
-import ExpenseTable from "@/components/sections/ExpenseTable/ExpenseTable";
+import ExpenseList from "@/components/sections/ExpenseList/ExpenseList";
 import Spinner from "@/components/widgets/Spinner";
 import SpinnerOverlay from "@/components/widgets/SpinnerOverlay";
 import { useAppDispatch, useAppSelector } from "@/store";
@@ -217,7 +217,7 @@ export default function TripData() {
             </div>
           </div>
           <div className="overflow-x-auto flex-1">
-            <ExpenseTable onClickExpense={onClickExpense} />
+            <ExpenseList onClickExpense={onClickExpense} />
           </div>
           <div className="flex justify-center py-6">
             {shouldShowSyncButton && (
@@ -229,7 +229,7 @@ export default function TripData() {
               </button>
             )}
             <button
-              className="btn btn-primary font-bold text-md"
+              className="btn btn-primary font-bold text-md text-white"
               onClick={onClickAddExpense}
             >
               <PlusIcon className="w-6 mr-2" /> Expense

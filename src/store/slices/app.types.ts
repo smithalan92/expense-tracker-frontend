@@ -5,7 +5,6 @@ export interface AppState {
   isLoggingIn: boolean;
   hasFailedToLogin: boolean;
   authToken: string;
-  disableNativeSelectsOnMobile: boolean;
 }
 
 export interface LoginThunkParams {

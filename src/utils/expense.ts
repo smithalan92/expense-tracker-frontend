@@ -1,7 +1,7 @@
 import {
-  TripDataState,
   AddExpenseParams,
   ParsedTripExpense,
+  TripDataState,
 } from "@/store/slices/tripData.types";
 
 export function getTempExpense(
@@ -34,6 +34,7 @@ export function getTempExpense(
     user: {
       id: 0,
       firstName: "",
+      lastName: "",
     },
     createdAt: "",
     updatedAt: "",

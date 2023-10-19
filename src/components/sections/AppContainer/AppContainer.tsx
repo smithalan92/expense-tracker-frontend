@@ -1,9 +1,10 @@
-import { useEffect } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import UserSettingsModal from "@/components/Modals/UserSettingsModal/UserSettingsModal";
+import Header from "@/components/sections/Header/Header";
 import { PATHS } from "@/router";
 import { useAppSelector } from "@/store";
 import { selectIsLoggedIn } from "@/store/slices/app";
-import Header from "@/components/sections/Header/Header";
+import { useCallback, useEffect, useState } from "react";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import PWAPrompt from "./PWAPrompt";
 
@@ -11,6 +12,11 @@ export default function AppContainer() {
   const location = useLocation();
   const navigate = useNavigate();
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
+  const [isSettingsVisible, setIsSettingsVisible] = useState(false);
+
+  const onClickSettings = useCallback(() => {
+    setIsSettingsVisible(true);
+  }, []);
 
   useEffect(() => {
     if (isLoggedIn && location.pathname === PATHS.LOGIN) {
@@ -18,11 +24,11 @@ export default function AppContainer() {
     } else if (location.pathname === PATHS.HOME) {
       navigate(PATHS.TRIPS);
     }
-  }, [location]);
+  }, [isLoggedIn, location, navigate]);
 
   return (
     <div className="w-full flex flex-col h-full overflow-hidden items-center max-w-[800px] bg-base-100">
-      {isLoggedIn && <Header />}
+      {isLoggedIn && <Header onClickSettings={onClickSettings} />}
       <div className="px-4 w-full max-w-3xl min-w-[390px] flex flex-col h-full overflow-hidden">
         <Outlet />
       </div>
@@ -36,6 +42,9 @@ export default function AppContainer() {
         progressStyle={{ background: "#0284c7" }}
         limit={3}
       />
+      {isSettingsVisible && (
+        <UserSettingsModal onClose={() => setIsSettingsVisible(false)} />
+      )}
       <PWAPrompt />
     </div>
   );

@@ -18,9 +18,11 @@ export default function MobileSelect({
 }: MobileSelectProps) {
   const onSelectChange = useCallback(
     (event: ChangeEvent<HTMLSelectElement>) => {
-      const option = options.find(
-        (o) => o.value === parseInt(event.target.value, 10)
-      );
+      const option = options.find((o) => {
+        if (typeof o.value === "number")
+          return o.value === parseInt(event.target.value, 10);
+        return o.value === event.target.value;
+      });
       onChange(option!);
     },
     [options, onChange]

@@ -1,14 +1,14 @@
-import Expense from "@/components/sections/Expense/Expense";
+import Expense from "@/components/sections/ExpenseList/Expense/Expense";
 import { useAppSelector } from "@/store";
-import { selectExpenses } from "@/store/slices/tripData";
-import ExpenseTableFooter from "@/components/sections/ExpenseTableFooter/ExpenseTableFooter";
+import { selectExpenses, selectTrip } from "@/store/slices/tripData";
 
-export default function ExpenseTable({
+export default function ExpenseListTable({
   onClickExpense,
 }: {
   onClickExpense: (id: number) => void;
 }) {
   const expenses = useAppSelector(selectExpenses)!;
+  const trip = useAppSelector(selectTrip);
 
   return (
     <div className="overflow-y-scroll overflow-x-auto w-full h-full pr-2">
@@ -50,7 +50,20 @@ export default function ExpenseTable({
             </tr>
           )}
         </tbody>
-        {expenses.length > 0 && <ExpenseTableFooter />}
+        {expenses.length > 0 && (
+          <tfoot>
+            <tr className="sticky bottom-[-1px] select-none">
+              <td colSpan={2} className="pb-[12px]"></td>
+              <td align="right" className="pb-[12px]">
+                Total
+              </td>
+              <td align="center" className="pb-[12px]">
+                €{trip?.totalExpenseAmount}
+              </td>
+              <td colSpan={3} className="pb-[12px]"></td>
+            </tr>
+          </tfoot>
+        )}
       </table>
     </div>
   );

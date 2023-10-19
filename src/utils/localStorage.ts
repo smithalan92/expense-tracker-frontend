@@ -15,6 +15,10 @@ export function getMobileSelectConfigKey() {
   return "disable-native-selects-on-mobile";
 }
 
+export function getExpenseViewConfigKey() {
+  return "expense-view";
+}
+
 export function setStorageItem(key: string, data: unknown) {
   const parsedData = JSON.stringify(data);
 

@@ -1,9 +1,13 @@
 import { ReactComponent as Logo } from "@/assets/logo.svg";
-import { Link } from "react-router-dom";
 import { PATHS } from "@/router";
+import { Link } from "react-router-dom";
 import Dropdown from "./DropdownMenu";
 
-export default function Header() {
+export default function Header({
+  onClickSettings,
+}: {
+  onClickSettings: () => void;
+}) {
   return (
     <div className="navbar bg-base-100 pb-4 min-h-20">
       <div className="navbar-start">
@@ -12,7 +16,7 @@ export default function Header() {
         </Link>
       </div>
       <div className="navbar-end">
-        <Dropdown />
+        <Dropdown onClickSettings={onClickSettings} />
       </div>
     </div>
   );

@@ -10,7 +10,7 @@ export default function CustomSelect<
   Group extends GroupBase<Option> = GroupBase<Option>
 >(props: Props<Option, IsMulti, Group>) {
   const isNativeSelectsOnMobileDisabled = useAppSelector(
-    (state) => state.app.disableNativeSelectsOnMobile
+    (state) => state.userSettings.disableNativeSelectsOnMobile
   );
 
   const customStyles = {
