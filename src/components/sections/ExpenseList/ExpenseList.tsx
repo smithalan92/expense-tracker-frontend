@@ -1,6 +1,6 @@
 import { useAppSelector } from "@/store";
-import ExpenseListCards from "./ExpenseListCards";
-import ExpenseListTable from "./ExpenseListTable";
+import ExpenseListCards from "./ExpenseListCards/ExpenseListCards";
+import ExpenseListTable from "./ExpenseListTable/ExpenseListTable";
 
 export default function ExpenseList({
   onClickExpense,

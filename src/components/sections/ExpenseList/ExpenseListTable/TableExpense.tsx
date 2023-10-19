@@ -1,10 +1,14 @@
-// import { PATHS } from "@/router";
-// import { Link } from "react-router-dom";
 import format from "date-fns/format";
 import { useMemo } from "react";
-import { ExpenseProps } from "./Expense.types";
 
-export default function Expense({ expense, onClick }: ExpenseProps) {
+import { ParsedTripExpense } from "@/store/slices/tripData.types";
+
+export interface TableExpenseProps {
+  expense: ParsedTripExpense;
+  onClick: (id: number) => void;
+}
+
+export default function TableExpense({ expense, onClick }: TableExpenseProps) {
   const formattedDate = useMemo(() => {
     return format(new Date(expense.localDateTime), "do MMM HH:mm");
   }, [expense]);

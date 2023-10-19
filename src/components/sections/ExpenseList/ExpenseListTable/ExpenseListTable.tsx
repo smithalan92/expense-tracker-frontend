@@ -1,4 +1,4 @@
-import Expense from "@/components/sections/ExpenseList/Expense/Expense";
+import TableExpense from "@/components/sections/ExpenseList/ExpenseListTable/TableExpense";
 import { useAppSelector } from "@/store";
 import { selectExpenses, selectTrip } from "@/store/slices/tripData";
 
@@ -35,7 +35,7 @@ export default function ExpenseListTable({
         <tbody>
           {expenses.map((expense) => {
             return (
-              <Expense
+              <TableExpense
                 key={expense.id}
                 expense={expense}
                 onClick={onClickExpense}
