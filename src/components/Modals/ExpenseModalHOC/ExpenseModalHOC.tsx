@@ -24,6 +24,15 @@ export default function ExpenseModalHOC({
   const expense = useAppSelector((state) =>
     selectExpenseById(state, expenseId ?? 0)
   )!;
+  const currentUserId = useAppSelector((state) => state.app.user!.id);
+  const tripUsers = useAppSelector((state) => state.tripData.users);
+  const userOptions = useMemo(() => {
+    return tripUsers.map<PickerOption>((u) => ({
+      label: `${u.firstName} ${u.lastName}`,
+      value: u.id,
+    }));
+  }, [tripUsers]);
+
   const countries = useAppSelector(selectCountries);
   const countryOptions = useMemo(() => {
     return countries.map<PickerOption>((c) => ({
@@ -55,6 +64,7 @@ export default function ExpenseModalHOC({
   const [date, setDate] = useState(
     formatDateForExpense(expense ? new Date(expense.localDateTime) : new Date())
   );
+  const [userId, setUserId] = useState(expense?.user.id ?? currentUserId);
   const [countryId, setCountryId] = useState<number | null>(
     expense?.country.id ?? null
   );
@@ -78,6 +88,7 @@ export default function ExpenseModalHOC({
       currencyId,
       categoryId,
       description,
+      userId,
     });
   }, [
     date,
@@ -87,6 +98,7 @@ export default function ExpenseModalHOC({
     currencyId,
     categoryId,
     description,
+    userId,
     onChangeData,
   ]);
 
@@ -164,6 +176,15 @@ export default function ExpenseModalHOC({
               options={categoryOptions}
               value={categoryId}
               onChange={setCategoryId}
+              isMulti={false}
+            />
+          </div>
+          <div className="flex items-center py-4">
+            <div className="w-24">Person</div>
+            <Picker
+              options={userOptions}
+              value={userId}
+              onChange={setUserId}
               isMulti={false}
             />
           </div>

@@ -6,6 +6,7 @@ export interface ExpenseData {
   currencyId: number | null;
   categoryId: number | null;
   description: string;
+  userId: number;
 }
 
 export interface ExpenseModalHOCProps {

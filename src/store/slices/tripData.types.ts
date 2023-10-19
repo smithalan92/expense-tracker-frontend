@@ -6,6 +6,7 @@ import {
   GetTripEditDataResponse,
   Trip,
   TripExpense,
+  TripUser,
 } from "@/api.types";
 import { TripModalData } from "@/components/Modals/TripModalHOC/TripModalHOC.types";
 
@@ -16,6 +17,7 @@ export interface ParsedTripExpense extends TripExpense {
 export interface TripDataState {
   expenses: ParsedTripExpense[];
   trip: Trip | Record<string, number>;
+  users: TripUser[];
   countries: Country[];
   cities: City[];
   currencies: Currency[];
@@ -48,6 +50,7 @@ export interface AddExpenseParams {
   currencyId: number;
   categoryId: number;
   description: string;
+  userId: number;
 }
 
 export interface EditExpenseParams extends Partial<AddExpenseParams> {

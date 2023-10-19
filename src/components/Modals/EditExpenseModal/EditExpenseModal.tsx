@@ -1,23 +1,23 @@
+import SpinnerOverlay from "@/components/widgets/SpinnerOverlay";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
-  selectIsDeletingExpense,
-  selectDidDeletingExpenseFail,
   deleteExpense,
-  selectDidDeleteExpense,
-  resetDeleteStates,
-  selectExpenseById,
-  selectIsEditingExpense,
   editExpense,
+  resetDeleteStates,
+  selectDidDeleteExpense,
+  selectDidDeletingExpenseFail,
+  selectExpenseById,
+  selectIsDeletingExpense,
+  selectIsEditingExpense,
   selectTrip,
 } from "@/store/slices/tripData";
+import { EditExpenseParams } from "@/store/slices/tripData.types";
+import { showToast } from "@/utils/toast";
 import { useEffect, useMemo, useState } from "react";
+import { DeleteExpenseAlert } from "../DeleteExpenseAlert/DeleteExpenseAlert";
 import ExpenseModalHOC from "../ExpenseModalHOC/ExpenseModalHOC";
 import { ExpenseData } from "../ExpenseModalHOC/ExpenseModalHOC.types";
-import { DeleteExpenseAlert } from "../DeleteExpenseAlert/DeleteExpenseAlert";
 import { EditExpenseModalProps } from "./EditExpenseModal.types";
-import SpinnerOverlay from "@/components/widgets/SpinnerOverlay";
-import { showToast } from "@/utils/toast";
-import { EditExpenseParams } from "@/store/slices/tripData.types";
 
 export default function EditExpenseModal({
   expenseId,
@@ -49,19 +49,21 @@ export default function EditExpenseModal({
       parsedAmount > 0 &&
       expenseData.currencyId &&
       expenseData.categoryId &&
+      expenseData.userId &&
       (expenseData.date !== expense.localDateTime ||
         expenseData.countryId !== expense.country.id ||
         expenseData.cityId !== expense.city.id ||
         expenseData.amount !== expense.amount ||
         expenseData.currencyId !== expense.currency.id ||
         expenseData.categoryId !== expense.category.id ||
-        expenseData.description !== expense.description)
+        expenseData.description !== expense.description ||
+        expenseData.userId !== expense.user.id)
     );
   }, [expenseData, expense]);
 
   const shouldShowSpinner = useMemo(() => {
     return isDeletingExpense || isEditingExpense;
-  }, [isDeletingExpense]);
+  }, [isDeletingExpense, isEditingExpense]);
 
   const onClickUpdate = async () => {
     if (!expenseData || !expense) return;
@@ -104,6 +106,10 @@ export default function EditExpenseModal({
     if (expenseData.description !== expense.description) {
       params.description = expenseData.description;
     }
+
+    if (expenseData.userId !== expense.user.id) {
+      params.userId = expenseData.userId;
+    }
     dispatch(editExpense(params));
   };
 
@@ -123,7 +129,7 @@ export default function EditExpenseModal({
       showToast("Your expense has been deleted", { type: "success" });
       onClose();
     }
-  }, [didDeleteExpense]);
+  }, [didDeleteExpense, dispatch, onClose]);
 
   useEffect(() => {
     if (hasDeletingExpenseFailed) {

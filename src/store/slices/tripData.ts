@@ -40,6 +40,7 @@ import { removeTrip, updateTrip as updateTripListTrip } from "./trips";
 
 const initialState: TripDataState = {
   trip: {},
+  users: [],
   expenses: [],
   countries: [],
   cities: [],
@@ -104,6 +105,7 @@ export const addExpense = createAsyncThunk<
     currencyId: params.currencyId,
     categoryId: params.categoryId,
     description: params.description,
+    userId: params.userId,
   };
 
   try {
@@ -134,6 +136,7 @@ export const editExpense = createAsyncThunk<
     currencyId: params.currencyId,
     categoryId: params.categoryId,
     description: params.description,
+    userId: params.userId,
   };
 
   const tempExp = state.tripData.unsavedExpenses.find(
@@ -150,6 +153,7 @@ export const editExpense = createAsyncThunk<
         currencyId: params.currencyId ?? tempExp.currency.id,
         categoryId: params.categoryId ?? tempExp.category.id,
         description: params.description ?? tempExp.description,
+        userId: params.userId ?? tempExp.user.id,
       }),
       id: tempExp.id,
     };
@@ -209,6 +213,7 @@ export const syncUnsavedExpenses = createAsyncThunk<
         currencyId: expense.currency.id,
         categoryId: expense.category.id,
         description: expense.description,
+        userId: expense.user.id,
       };
       await api.addExpenseToTrip(trip!.id, payload);
       savedExpenses.push(expense.id);
@@ -390,6 +395,15 @@ export const expenseSlice = createSlice({
         state.cities = action.payload.cities;
         state.currencies = action.payload.currencies;
         state.categories = action.payload.categories;
+        state.users = Object.entries(action.payload.users).map(
+          ([key, { firstName, lastName }]) => {
+            return {
+              id: parseInt(key, 10),
+              firstName,
+              lastName,
+            };
+          }
+        );
         state.isLoadingTripData = false;
       }
     );

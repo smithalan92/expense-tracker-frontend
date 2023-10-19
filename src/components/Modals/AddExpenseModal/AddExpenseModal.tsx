@@ -21,7 +21,8 @@ export default function AddExpenseModal() {
       expenseData?.amount &&
       parsedAmount > 0 &&
       expenseData?.currencyId &&
-      expenseData?.categoryId
+      expenseData?.categoryId &&
+      expenseData.userId > 0
     );
   }, [expenseData]);
 
@@ -38,6 +39,7 @@ export default function AddExpenseModal() {
         currencyId: expenseData!.currencyId!,
         categoryId: expenseData!.categoryId!,
         description: expenseData!.description,
+        userId: expenseData!.userId,
       })
     );
   };

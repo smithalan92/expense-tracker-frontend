@@ -58,6 +58,8 @@ export interface ExpenseUser {
   lastName: string;
 }
 
+export type TripUser = ExpenseUser;
+
 export interface TripExpense {
   id: number;
   amount: string;
@@ -109,6 +111,7 @@ export interface AddExpenseForTripBody {
   currencyId: number;
   categoryId: number;
   description: string;
+  userId: number;
 }
 
 export type EditExpenseForTripBody = Partial<AddExpenseForTripBody>;
@@ -120,6 +123,7 @@ export interface GetTripDataResponse {
   cities: City[];
   currencies: Currency[];
   categories: ExpenseCategory[];
+  users: Record<string, { firstName: string; lastName: string }>;
 }
 
 export interface CountryWithCities {
