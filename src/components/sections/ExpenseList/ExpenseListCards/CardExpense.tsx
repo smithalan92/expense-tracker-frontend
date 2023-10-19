@@ -22,7 +22,7 @@ export default function CardExpense({ expense, onClick }: CardExpenseProps) {
 
   return (
     <div
-      className="flex border-t border-b border-l even:border-t-0 even:border-b-0 border-solid border-gray-300"
+      className="flex border-t border-b border-l even:border-t-0 even:border-b-0 border-solid border-gray-300 cursor-pointer hover:bg-gray-200"
       onClick={() => onClick(expense.id)}
     >
       <div className="flex px-1 py-1 bg-primary text-white border-b border-solid border-white">
