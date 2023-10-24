@@ -3,12 +3,6 @@ import { HourlySpendingBreakdownTableProps } from "./HourlySpendingBreakdownTabl
 export default function UserBreakdownTable({
   hourlySpendingBreakdown,
 }: HourlySpendingBreakdownTableProps) {
-  const total = hourlySpendingBreakdown.reduce((acc, current) => {
-    return (acc += current.total);
-  }, 0);
-
-  console.log(total);
-
   return (
     <table className="table table-compact w-full border-collapse">
       <colgroup>

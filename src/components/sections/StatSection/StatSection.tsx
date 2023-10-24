@@ -2,11 +2,9 @@ import { StatSectionProps } from "./StatSection.types";
 
 export default function StatSection({ title, children }: StatSectionProps) {
   return (
-    <div className="flex flex-col">
-      <h1 className="font-semibold text-xl">{title}</h1>
-      <div>
-        <div className="mt-2">{children}</div>
-      </div>
+    <div className="w-full rounded-lg border border-solid border-gray-300 shadow-sm p-2">
+      <h2 className="text-lg font-bold p-2">{title}</h2>
+      <div className="px-2 py-1">{children}</div>
     </div>
   );
 }

@@ -28,10 +28,6 @@ export default function MobileSelect({
     [options, onChange]
   );
 
-  if (options.find((o) => o.label.toLowerCase() === "tanzania")) {
-    console.log(value);
-  }
-
   return (
     <select
       onChange={onSelectChange}

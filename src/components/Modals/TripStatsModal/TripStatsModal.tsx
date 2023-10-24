@@ -1,18 +1,18 @@
 import { getTripStats } from "@/api";
 import { GetTripStatsResponse } from "@/api.types";
+import { ReactComponent as CloseIcon } from "@/assets/close.svg";
+import StatSection from "@/components/sections/StatSection/StatSection";
+import Spinner from "@/components/widgets/Spinner";
 import { useAppDispatch } from "@/store";
 import { setShouldShowTripStatsModal } from "@/store/slices/tripData";
 import format from "date-fns/format";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import Spinner from "@/components/widgets/Spinner";
 import CategoryBreakdown from "./CategoryBreakDown/CategoryBreakdown";
-import UserBreakdown from "./UserBreakdown/UserBreakdown";
-import StatSection from "@/components/sections/StatSection/StatSection";
-import DayBreakdown from "./DayBreakdown/DayBreakdown";
-import CountryBreakdown from "./CountryBreakdown/CountryBreakdown";
 import CityBreakdown from "./CityBreakdown/CityBreakdown";
+import CountryBreakdown from "./CountryBreakdown/CountryBreakdown";
+import DayBreakdown from "./DayBreakdown/DayBreakdown";
 import HourlySpendingBreakdown from "./HourlySpendingBreakdown/HourlySpendingBreakdown";
-import { ReactComponent as CloseIcon } from "@/assets/close.svg";
+import UserBreakdown from "./UserBreakdown/UserBreakdown";
 
 export default function TripStatsModal({ tripId }: { tripId: number }) {
   const dispatch = useAppDispatch();
@@ -37,6 +37,7 @@ export default function TripStatsModal({ tripId }: { tripId: number }) {
         console.log(err);
         setHasFailedToLoad(true);
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onClickClose = () => {
@@ -63,7 +64,7 @@ export default function TripStatsModal({ tripId }: { tripId: number }) {
     return (
       <div>
         <div className="flex flex-col py-4">
-          <StatSection title="Most expense Day">
+          <StatSection title="Most Expensive Day">
             <span>
               {format(new Date(mostExpenseDay.localDate), "dd MMM yyyy")} spent{" "}
               <span className="text-red-500">
@@ -72,7 +73,7 @@ export default function TripStatsModal({ tripId }: { tripId: number }) {
             </span>
           </StatSection>
         </div>
-        <div className="flex flex-col py-4 border-t border-solid border-gray-300">
+        <div className="flex flex-col py-4">
           <StatSection title="Least Expensive Day">
             <span>
               {format(new Date(leastExpensiveDay.localDate), "dd MMM yyyy")}{" "}
@@ -83,29 +84,29 @@ export default function TripStatsModal({ tripId }: { tripId: number }) {
             </span>
           </StatSection>
         </div>
-        <div className="flex flex-col py-4 border-t border-solid border-gray-300">
+        <div className="flex flex-col py-4">
           <UserBreakdown userBreakdown={userBreakdown} />
         </div>
-        <div className="flex flex-col py-4 border-t border-solid border-gray-300">
+        <div className="flex flex-col py-4">
           <CategoryBreakdown categoryBreakdown={categoryBreakdown} />
         </div>
-        <div className="flex flex-col py-4 border-t border-solid border-gray-300">
+        <div className="flex flex-col py-4">
           <CountryBreakdown countryBreakdown={countryBreakdown} />
         </div>
-        <div className="flex flex-col py-4 border-t border-solid border-gray-300">
+        <div className="flex flex-col py-4">
           <CityBreakdown cityBreakdown={cityBreakdown} />
         </div>
-        <div className="flex flex-col py-4 border-t border-solid border-gray-300">
+        <div className="flex flex-col py-4">
           <DayBreakdown dailyCostBreakdown={dailyCostBreakdown} />
         </div>
-        <div className="flex flex-col py-4 border-t border-solid border-gray-300">
+        <div className="flex flex-col py-4">
           <HourlySpendingBreakdown
             hourlySpendingBreakdown={hourlySpendingBreakdown}
           />
         </div>
       </div>
     );
-  }, [isLoading]);
+  }, [hasEmptyStats, hasFailedToLoad, isLoading, stats]);
 
   const maybeRenderLoader = useCallback(() => {
     if (!isLoading) return null;
@@ -123,7 +124,7 @@ export default function TripStatsModal({ tripId }: { tripId: number }) {
         Stats failed to load. Please try again later.
       </div>
     );
-  }, [isLoading]);
+  }, [hasFailedToLoad]);
 
   const maybeRenderEmptyState = useCallback(() => {
     if (!hasEmptyStats) return null;
@@ -132,7 +133,7 @@ export default function TripStatsModal({ tripId }: { tripId: number }) {
         No stats available. Add some expenses and come back!
       </div>
     );
-  }, [isLoading]);
+  }, [hasEmptyStats]);
 
   return (
     <div

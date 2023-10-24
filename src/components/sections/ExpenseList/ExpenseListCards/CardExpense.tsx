@@ -33,7 +33,7 @@ export default function CardExpense({ expense, onClick }: CardExpenseProps) {
           <span className="text-xs">{expenseTime}</span>
         </div>
       </div>
-      <div className="flex flex-1 flex-col p-2 flex-nowrap">
+      <div className="flex flex-1 flex-col p-2 flex-nowrap overflow-hidden">
         <div className="flex items-center w-full flex-nowrap">
           <LocationIcon className="w-4" />
           <span className="ml-2 whitespace-nowrap text-ellipsis overflow-hidden font-semibold">
