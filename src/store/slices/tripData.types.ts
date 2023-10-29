@@ -30,7 +30,6 @@ export interface TripDataState {
   isSyncingUnSavedExpenses: boolean;
   isLoadingExpenses: boolean;
   shouldShowAddExpenseModal: boolean;
-  shouldShowEditExpenseModal: boolean;
   shouldShowTripStatsModal: boolean;
   isDeletingExpense: boolean;
   didDeleteExpense: boolean;

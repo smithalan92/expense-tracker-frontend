@@ -9,26 +9,30 @@ import { DeleteTripAlert } from "@/components/Modals/DeleteTripAlert/DeleteTripA
 import EditExpenseModal from "@/components/Modals/EditExpenseModal/EditExpenseModal";
 import EditTripModal from "@/components/Modals/EditTripModal/EditTripModal";
 import TripStatsModal from "@/components/Modals/TripStatsModal/TripStatsModal";
+import ViewExpenseModal from "@/components/Modals/ViewExpenseModal/ViewExpenseModal";
 import ExpenseList from "@/components/sections/ExpenseList/ExpenseList";
 import Spinner from "@/components/widgets/Spinner";
 import SpinnerOverlay from "@/components/widgets/SpinnerOverlay";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
+  deleteExpense,
   deleteTrip,
   loadTripData,
+  resetDeleteStates,
   resetState,
   selectCanShowSyncButton,
+  selectDidDeleteExpense,
+  selectDidDeletingExpenseFail,
   selectHasFailedToTripData,
   selectIsAddingExpense,
+  selectIsDeletingExpense,
   selectIsLoadingExpenses,
   selectIsLoadingTripData,
   selectIsSyncingUnSavedExpenses,
   selectShouldShowAddExpenseModal,
-  selectShouldShowEditExpenseModal,
   selectShouldShowTripStatsModal,
   selectTrip,
   setShouldShowAddExpenseModal,
-  setShouldShowEditExpenseModal,
   setShouldShowTripStatsModal,
   syncUnsavedExpenses,
 } from "@/store/slices/tripData";
@@ -49,9 +53,13 @@ export default function TripData() {
   const shouldShowTripStatsModal = useAppSelector(
     selectShouldShowTripStatsModal
   );
-  const shouldShowEditExpenseModal = useAppSelector(
-    selectShouldShowEditExpenseModal
-  );
+  const [shouldShowEditExpenseModal, setShouldShowEditExpenseModal] =
+    useState(false);
+
+  const [currentSelectedExpenseID, setCurrentSelectedExpenseID] = useState<
+    number | null
+  >(null);
+
   const shouldShowSyncButton = useAppSelector(selectCanShowSyncButton);
   const isSavingExpense = useAppSelector(selectIsAddingExpense);
   const isSyncingUnsavedExpenses = useAppSelector(
@@ -69,9 +77,12 @@ export default function TripData() {
     (state) => state.tripData.hasDeletedTrip
   );
 
-  const [expenseToEdit, setExpenseToEdit] = useState<null | number>(null);
   const [isEditTripModalOpen, setIsEditTripModalOpen] = useState(false);
   const [isDeleteTripModalOpen, setIsDeleteTripModalOpen] = useState(false);
+
+  const isDeletingExpense = useAppSelector(selectIsDeletingExpense);
+  const hasDeletingExpenseFailed = useAppSelector(selectDidDeletingExpenseFail);
+  const didDeleteExpense = useAppSelector(selectDidDeleteExpense);
 
   const onConfirmDeleteTrip = (shouldDelete: boolean) => {
     if (shouldDelete) {
@@ -80,13 +91,21 @@ export default function TripData() {
     setIsDeleteTripModalOpen(false);
   };
 
-  const onClickExpense = useCallback(
-    (expenseId: number) => {
-      setExpenseToEdit(expenseId);
-      dispatch(setShouldShowEditExpenseModal(true));
-    },
-    [dispatch]
-  );
+  const onClickExpense = useCallback((expenseId: number) => {
+    setCurrentSelectedExpenseID(expenseId);
+  }, []);
+
+  const onCloseViewExpenseModal = useCallback(() => {
+    setCurrentSelectedExpenseID(null);
+  }, []);
+
+  const onClickEditExpense = useCallback(() => {
+    setShouldShowEditExpenseModal(true);
+  }, []);
+
+  const onConfirmDeleteExpense = () => {
+    dispatch(deleteExpense(currentSelectedExpenseID!));
+  };
 
   useEffect(() => {
     dispatch(loadTripData(parseInt(tripId!, 10)));
@@ -113,7 +132,8 @@ export default function TripData() {
   }, [dispatch, trip]);
 
   const onCloseEditExpenseModal = () => {
-    dispatch(setShouldShowEditExpenseModal(false));
+    setShouldShowEditExpenseModal(false);
+    setCurrentSelectedExpenseID(null);
   };
 
   useEffect(() => {
@@ -130,6 +150,22 @@ export default function TripData() {
       navigate("/");
     }
   }, [dispatch, hasDeletedTrip, navigate]);
+
+  useEffect(() => {
+    if (didDeleteExpense) {
+      dispatch(resetDeleteStates());
+      showToast("Your expense has been deleted", { type: "success" });
+    }
+  }, [didDeleteExpense, dispatch]);
+
+  useEffect(() => {
+    if (hasDeletingExpenseFailed) {
+      showToast("Your expense was not deleted. Please try again", {
+        type: "error",
+      });
+      dispatch(resetDeleteStates());
+    }
+  }, [hasDeletingExpenseFailed, dispatch]);
 
   const tripStartDate = useMemo(() => {
     if (!trip.startDate) return "";
@@ -260,9 +296,17 @@ export default function TripData() {
       {maybeRenderContent()}
       {shouldShowAddExpenseModal && <AddExpenseModal />}
       {shouldShowTripStatsModal && <TripStatsModal tripId={trip.id} />}
-      {shouldShowEditExpenseModal && (
+      {currentSelectedExpenseID && !shouldShowEditExpenseModal && (
+        <ViewExpenseModal
+          expenseId={currentSelectedExpenseID}
+          onClose={onCloseViewExpenseModal}
+          onClickEditExpense={onClickEditExpense}
+          onConfirmDeleteExpense={onConfirmDeleteExpense}
+        />
+      )}
+      {currentSelectedExpenseID && shouldShowEditExpenseModal && (
         <EditExpenseModal
-          expenseId={expenseToEdit!}
+          expenseId={currentSelectedExpenseID}
           onClose={onCloseEditExpenseModal}
         />
       )}
@@ -275,7 +319,7 @@ export default function TripData() {
       {isDeleteTripModalOpen && (
         <DeleteTripAlert tripId={trip.id} onConfirm={onConfirmDeleteTrip} />
       )}
-      {isDeletingTrip && <SpinnerOverlay />}
+      {isDeletingTrip || (isDeletingExpense && <SpinnerOverlay />)}
     </div>
   );
 }

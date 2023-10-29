@@ -54,7 +54,6 @@ const initialState: TripDataState = {
   isSyncingUnSavedExpenses: false,
   isLoadingExpenses: false,
   shouldShowAddExpenseModal: false,
-  shouldShowEditExpenseModal: false,
   shouldShowTripStatsModal: false,
   isDeletingExpense: false,
   didDeleteExpense: false,
@@ -173,8 +172,6 @@ export const editExpense = createAsyncThunk<
       throw err;
     }
   }
-
-  thunkApi.dispatch(setShouldShowEditExpenseModal(false));
 });
 
 export const loadExpenses = createAsyncThunk<
@@ -339,10 +336,6 @@ export const expenseSlice = createSlice({
     },
     setShouldShowAddExpenseModal(state, action: PayloadAction<boolean>) {
       state.shouldShowAddExpenseModal = action.payload;
-    },
-    setShouldShowEditExpenseModal(state, action: PayloadAction<boolean>) {
-      state.shouldShowEditExpenseModal = action.payload;
-      state.isEditingExpense = false;
     },
     setShouldShowTripStatsModal(state, action: PayloadAction<boolean>) {
       state.shouldShowTripStatsModal = action.payload;
@@ -524,7 +517,6 @@ export const {
   loadUnsavedExpensesFromStorage,
   setShouldShowTripStatsModal,
   resetDeleteStates,
-  setShouldShowEditExpenseModal,
   editUnsavedExpense,
   resetUpdateTripStatus,
 } = expenseSlice.actions;
@@ -566,11 +558,6 @@ export const selectTrip = createSelector([selectState], (state) => state.trip);
 export const selectShouldShowAddExpenseModal = createSelector(
   [selectState],
   (state) => state.shouldShowAddExpenseModal
-);
-
-export const selectShouldShowEditExpenseModal = createSelector(
-  [selectState],
-  (state) => state.shouldShowEditExpenseModal
 );
 
 export const selectCanShowSyncButton = createSelector(

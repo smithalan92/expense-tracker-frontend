@@ -1,20 +1,13 @@
 import SpinnerOverlay from "@/components/widgets/SpinnerOverlay";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
-  deleteExpense,
   editExpense,
-  resetDeleteStates,
-  selectDidDeleteExpense,
-  selectDidDeletingExpenseFail,
   selectExpenseById,
-  selectIsDeletingExpense,
   selectIsEditingExpense,
   selectTrip,
 } from "@/store/slices/tripData";
 import { EditExpenseParams } from "@/store/slices/tripData.types";
-import { showToast } from "@/utils/toast";
-import { useEffect, useMemo, useState } from "react";
-import { DeleteExpenseAlert } from "../DeleteExpenseAlert/DeleteExpenseAlert";
+import { useMemo, useState } from "react";
 import ExpenseModalHOC from "../ExpenseModalHOC/ExpenseModalHOC";
 import { ExpenseData } from "../ExpenseModalHOC/ExpenseModalHOC.types";
 import { EditExpenseModalProps } from "./EditExpenseModal.types";
@@ -25,17 +18,12 @@ export default function EditExpenseModal({
 }: EditExpenseModalProps) {
   const dispatch = useAppDispatch();
   const trip = useAppSelector(selectTrip);
-  const isDeletingExpense = useAppSelector(selectIsDeletingExpense);
-  const hasDeletingExpenseFailed = useAppSelector(selectDidDeletingExpenseFail);
-  const didDeleteExpense = useAppSelector(selectDidDeleteExpense);
   const isEditingExpense = useAppSelector(selectIsEditingExpense);
 
   const expense = useAppSelector((state) =>
     selectExpenseById(state, expenseId)
   );
   const [expenseData, setExpenseData] = useState<ExpenseData | null>(null);
-  const [shouldShowConfirmDeleteModal, setShouldShowConfirmDeleteModal] =
-    useState(false);
 
   const canUpdateExpense = useMemo(() => {
     if (!expenseData || !expense) return false;
@@ -60,10 +48,6 @@ export default function EditExpenseModal({
         expenseData.userId !== expense.user.id)
     );
   }, [expenseData, expense]);
-
-  const shouldShowSpinner = useMemo(() => {
-    return isDeletingExpense || isEditingExpense;
-  }, [isDeletingExpense, isEditingExpense]);
 
   const onClickUpdate = async () => {
     if (!expenseData || !expense) return;
@@ -113,32 +97,6 @@ export default function EditExpenseModal({
     dispatch(editExpense(params));
   };
 
-  const onClickDelete = () => {
-    dispatch(resetDeleteStates());
-    setShouldShowConfirmDeleteModal(true);
-  };
-
-  const onConfirmDelete = (shouldDelete: boolean) => {
-    setShouldShowConfirmDeleteModal(false);
-    if (shouldDelete) dispatch(deleteExpense(expenseId));
-  };
-
-  useEffect(() => {
-    if (didDeleteExpense) {
-      dispatch(resetDeleteStates());
-      showToast("Your expense has been deleted", { type: "success" });
-      onClose();
-    }
-  }, [didDeleteExpense, dispatch, onClose]);
-
-  useEffect(() => {
-    if (hasDeletingExpenseFailed) {
-      showToast("Your expense was not deleted. Please try again", {
-        type: "error",
-      });
-    }
-  }, [hasDeletingExpenseFailed]);
-
   return (
     <>
       <ExpenseModalHOC
@@ -154,12 +112,6 @@ export default function EditExpenseModal({
               Cancel
             </button>
             <button
-              className="btn btn-error font-bold text-md mr-4"
-              onClick={onClickDelete}
-            >
-              Delete
-            </button>
-            <button
               className="btn btn-primary font-bold text-md"
               disabled={!canUpdateExpense}
               onClick={onClickUpdate}
@@ -169,10 +121,7 @@ export default function EditExpenseModal({
           </div>
         }
       />
-      {shouldShowConfirmDeleteModal && (
-        <DeleteExpenseAlert onConfirm={onConfirmDelete} />
-      )}
-      {shouldShowSpinner && <SpinnerOverlay />}
+      {isEditingExpense && <SpinnerOverlay />}
     </>
   );
 }
