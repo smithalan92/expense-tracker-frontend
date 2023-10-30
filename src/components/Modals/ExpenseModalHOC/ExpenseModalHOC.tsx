@@ -1,3 +1,7 @@
+import Modal from "@/components/Modals/ModalBase/Modal";
+import ModalBody from "@/components/Modals/ModalBase/ModalBody";
+import ModalFooter from "@/components/Modals/ModalBase/ModalFooter";
+import ModalHeader from "@/components/Modals/ModalBase/ModalHeader";
 import Picker from "@/components/widgets/Picker/Picker";
 import { PickerOption } from "@/components/widgets/Picker/Picker.types";
 import { useAppSelector } from "@/store";
@@ -111,90 +115,88 @@ export default function ExpenseModalHOC({
   }, []);
 
   return (
-    <div className="et-modal-backdrop overflow-hidden">
-      <div className="animate-slide-in-bottom et-modal overflow-hidden absolute bottom-0 md:relative box-content w-[350px] md:w-full">
-        <h2 className="font-bold text-2xl mb-2">{title}</h2>
-        <div className="h-[450px] overflow-y-scroll pr-4">
-          <div className="flex items-center py-4">
-            <div className="w-24 mb-4">When</div>
-            <CustomDatePicker
-              value={date}
-              dateStringFormatter={formatDateForExpense}
-              onChange={setDate}
-            />
-          </div>
-          <div className="flex items-center py-4">
-            <div className="w-24">Country</div>
-            <Picker
-              options={countryOptions}
-              value={countryId}
-              onChange={setCountryId}
-              isMulti={false}
-            />
-          </div>
-          <div className="flex items-center py-4">
-            <div className="w-24">City</div>
-            <CityPicker
-              value={cityId}
-              selectedCountryId={countryId}
-              onChange={setCityId}
-            />
-          </div>
-          <div className="flex items-center py-4">
-            <div className="w-24">Amount</div>
-            <ExpenseAmountInput value={amount} onChange={setAmount} />
-          </div>
-          <div className="flex items-center pt-4">
-            <div className="w-24">Currency</div>
-            <CurrencyPicker
-              value={currencyId}
-              selectedCountryId={countryId}
-              onChange={setCurrencyId}
-              availableCurrencyIds={
-                shouldShowAllCurrencies ? undefined : currenciesForCountries
+    <Modal>
+      <ModalHeader title={title} />
+      <ModalBody>
+        <div className="flex items-center py-4">
+          <div className="w-24">When</div>
+          <CustomDatePicker
+            value={date}
+            dateStringFormatter={formatDateForExpense}
+            onChange={setDate}
+          />
+        </div>
+        <div className="flex items-center py-4">
+          <div className="w-24">Country</div>
+          <Picker
+            options={countryOptions}
+            value={countryId}
+            onChange={setCountryId}
+            isMulti={false}
+          />
+        </div>
+        <div className="flex items-center py-4">
+          <div className="w-24">City</div>
+          <CityPicker
+            value={cityId}
+            selectedCountryId={countryId}
+            onChange={setCityId}
+          />
+        </div>
+        <div className="flex items-center py-4">
+          <div className="w-24">Amount</div>
+          <ExpenseAmountInput value={amount} onChange={setAmount} />
+        </div>
+        <div className="flex items-center pt-4">
+          <div className="w-24">Currency</div>
+          <CurrencyPicker
+            value={currencyId}
+            selectedCountryId={countryId}
+            onChange={setCurrencyId}
+            availableCurrencyIds={
+              shouldShowAllCurrencies ? undefined : currenciesForCountries
+            }
+          />
+        </div>
+        <div className="flex items-center pt-2 pb-4">
+          <div className="w-24" />
+          <div className="flex-1 flex items-center justify-center">
+            <span className="text-xs">Display all currencies</span>
+            <input
+              className="ml-2"
+              name="showAllCurrencies"
+              type="checkbox"
+              checked={shouldShowAllCurrencies}
+              onChange={() =>
+                setShouldShowAllCurrencies(!shouldShowAllCurrencies)
               }
             />
           </div>
-          <div className="flex items-center pt-2 pb-4">
-            <div className="w-24" />
-            <div className="flex-1 flex items-center justify-center">
-              <span className="text-xs">Display all currencies</span>
-              <input
-                className="ml-2"
-                name="showAllCurrencies"
-                type="checkbox"
-                checked={shouldShowAllCurrencies}
-                onChange={() =>
-                  setShouldShowAllCurrencies(!shouldShowAllCurrencies)
-                }
-              />
-            </div>
-          </div>
-          <div className="flex items-center py-4">
-            <div className="w-24">Category</div>
-            <Picker
-              options={categoryOptions}
-              value={categoryId}
-              onChange={setCategoryId}
-              isMulti={false}
-            />
-          </div>
-          <div className="flex items-center py-4">
-            <div className="w-24">Person</div>
-            <Picker
-              options={userOptions}
-              value={userId}
-              onChange={setUserId}
-              isMulti={false}
-            />
-          </div>
-          <div className="flex flex-col py-4">
-            <div className="w-24 mb-4">Description</div>
-            <ExpenseDescription value={description} onChange={setDescription} />
-          </div>
         </div>
-        <div>{footer}</div>
-      </div>
-    </div>
+        <div className="flex items-center py-4">
+          <div className="w-24">Category</div>
+          <Picker
+            options={categoryOptions}
+            value={categoryId}
+            onChange={setCategoryId}
+            isMulti={false}
+          />
+        </div>
+        <div className="flex items-center py-4">
+          <div className="w-24">Person</div>
+          <Picker
+            options={userOptions}
+            value={userId}
+            onChange={setUserId}
+            isMulti={false}
+          />
+        </div>
+        <div className="flex flex-col py-4">
+          <div className="w-24 mb-4">Description</div>
+          <ExpenseDescription value={description} onChange={setDescription} />
+        </div>
+      </ModalBody>
+      <ModalFooter>{footer}</ModalFooter>
+    </Modal>
   );
 }

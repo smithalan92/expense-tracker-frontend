@@ -49,7 +49,7 @@ export default function AddExpenseModal() {
       title="Add Expense"
       onChangeData={setExpenseData}
       footer={
-        <div className="flex justify-end pt-8">
+        <>
           <button
             className="btn btn-secondary font-bold text-md mr-4"
             onClick={onClickCancel}
@@ -63,7 +63,7 @@ export default function AddExpenseModal() {
           >
             Save
           </button>
-        </div>
+        </>
       }
     />
   );

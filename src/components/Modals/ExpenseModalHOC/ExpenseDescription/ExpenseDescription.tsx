@@ -14,7 +14,7 @@ export default function ExpenseDescription({
 
   return (
     <textarea
-      className="textarea rounded-md bg-white textarea-bordered ml-2"
+      className="textarea rounded-md bg-white textarea-bordered"
       value={value}
       onChange={onChangeDescription}
     />

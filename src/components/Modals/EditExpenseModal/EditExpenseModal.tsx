@@ -104,7 +104,7 @@ export default function EditExpenseModal({
         title="Edit Expense"
         onChangeData={setExpenseData}
         footer={
-          <div className="flex justify-end pt-8">
+          <>
             <button
               className="btn btn-secondary font-bold text-md mr-4"
               onClick={onClose}
@@ -118,7 +118,7 @@ export default function EditExpenseModal({
             >
               Update
             </button>
-          </div>
+          </>
         }
       />
       {isEditingExpense && <SpinnerOverlay />}

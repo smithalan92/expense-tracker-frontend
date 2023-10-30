@@ -106,7 +106,7 @@ export default function EditTripModal({ tripId, onClose }: EditTripModalProps) {
           onChangeData={onChangeData}
           initalData={trip}
           footer={
-            <div className="flex justify-end pt-8">
+            <>
               <button
                 className="btn btn-secondary font-bold text-md mr-4"
                 onClick={close}
@@ -120,7 +120,7 @@ export default function EditTripModal({ tripId, onClose }: EditTripModalProps) {
               >
                 Update
               </button>
-            </div>
+            </>
           }
         />
       )}

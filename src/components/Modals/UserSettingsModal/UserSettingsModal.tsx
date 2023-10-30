@@ -1,4 +1,6 @@
-import { ReactComponent as CloseIcon } from "@/assets/close.svg";
+import Modal from "@/components/Modals/ModalBase/Modal";
+import ModalBody from "@/components/Modals/ModalBase/ModalBody";
+import ModalHeader from "@/components/Modals/ModalBase/ModalHeader";
 import CustomSelect from "@/components/widgets/CustomSelect/CustomSelect";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
@@ -51,45 +53,39 @@ export default function UserSettingsModal({
   );
 
   return (
-    <div className="et-modal-backdrop overflow-hidden">
-      <div className="animate-slide-in-bottom et-modal overflow-hidden absolute bottom-0 md:relative box-content w-[350px] md:w-full">
-        <div className="flex items-center justify-between mb-2">
-          <h2 className="font-bold text-2xl">Add a Country</h2>
-          <div
-            className="hover:bg-gray-200 p-2 rounded-full cursor-pointer"
-            onClick={onClose}
-          >
-            <CloseIcon className="w-[12px]" />
+    <Modal>
+      <ModalHeader
+        title="Settings"
+        includeCloseButton={true}
+        onClickClose={onClose}
+      />
+      <ModalBody>
+        <div className="flex flex-col py-4">
+          <div className="flex mt-4 mb-4 justify-between items-center">
+            <span>Use native mobile pickers</span>
+            <input
+              id="useNativeSelectsOnMobile"
+              name="useNativeSelectsOnMobile"
+              type="checkbox"
+              className="toggle toggle-primary"
+              checked={!isNativeSelectsOnMobileDisabled}
+              onChange={toggleNativeMobileSelects}
+            />
+          </div>
+          <div className="flex mt-2 items-center justify-between">
+            <span className="mr-8">Expense List display</span>
+            <CustomSelect
+              className="cursor-pointer w-32"
+              options={expenseDisplayViewOptions as any}
+              onChange={onSelectExpenseDisplayView}
+              value={selectedOption}
+              menuPortalTarget={document.body}
+              isMulti={false}
+              isSearchable={false}
+            />
           </div>
         </div>
-        <div className="min-h-[500px] overflow-hidden pr-4">
-          <div className="flex flex-col py-4">
-            <div className="flex mt-4 mb-4 justify-between items-center">
-              <span>Use native mobile pickers</span>
-              <input
-                id="useNativeSelectsOnMobile"
-                name="useNativeSelectsOnMobile"
-                type="checkbox"
-                className="toggle toggle-primary"
-                checked={!isNativeSelectsOnMobileDisabled}
-                onChange={toggleNativeMobileSelects}
-              />
-            </div>
-            <div className="flex mt-2 items-center justify-between">
-              <span className="mr-8">Expense List display</span>
-              <CustomSelect
-                className="cursor-pointer w-32"
-                options={expenseDisplayViewOptions as any}
-                onChange={onSelectExpenseDisplayView}
-                value={selectedOption}
-                menuPortalTarget={document.body}
-                isMulti={false}
-                isSearchable={false}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+      </ModalBody>
+    </Modal>
   );
 }

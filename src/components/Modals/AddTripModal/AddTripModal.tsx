@@ -51,7 +51,7 @@ export default function AddTripModal() {
         title="Add Trip"
         onChangeData={setData}
         footer={
-          <div className="flex justify-end pt-8">
+          <>
             <button
               className="btn btn-secondary font-bold text-md mr-4"
               onClick={onClickCancel}
@@ -65,7 +65,7 @@ export default function AddTripModal() {
             >
               Save
             </button>
-          </div>
+          </>
         }
       />
       {isAddingTrip && <SpinnerOverlay />}

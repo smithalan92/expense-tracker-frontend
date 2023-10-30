@@ -5,12 +5,16 @@ import { ReactComponent as NoteIcon } from "@/assets/note.svg";
 import { ReactComponent as PriceTagIcon } from "@/assets/price-tag.svg";
 import { ReactComponent as TrashIcon } from "@/assets/trash.svg";
 import { ReactComponent as UserIcon } from "@/assets/user.svg";
+import Modal from "@/components/Modals/ModalBase/Modal";
+import ModalBody from "@/components/Modals/ModalBase/ModalBody";
+import ModalFooter from "@/components/Modals/ModalBase/ModalFooter";
+import ModalHeader from "@/components/Modals/ModalBase/ModalHeader";
 import ExpenseCategoryIcon from "@/components/sections/ExpenseList/ExpenseListCards/ExpenseCategoryIcon";
 import { useAppSelector } from "@/store";
 import { selectExpenseById } from "@/store/slices/tripData";
 import format from "date-fns/format";
 import { useCallback, useMemo, useState } from "react";
-import { DeleteExpenseAlert } from "../DeleteExpenseAlert/DeleteExpenseAlert";
+import { ConfirmModal } from "../ConfirmModal/ConfirmModal";
 
 interface DataField {
   label: string;
@@ -113,60 +117,64 @@ export default function ViewExpenseModal({
 
   return (
     <div>
-      <div className="et-modal-backdrop overflow-hidden">
-        <div className="animate-slide-in-bottom et-modal overflow-hidden absolute bottom-0 md:relative box-content w-[380px] md:w-full p-0">
-          <div className="flex flex-col items-center items-center justify-center mb-2 relative bg-primary p-2 text-white">
-            <span className="font-bold text-2xl">{expenseDate}</span>
-            <span className="font-bold text-md">{expenseTime}</span>
-          </div>
-          <div className="min-h-[380px] max-h-[380px] overflow-scroll px-8">
-            <div className="flex flex-col py-2">
-              {dataFieldsToDisplay.map(({ label, value, icon }) => {
-                const iconProps = icon?.props || {};
-                return (
-                  <div
-                    className="flex flex-1 py-2 items-center border-b border-dashed border-primary last:border-0"
-                    key={label}
-                  >
-                    <div className="flex items-center flex-col border-r border-dashed border-primary w-20 pr-3">
-                      <icon.Component {...iconProps} className="w-6" />
-                      <span className="text-[10px] mt-1 font-bold">
-                        {label}
-                      </span>
-                    </div>
-                    <div className="flex-1 ml-6 text-sm">{value}</div>
-                  </div>
-                );
-              })}
+      <Modal>
+        <ModalHeader
+          title={
+            <div className="flex flex-col items-center flex-1">
+              <span className="font-bold text-2xl">{expenseDate}</span>
+              <span className="font-bold text-md">{expenseTime}</span>
             </div>
+          }
+        />
+
+        <ModalBody height={330}>
+          <div className="flex flex-col py-2">
+            {dataFieldsToDisplay.map(({ label, value, icon }) => {
+              const iconProps = icon?.props || {};
+              return (
+                <div
+                  className="flex flex-1 py-2 items-center border-b border-dashed border-primary last:border-0"
+                  key={label}
+                >
+                  <div className="flex items-center flex-col border-r border-dashed border-primary w-20 pr-3">
+                    <icon.Component {...iconProps} className="w-6" />
+                    <span className="text-[10px] mt-1 font-bold">{label}</span>
+                  </div>
+                  <div className="flex-1 ml-6 text-sm">{value}</div>
+                </div>
+              );
+            })}
           </div>
-          <div className="flex w-full p-2 pb-4 justify-center">
-            <button
-              className="flex items-center py-2 px-4 text-md hover:underline font-bold"
-              onClick={onClose}
-            >
-              <CancelIcon className="w-6 mr-1" />
-              Cancel
-            </button>
-            <button
-              className="flex items-center py-2 px-4 text-md text-red-400 hover:underline font-bold"
-              onClick={onClickDeleteExpense}
-            >
-              <TrashIcon className="w-6 mr-1" />
-              Delete
-            </button>
-            <button
-              className="flex items-center py-2 px-4 text-md mx-4 hover:underline text-primary font-bold"
-              onClick={onClickEditExpense}
-            >
-              <EditIcon className="w-6 mr-1 fill-primary" />
-              Edit
-            </button>
-          </div>
-        </div>
-      </div>
+        </ModalBody>
+        <ModalFooter>
+          <button
+            className="flex items-center py-2 px-4 text-md hover:underline font-bold"
+            onClick={onClose}
+          >
+            <CancelIcon className="w-6 mr-1" />
+            Cancel
+          </button>
+          <button
+            className="flex items-center py-2 px-4 text-md text-red-400 hover:underline font-bold"
+            onClick={onClickDeleteExpense}
+          >
+            <TrashIcon className="w-6 mr-1" />
+            Delete
+          </button>
+          <button
+            className="flex items-center py-2 px-4 text-md mx-4 hover:underline text-primary font-bold"
+            onClick={onClickEditExpense}
+          >
+            <EditIcon className="w-6 mr-1 fill-primary" />
+            Edit
+          </button>
+        </ModalFooter>
+      </Modal>
       {shouldConfirmDelete && (
-        <DeleteExpenseAlert onConfirm={onConfirmDelete} />
+        <ConfirmModal
+          title="Are you sure you want to delete this expense?"
+          onConfirm={onConfirmDelete}
+        />
       )}
     </div>
   );

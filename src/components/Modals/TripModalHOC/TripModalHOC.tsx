@@ -1,6 +1,10 @@
 import * as api from "@/api";
 import { ReactComponent as XIcon } from "@/assets/close.svg";
 import { ReactComponent as PlusIcon } from "@/assets/plus.svg";
+import Modal from "@/components/Modals/ModalBase/Modal";
+import ModalBody from "@/components/Modals/ModalBase/ModalBody";
+import ModalFooter from "@/components/Modals/ModalBase/ModalFooter";
+import ModalHeader from "@/components/Modals/ModalBase/ModalHeader";
 import ImagePicker from "@/components/widgets/ImagePicker/ImagePicker";
 import Picker from "@/components/widgets/Picker/Picker";
 import { PickerOption } from "@/components/widgets/Picker/Picker.types";
@@ -125,10 +129,10 @@ export default function TripModalHOC({
   ]);
 
   return (
-    <div className="et-modal-backdrop overflow-hidden">
-      <div className="animate-slide-in-bottom et-modal overflow-hidden absolute bottom-0 md:relative box-content w-[350px] md:w-full">
-        <h2 className="font-bold text-2xl mb-2">{title}</h2>
-        <div className="h-[450px] overflow-y-scroll pr-4">
+    <>
+      <Modal>
+        <ModalHeader title={title} />
+        <ModalBody>
           <div className="flex items-center py-4">
             <span className="w-24">Image</span>
             <ImagePicker
@@ -208,9 +212,10 @@ export default function TripModalHOC({
               isMulti={true}
             />
           </div>
-        </div>
-        <div>{footer}</div>
-      </div>
+        </ModalBody>
+        <ModalFooter>{footer}</ModalFooter>
+      </Modal>
+
       {isCountryPickerOpen && (
         <AddCountryModal
           initalData={countryModalData}
@@ -218,6 +223,6 @@ export default function TripModalHOC({
           onClose={onCloseCountryModal}
         />
       )}
-    </div>
+    </>
   );
 }

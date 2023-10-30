@@ -1,4 +1,8 @@
 import { loadCountries } from "@/api";
+import Modal from "@/components/Modals/ModalBase/Modal";
+import ModalBody from "@/components/Modals/ModalBase/ModalBody";
+import ModalFooter from "@/components/Modals/ModalBase/ModalFooter";
+import ModalHeader from "@/components/Modals/ModalBase/ModalHeader";
 import Picker from "@/components/widgets/Picker/Picker";
 import { PickerOption } from "@/components/widgets/Picker/Picker.types";
 import { useCallback, useEffect, useState } from "react";
@@ -81,44 +85,42 @@ export default function AddCountryModal({
   }, []);
 
   return (
-    <div className="et-modal-backdrop overflow-hidden">
-      <div className="animate-slide-in-bottom et-modal overflow-hidden absolute bottom-0 md:relative box-content w-[350px] md:w-full">
-        <h2 className="font-bold text-2xl mb-2">Add a Country</h2>
-        <div className="min-h-[500px] overflow-hidden pr-4">
+    <Modal>
+      <ModalHeader title="Add a Country" />
+      <ModalBody>
+        <div className="flex flex-col py-4">
+          <span className="mb-4 font-bold">Pick a country</span>
+          <Picker
+            options={countryPickerOptions}
+            value={selectedCountryId}
+            onChange={onSelectCountry}
+            isMulti={false}
+          />
+        </div>
+        {selectedCountryId > 0 && (
           <div className="flex flex-col py-4">
-            <span className="mb-4 font-bold">Pick a country</span>
-            <Picker
-              options={countryPickerOptions}
-              value={selectedCountryId}
-              onChange={onSelectCountry}
-              isMulti={false}
+            <CityPickerList
+              countryId={selectedCountryId}
+              cityIds={selectedCityIds}
+              onSelectCity={onSelectCity}
             />
           </div>
-          {selectedCountryId > 0 && (
-            <div className="flex flex-col py-4">
-              <CityPickerList
-                countryId={selectedCountryId}
-                cityIds={selectedCityIds}
-                onSelectCity={onSelectCity}
-              />
-            </div>
-          )}
-        </div>
-        <div className="flex justify-end pt-6">
-          <button
-            className="btn btn-secondary font-bold text-md mr-4"
-            onClick={onClickCancel}
-          >
-            Cancel
-          </button>
-          <button
-            className="btn btn-primary font-bold text-md"
-            onClick={onClickSave}
-          >
-            Save
-          </button>
-        </div>
-      </div>
-    </div>
+        )}
+      </ModalBody>
+      <ModalFooter>
+        <button
+          className="btn btn-secondary font-bold text-md mr-4"
+          onClick={onClickCancel}
+        >
+          Cancel
+        </button>
+        <button
+          className="btn btn-primary font-bold text-md"
+          onClick={onClickSave}
+        >
+          Save
+        </button>
+      </ModalFooter>
+    </Modal>
   );
 }

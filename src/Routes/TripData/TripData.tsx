@@ -5,7 +5,7 @@ import { ReactComponent as RefreshIcon } from "@/assets/refresh.svg";
 import { ReactComponent as StatsIcon } from "@/assets/stats.svg";
 import { ReactComponent as DeleteIcon } from "@/assets/trash.svg";
 import AddExpenseModal from "@/components/Modals/AddExpenseModal/AddExpenseModal";
-import { DeleteTripAlert } from "@/components/Modals/DeleteTripAlert/DeleteTripAlert";
+import { ConfirmModal } from "@/components/Modals/ConfirmModal/ConfirmModal";
 import EditExpenseModal from "@/components/Modals/EditExpenseModal/EditExpenseModal";
 import EditTripModal from "@/components/Modals/EditTripModal/EditTripModal";
 import TripStatsModal from "@/components/Modals/TripStatsModal/TripStatsModal";
@@ -317,7 +317,15 @@ export default function TripData() {
         />
       )}
       {isDeleteTripModalOpen && (
-        <DeleteTripAlert tripId={trip.id} onConfirm={onConfirmDeleteTrip} />
+        <ConfirmModal
+          title={
+            <span>
+              Are you sure you want to delete the{" "}
+              <span className="font-bold">{trip.name}</span> trip?
+            </span>
+          }
+          onConfirm={onConfirmDeleteTrip}
+        />
       )}
       {isDeletingTrip || (isDeletingExpense && <SpinnerOverlay />)}
     </div>
