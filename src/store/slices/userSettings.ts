@@ -11,7 +11,7 @@ const initialState: UserSettingsState = {
   disableNativeSelectsOnMobile:
     getStorageItem<boolean>(getMobileSelectConfigKey()) ?? false,
   expenseView:
-    getStorageItem<ExpenseViewType>(getExpenseViewConfigKey()) ?? "table",
+    getStorageItem<ExpenseViewType>(getExpenseViewConfigKey()) ?? "card",
 };
 
 export const userSettingsSlice = createSlice({
