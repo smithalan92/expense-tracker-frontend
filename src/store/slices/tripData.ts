@@ -250,6 +250,39 @@ export const deleteExpense = createAsyncThunk<
   return { tripId, expenseId };
 });
 
+export const copyExpense = createAsyncThunk<
+  unknown,
+  number,
+  { state: RootState }
+>("tripData/copyExpense", async (expenseId, thunkApi) => {
+  const state = thunkApi.getState();
+
+  let expense = state.tripData.expenses.find((e) => e.id === expenseId);
+
+  if (!expense) {
+    expense = state.tripData.unsavedExpenses.find((e) => e.id === expenseId);
+  }
+
+  if (!expense) {
+    showToast("Could not copy expense. Expense not found.", { type: "error" });
+    return;
+  }
+
+  await thunkApi.dispatch(
+    addExpense({
+      date: expense.localDateTime,
+      amount: parseFloat(expense.amount),
+      cityId: expense.city.id,
+      currencyId: expense.currency.id,
+      categoryId: expense.category.id,
+      description: `${expense.description} (copied at ${new Date()})`,
+      userId: expense.user.id,
+    })
+  );
+
+  showToast("Your expense has been copied", { type: "success" });
+});
+
 export const updateTrip = createAsyncThunk(
   "trips/updateTrip",
   async ({ tripId, newData, oldData }: UpdateTripThunkPayload, thunkApi) => {

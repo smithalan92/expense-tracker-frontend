@@ -1,4 +1,4 @@
-import { ReactComponent as CancelIcon } from "@/assets/cancel.svg";
+import { ReactComponent as CloneIcon } from "@/assets/clone.svg";
 import { ReactComponent as EditIcon } from "@/assets/edit.svg";
 import { ReactComponent as LocationIcon } from "@/assets/location.svg";
 import { ReactComponent as NoteIcon } from "@/assets/note.svg";
@@ -10,8 +10,8 @@ import ModalBody from "@/components/Modals/ModalBase/ModalBody";
 import ModalFooter from "@/components/Modals/ModalBase/ModalFooter";
 import ModalHeader from "@/components/Modals/ModalBase/ModalHeader";
 import ExpenseCategoryIcon from "@/components/sections/ExpenseList/ExpenseListCards/ExpenseCategoryIcon";
-import { useAppSelector } from "@/store";
-import { selectExpenseById } from "@/store/slices/tripData";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { copyExpense, selectExpenseById } from "@/store/slices/tripData";
 import format from "date-fns/format";
 import { useCallback, useMemo, useState } from "react";
 import { ConfirmModal } from "../ConfirmModal/ConfirmModal";
@@ -39,6 +39,7 @@ export default function ViewExpenseModal({
   onClickEditExpense,
   onConfirmDeleteExpense,
 }: ViewExpenseModalProps) {
+  const dispatch = useAppDispatch();
   const expense = useAppSelector((state) =>
     selectExpenseById(state, expenseId)
   )!;
@@ -99,10 +100,27 @@ export default function ViewExpenseModal({
   }, [expense]);
 
   const [shouldConfirmDelete, setShouldConfirmDelete] = useState(false);
+  const [shouldConfirmCopy, setShouldConfirmCopy] = useState(false);
 
   const onClickDeleteExpense = useCallback(() => {
     setShouldConfirmDelete(true);
   }, []);
+
+  const onClickConfirmCopy = useCallback(() => {
+    setShouldConfirmCopy(true);
+  }, []);
+
+  const onConfirmCopy = useCallback(
+    async (shouldCopy: boolean) => {
+      setShouldConfirmCopy(false);
+
+      if (shouldCopy) {
+        await dispatch(copyExpense(expenseId));
+        onClose();
+      }
+    },
+    [dispatch, expenseId, onClose]
+  );
 
   const onConfirmDelete = useCallback(
     (shouldDelete: boolean) => {
@@ -119,6 +137,8 @@ export default function ViewExpenseModal({
     <div>
       <Modal>
         <ModalHeader
+          includeCloseButton={true}
+          onClickClose={onClose}
           title={
             <div className="flex flex-col items-center flex-1">
               <span className="font-bold text-2xl">{expenseDate}</span>
@@ -148,11 +168,18 @@ export default function ViewExpenseModal({
         </ModalBody>
         <ModalFooter>
           <button
-            className="flex items-center py-2 px-4 text-md hover:underline font-bold"
-            onClick={onClose}
+            className="flex items-center py-2 px-4 text-md mx-4 hover:underline text-primary font-bold"
+            onClick={onClickEditExpense}
           >
-            <CancelIcon className="w-6 mr-1" />
-            Cancel
+            <EditIcon className="w-6 mr-1 fill-primary" />
+            Edit
+          </button>
+          <button
+            className="flex items-center py-2 px-4 text-md mx-4 hover:underline text-primary font-bold text-blue-400"
+            onClick={onClickConfirmCopy}
+          >
+            <CloneIcon className="w-6 mr-1 fill-primary" />
+            Copy
           </button>
           <button
             className="flex items-center py-2 px-4 text-md text-red-400 hover:underline font-bold"
@@ -161,19 +188,18 @@ export default function ViewExpenseModal({
             <TrashIcon className="w-6 mr-1" />
             Delete
           </button>
-          <button
-            className="flex items-center py-2 px-4 text-md mx-4 hover:underline text-primary font-bold"
-            onClick={onClickEditExpense}
-          >
-            <EditIcon className="w-6 mr-1 fill-primary" />
-            Edit
-          </button>
         </ModalFooter>
       </Modal>
       {shouldConfirmDelete && (
         <ConfirmModal
           title="Are you sure you want to delete this expense?"
           onConfirm={onConfirmDelete}
+        />
+      )}
+      {shouldConfirmCopy && (
+        <ConfirmModal
+          title="Are you sure you want to copy this expense?"
+          onConfirm={onConfirmCopy}
         />
       )}
     </div>
