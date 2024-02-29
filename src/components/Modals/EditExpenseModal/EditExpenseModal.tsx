@@ -95,6 +95,7 @@ export default function EditExpenseModal({
       params.userId = expenseData.userId;
     }
     dispatch(editExpense(params));
+    onClose();
   };
 
   return (

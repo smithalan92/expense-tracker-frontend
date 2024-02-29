@@ -161,6 +161,7 @@ export const editExpense = createAsyncThunk<
   } else {
     try {
       await api.editExpenseForTrip(tripId, expenseId, payload);
+      showToast("Expense updated", { type: "success" });
       await thunkApi.dispatch(loadTripData(tripId));
     } catch (err) {
       if (axios.isAxiosError(err) && err.code === "ERR_NETWORK") {
@@ -168,8 +169,9 @@ export const editExpense = createAsyncThunk<
           "You can't edit expenses when your not connected to the internet. Try again when you have an internet connection",
           { type: "error" }
         );
+      } else {
+        showToast("Failed to edit expense. Try again", { type: "error" });
       }
-      throw err;
     }
   }
 });
@@ -357,6 +359,7 @@ export const expenseSlice = createSlice({
         getUnsavedExpensesForTripKey(state.trip.id),
         state.unsavedExpenses
       );
+      showToast("Expense updated", { type: "success" });
     },
     resetDeleteStates(state) {
       state.isDeletingExpense = false;
