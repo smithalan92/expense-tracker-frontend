@@ -89,9 +89,15 @@ export async function getExpensesForTrip(tripId: number) {
   return data;
 }
 
-export async function getTripStats(tripId: number) {
+export async function getTripStats(
+  tripId: number,
+  {
+    includeFlights,
+    includeHotels,
+  }: { includeFlights: boolean; includeHotels: boolean }
+) {
   const { data } = await http!.get<GetTripStatsResponse>(
-    `/trips/${tripId}/stats`
+    `/trips/${tripId}/stats?includeFlights=${includeFlights}&includeHotels=${includeHotels}`
   );
 
   return data;

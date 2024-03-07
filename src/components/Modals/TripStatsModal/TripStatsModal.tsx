@@ -22,7 +22,8 @@ export default function TripStatsModal({ tripId }: { tripId: number }) {
   const [isLoading, setIsLoading] = useState(true);
   const [hasFailedToLoad, setHasFailedToLoad] = useState(false);
   const [stats, setStats] = useState<GetTripStatsResponse | null>(null);
-  const [isClosing, setIsClosing] = useState(false);
+  const [includeFlights, setIncludeFlights] = useState(true);
+  const [includeAccommodation, setIncludeAccommodation] = useState(true);
 
   const hasEmptyStats = useMemo(() => {
     if (stats === null) return false;
@@ -30,7 +31,11 @@ export default function TripStatsModal({ tripId }: { tripId: number }) {
   }, [stats]);
 
   useEffect(() => {
-    getTripStats(tripId)
+    setIsLoading(true);
+    getTripStats(tripId, {
+      includeFlights,
+      includeHotels: includeAccommodation,
+    })
       .then((res) => {
         setStats(res);
         setIsLoading(false);
@@ -40,7 +45,7 @@ export default function TripStatsModal({ tripId }: { tripId: number }) {
         setHasFailedToLoad(true);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [includeFlights, includeAccommodation]);
 
   const onClickClose = useCallback(() => {
     dispatch(setShouldShowTripStatsModal(false));
@@ -134,6 +139,35 @@ export default function TripStatsModal({ tripId }: { tripId: number }) {
     );
   }, [hasEmptyStats]);
 
+  const maybeRenderFilters = useCallback(() => {
+    if (isLoading) return null;
+
+    return (
+      <div className="flex py-2 mt-4">
+        <div className="flex items-center justify-center">
+          <label>
+            <span className="mr-1">Include Flights</span>
+            <input
+              type="checkbox"
+              checked={includeFlights}
+              onChange={(e) => setIncludeFlights(e.target.checked)}
+            />
+          </label>
+        </div>
+        <div className="flex items-center justify-center ml-4">
+          <label>
+            <span className="mr-1"> Include Accommodation</span>
+            <input
+              type="checkbox"
+              checked={includeAccommodation}
+              onChange={(e) => setIncludeAccommodation(e.target.checked)}
+            />
+          </label>
+        </div>
+      </div>
+    );
+  }, [isLoading, includeFlights, includeAccommodation]);
+
   return (
     <Modal>
       <ModalHeader
@@ -143,6 +177,7 @@ export default function TripStatsModal({ tripId }: { tripId: number }) {
       />
       <ModalBody>
         {maybeRenderLoader()}
+        {maybeRenderFilters()}
         {maybeRenderFailedState()}
         {maybeRenderContent()}
         {maybeRenderEmptyState()}
