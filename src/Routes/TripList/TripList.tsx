@@ -36,7 +36,7 @@ export default function TripList() {
     if (!isLoadingTrips) return null;
 
     return (
-      <div className="w-full h-full flex justify-center items-center">
+      <div className="w-full h-full flex flex-1 justify-center items-center">
         <Spinner />
       </div>
     );
@@ -67,7 +67,7 @@ export default function TripList() {
   }, [isLoadingTrips, hasFailedToLoadTrips, trips]);
 
   return (
-    <div className="pr-4 overflow-scroll">
+    <div className="pr-4 flex-1 overflow-scroll">
       <div className="w-full flex justify-end px-4 pb-4 sticky top-0 z-[1] bg-base-100">
         <button
           className="btn btn-sm gap-2 btn-primary text-white"
