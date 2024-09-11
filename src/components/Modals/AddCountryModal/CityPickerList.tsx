@@ -1,7 +1,8 @@
 import { loadCitiesForCountry } from "@/api";
-import { City } from "@/api.types";
-import { ReactComponent as CheckIcon } from "@/assets/check.svg";
+import { City as CityType } from "@/api.types";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import City from "./City";
+import SelectedCitiesPopUp from "./SelectedCitiesPopup";
 
 export interface OnClickCityProps {
   op: "add" | "remove";
@@ -19,23 +20,13 @@ export default function CityPickerList({
   onSelectCity,
   cityIds: selectedCityIds,
 }: CityPickerListProps) {
-  const [cities, setCities] = useState<Omit<City, "timezoneName">[]>([]);
+  const [cities, setCities] = useState<Omit<CityType, "timezoneName">[]>([]);
   // const [selectedCityIds, setSelectedCityIds] = useState<number[]>(cityIds);
-  const [shouldOnlyDisplaySelectedCities, setShouldOnlyDisplaySelectedCities] =
+  const [isSelectedCitiesPopupOpen, setIsSelectedCitiesPopupOpen] =
     useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
   const citiesToDisplay = useMemo(() => {
-    if (shouldOnlyDisplaySelectedCities) {
-      return cities.filter((city) => {
-        const matchesSearch =
-          searchTerm.trim().length > 0
-            ? city.name.toLowerCase().includes(searchTerm.toLowerCase())
-            : true;
-        return selectedCityIds.includes(city.id) && matchesSearch;
-      });
-    }
-
     if (searchTerm) {
       return cities.filter((city) => {
         return city.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -43,7 +34,11 @@ export default function CityPickerList({
     }
 
     return cities;
-  }, [shouldOnlyDisplaySelectedCities, searchTerm, cities, selectedCityIds]);
+  }, [searchTerm, cities]);
+
+  const selectedCities = useMemo(() => {
+    return selectedCityIds.map((id) => cities.find((city) => city.id === id)!);
+  }, [selectedCityIds, cities]);
 
   const loadCityOptions = async () => {
     const cities = await loadCitiesForCountry(countryId);
@@ -77,6 +72,7 @@ export default function CityPickerList({
       </span>
       <div className="my-2">
         <input
+          type="search"
           className="w-full p-2 rounded bg-white border border-solid border-gray-200"
           placeholder="Search for a city"
           value={searchTerm}
@@ -84,44 +80,35 @@ export default function CityPickerList({
         />
       </div>
       <div className="flex justify-between flex-wrap h-[180px] overflow-scroll">
-        {citiesToDisplay.length === 0 && shouldOnlyDisplaySelectedCities && (
-          <span className="text-center">No cities have been selected</span>
+        {citiesToDisplay.length === 0 && searchTerm && (
+          <span>No cities match your search term</span>
         )}
         {citiesToDisplay.map((city) => {
           const isSelected = selectedCityIds.includes(city.id);
           return (
-            <div
-              className="flex items-center justify-between w-1/2 h-12 overflow-hidden px-2 py-4 hover:opacity-70 cursor-pointer"
-              key={city.id}
-              onClick={() => onClickCity(city.id)}
-            >
-              <span
-                className={`truncate ${isSelected ? "text-green-600" : ""}`}
-              >
-                {city.name}
-              </span>
-              {isSelected && (
-                <span className="ml-2">
-                  <CheckIcon className="w-6 fill-green-600" />
-                </span>
-              )}
+            <div className="w-1/2" key={city.id}>
+              <City city={city} isSelected={isSelected} onClick={onClickCity} />
             </div>
           );
         })}
       </div>
       <div className="mt-6 flex justify-center">
-        <button
-          className="underline"
-          onClick={() =>
-            setShouldOnlyDisplaySelectedCities(!shouldOnlyDisplaySelectedCities)
-          }
-        >
-          View{" "}
-          {shouldOnlyDisplaySelectedCities
-            ? "all cities"
-            : "selected cities only"}
-        </button>
+        {selectedCityIds.length > 0 && (
+          <button
+            className="underline"
+            onClick={() => setIsSelectedCitiesPopupOpen(true)}
+          >
+            View Selected Cities
+          </button>
+        )}
       </div>
+      {isSelectedCitiesPopupOpen && (
+        <SelectedCitiesPopUp
+          selectedCities={selectedCities}
+          onClickCity={onClickCity}
+          onClose={() => setIsSelectedCitiesPopupOpen(false)}
+        />
+      )}
     </div>
   );
 }

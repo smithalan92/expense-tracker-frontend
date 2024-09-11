@@ -18,7 +18,7 @@ export default function ModalHeader({
       )}
       {typeof title !== "string" && title}
       {includeCloseButton && onClickClose && (
-        <div className="p-1" onClick={onClickClose}>
+        <div className="p-1 hover:cursor-pointer" onClick={onClickClose}>
           <CloseIcon className="w-3" />
         </div>
       )}
