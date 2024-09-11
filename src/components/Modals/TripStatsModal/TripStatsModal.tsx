@@ -30,6 +30,13 @@ export default function TripStatsModal({ tripId }: { tripId: number }) {
     return stats.userBreakdown.length === 0;
   }, [stats]);
 
+  const totalAmountSpent = useMemo(() => {
+    if (!stats) return 0;
+    return stats.countryBreakdown.reduce((acc, current) => {
+      return acc + current.euroTotal;
+    }, 0);
+  }, [stats]);
+
   useEffect(() => {
     setIsLoading(true);
     getTripStats(tripId, {
@@ -68,23 +75,27 @@ export default function TripStatsModal({ tripId }: { tripId: number }) {
     return (
       <div>
         <div className="flex flex-col py-4">
+          <StatSection title="Total amount spent">
+            <span className="">€{totalAmountSpent}</span>
+          </StatSection>
+        </div>
+        <div className="flex flex-col py-4">
           <StatSection title="Most Expensive Day">
             <span>
-              {format(new Date(mostExpenseDay.localDate), "dd MMM yyyy")} spent{" "}
               <span className="text-red-500">
-                €{mostExpenseDay.totalEuroAmount}
+                €{mostExpenseDay.totalEuroAmount}&nbsp;
               </span>
+              on {format(new Date(mostExpenseDay.localDate), "dd MMMM yyyy")}
             </span>
           </StatSection>
         </div>
         <div className="flex flex-col py-4">
           <StatSection title="Least Expensive Day">
             <span>
-              {format(new Date(leastExpensiveDay.localDate), "dd MMM yyyy")}{" "}
-              spent{" "}
               <span className="text-green-500">
-                €{leastExpensiveDay.totalEuroAmount}
+                €{leastExpensiveDay.totalEuroAmount}&nbsp;
               </span>
+              on {format(new Date(leastExpensiveDay.localDate), "dd MMMM yyyy")}
             </span>
           </StatSection>
         </div>
