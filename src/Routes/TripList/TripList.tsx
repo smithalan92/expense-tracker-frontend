@@ -1,6 +1,7 @@
 import { ReactComponent as PlusIcon } from "@/assets/plus.svg";
 import AddTripModal from "@/components/Modals/AddTripModal/AddTripModal";
 import Trip from "@/components/sections/Trip/Trip";
+import { withRequireLogin } from "@/components/utility/withRequireLogin";
 import Spinner from "@/components/widgets/Spinner";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
@@ -14,7 +15,7 @@ import {
 } from "@/store/slices/trips";
 import { useCallback, useEffect } from "react";
 
-export default function TripList() {
+function TripList() {
   const dispatch = useAppDispatch();
   const trips = useAppSelector(selectTrips);
   const isLoadingTrips = useAppSelector(selectIsLoadingTrips);
@@ -85,3 +86,5 @@ export default function TripList() {
     </div>
   );
 }
+
+export default withRequireLogin(TripList);

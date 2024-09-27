@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import { ReactComponent as BackIcon } from "@/assets/back.svg";
 import { ReactComponent as EditIcon } from "@/assets/edit.svg";
 import { ReactComponent as PlusIcon } from "@/assets/plus.svg";
@@ -11,6 +12,7 @@ import EditTripModal from "@/components/Modals/EditTripModal/EditTripModal";
 import TripStatsModal from "@/components/Modals/TripStatsModal/TripStatsModal";
 import ViewExpenseModal from "@/components/Modals/ViewExpenseModal/ViewExpenseModal";
 import ExpenseList from "@/components/sections/ExpenseList/ExpenseList";
+import { withRequireLogin } from "@/components/utility/withRequireLogin";
 import Spinner from "@/components/widgets/Spinner";
 import SpinnerOverlay from "@/components/widgets/SpinnerOverlay";
 import { useAppDispatch, useAppSelector } from "@/store";
@@ -41,7 +43,7 @@ import format from "date-fns/format";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-export default function TripData() {
+function TripData() {
   const { tripId } = useParams();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -331,3 +333,5 @@ export default function TripData() {
     </div>
   );
 }
+
+export default withRequireLogin(TripData);
