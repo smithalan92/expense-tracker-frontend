@@ -1,6 +1,6 @@
-import DoughnutChart from "@/components/widgets/Charts/DoughnutChart/DoughnutChart";
+import { CategoryBreakdownResult } from "@/api";
+import DoughnutChart from "@/components/widgets/Charts/DoughnutChart";
 import { useMemo } from "react";
-import { CategoryBreakDownPieChartProps } from "./CategoryBreakDownPieChart.types";
 
 export default function CategoryBreakDownPieChart({
   categoryBreakdown,
@@ -23,4 +23,8 @@ export default function CategoryBreakDownPieChart({
       />
     </div>
   );
+}
+
+export interface CategoryBreakDownPieChartProps {
+  categoryBreakdown: CategoryBreakdownResult[];
 }

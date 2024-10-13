@@ -1,5 +1,4 @@
 import { useCallback } from "react";
-import { ExpenseDescriptionProps } from "./ExpenseDescription.types";
 
 export default function ExpenseDescription({
   value,
@@ -19,4 +18,9 @@ export default function ExpenseDescription({
       onChange={onChangeDescription}
     />
   );
+}
+
+export interface ExpenseDescriptionProps {
+  value: string;
+  onChange: (value: string) => void;
 }

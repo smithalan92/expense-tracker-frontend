@@ -2,10 +2,6 @@ import Picker from "@/components/widgets/Picker/Picker";
 import { useAppSelector } from "@/store";
 import { selectCountryById, selectCurrencies } from "@/store/slices/tripData";
 import { useEffect, useMemo, useRef } from "react";
-import {
-  CurrencyPickerOption,
-  CurrencyPickerProps,
-} from "./CurrencyPicker.types";
 
 export default function CurrencyPicker({
   value,
@@ -60,4 +56,16 @@ export default function CurrencyPicker({
       isMulti={false}
     />
   );
+}
+
+export interface CurrencyPickerProps {
+  value: number | null;
+  selectedCountryId: number | null;
+  onChange: (newAmount: number) => void;
+  availableCurrencyIds?: number[];
+}
+
+export interface CurrencyPickerOption {
+  value: number;
+  label: string;
 }

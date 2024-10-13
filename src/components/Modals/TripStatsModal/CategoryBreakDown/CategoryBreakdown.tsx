@@ -1,11 +1,8 @@
-import { useState } from "react";
-import {
-  CategoryBreakdownProps,
-  CategoryBreakdownView,
-} from "./CategoryBreakdown.types";
-import CategoryBreakdownTable from "./CategoryBreakdownTable";
-import CategoryBreakDownPieChart from "./CategoryBreakDownPieChart";
+import { CategoryBreakdownResult } from "@/api";
 import StatSection from "@/components/sections/StatSection/StatSection";
+import { useState } from "react";
+import CategoryBreakDownPieChart from "./CategoryBreakDownPieChart";
+import CategoryBreakdownTable from "./CategoryBreakdownTable";
 
 export default function CategoryBreakdown({
   categoryBreakdown,
@@ -51,3 +48,9 @@ export default function CategoryBreakdown({
     </StatSection>
   );
 }
+
+export interface CategoryBreakdownProps {
+  categoryBreakdown: CategoryBreakdownResult[];
+}
+
+export type CategoryBreakdownView = "chart" | "table";

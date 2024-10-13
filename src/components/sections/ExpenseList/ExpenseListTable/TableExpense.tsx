@@ -1,7 +1,6 @@
+import type { ParsedTripExpense } from "@/store/slices/tripData";
 import format from "date-fns/format";
 import { useMemo } from "react";
-
-import { ParsedTripExpense } from "@/store/slices/tripData.types";
 
 export interface TableExpenseProps {
   expense: ParsedTripExpense;

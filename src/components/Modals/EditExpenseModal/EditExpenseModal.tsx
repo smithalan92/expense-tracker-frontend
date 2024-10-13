@@ -1,16 +1,16 @@
 import SpinnerOverlay from "@/components/widgets/SpinnerOverlay";
 import { useAppDispatch, useAppSelector } from "@/store";
+import type { EditExpenseParams } from "@/store/slices/tripData";
 import {
   editExpense,
   selectExpenseById,
   selectIsEditingExpense,
   selectTrip,
 } from "@/store/slices/tripData";
-import { EditExpenseParams } from "@/store/slices/tripData.types";
 import { useMemo, useState } from "react";
-import ExpenseModalHOC from "../ExpenseModalHOC/ExpenseModalHOC";
-import { ExpenseData } from "../ExpenseModalHOC/ExpenseModalHOC.types";
-import { EditExpenseModalProps } from "./EditExpenseModal.types";
+import ExpenseModalHOC, {
+  type ExpenseData,
+} from "../ExpenseModalHOC/ExpenseModalHOC";
 
 export default function EditExpenseModal({
   expenseId,
@@ -125,4 +125,9 @@ export default function EditExpenseModal({
       {isEditingExpense && <SpinnerOverlay />}
     </>
   );
+}
+
+export interface EditExpenseModalProps {
+  expenseId: number;
+  onClose: () => void;
 }

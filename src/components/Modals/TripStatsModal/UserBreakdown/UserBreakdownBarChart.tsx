@@ -1,6 +1,6 @@
-import BarChart from "@/components/widgets/Charts/BarChart/BarChart";
+import { UserBreakdownResult } from "@/api";
+import BarChart from "@/components/widgets/Charts/BarChart";
 import { useMemo } from "react";
-import { UserBreakdownBarChartProps } from "./UserBreakdownBarChart.types";
 
 export default function UserBreakdownBarChart({
   userBreakdown,
@@ -24,4 +24,8 @@ export default function UserBreakdownBarChart({
       />
     </div>
   );
+}
+
+export interface UserBreakdownBarChartProps {
+  userBreakdown: UserBreakdownResult[];
 }

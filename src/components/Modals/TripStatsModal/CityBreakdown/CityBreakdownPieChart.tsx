@@ -1,6 +1,6 @@
-import DoughnutChart from "@/components/widgets/Charts/DoughnutChart/DoughnutChart";
+import { CityBreakdownResult } from "@/api";
+import DoughnutChart from "@/components/widgets/Charts/DoughnutChart";
 import { useMemo } from "react";
-import { CityBreakdownPieChartProps } from "./CityBreakdownPieChart.types";
 
 export default function CityBreakdownPieChart({
   cityBreakdown,
@@ -23,4 +23,8 @@ export default function CityBreakdownPieChart({
       />
     </div>
   );
+}
+
+export interface CityBreakdownPieChartProps {
+  cityBreakdown: CityBreakdownResult[];
 }

@@ -3,10 +3,10 @@ import Modal from "@/components/Modals/ModalBase/Modal";
 import ModalBody from "@/components/Modals/ModalBase/ModalBody";
 import ModalFooter from "@/components/Modals/ModalBase/ModalFooter";
 import ModalHeader from "@/components/Modals/ModalBase/ModalHeader";
+import type { PickerOption } from "@/components/widgets/Picker/Picker";
 import Picker from "@/components/widgets/Picker/Picker";
-import { PickerOption } from "@/components/widgets/Picker/Picker.types";
 import { useCallback, useEffect, useState } from "react";
-import { TripModalCountry } from "../TripModalHOC/TripModalHOC.types";
+import type { TripModalCountry } from "../TripModalHOC/TripModalHOC";
 import CityPickerList, { OnClickCityProps } from "./CityPickerList";
 
 export interface AddCountryModalProps {

@@ -1,4 +1,4 @@
-import { CountryBreakdownTableProps } from "./CountryBreakdownTable.types";
+import { CountryBreakdownResult } from "@/api";
 
 export default function CountryBreakdownTable({
   countryBreakdown,
@@ -31,4 +31,8 @@ export default function CountryBreakdownTable({
       </table>
     </div>
   );
+}
+
+export interface CountryBreakdownTableProps {
+  countryBreakdown: CountryBreakdownResult[];
 }

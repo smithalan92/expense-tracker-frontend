@@ -1,11 +1,8 @@
-import { useState } from "react";
-import {
-  CountryBreakdownProps,
-  CountryBreakdownView,
-} from "./CountryBreakdown.types";
-import CountryBreakdownTable from "./CountryBreakdownTable";
-import CountryBreakdownPieChart from "./CountryBreakdownPieChart";
+import { CountryBreakdownResult } from "@/api";
 import StatSection from "@/components/sections/StatSection/StatSection";
+import { useState } from "react";
+import CountryBreakdownPieChart from "./CountryBreakdownPieChart";
+import CountryBreakdownTable from "./CountryBreakdownTable";
 
 export default function CountryBreakdown({
   countryBreakdown,
@@ -51,3 +48,9 @@ export default function CountryBreakdown({
     </StatSection>
   );
 }
+
+export interface CountryBreakdownProps {
+  countryBreakdown: CountryBreakdownResult[];
+}
+
+export type CountryBreakdownView = "chart" | "table";

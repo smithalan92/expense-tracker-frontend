@@ -1,5 +1,5 @@
+import { DailyCostBreakdownResult } from "@/api";
 import format from "date-fns/format";
-import { DayBreakdownTableProps } from "./DayBreakdownTable.types";
 
 export default function UserBreakdownTable({
   dailyCostBreakdown,
@@ -28,4 +28,8 @@ export default function UserBreakdownTable({
       </tbody>
     </table>
   );
+}
+
+export interface DayBreakdownTableProps {
+  dailyCostBreakdown: DailyCostBreakdownResult[];
 }

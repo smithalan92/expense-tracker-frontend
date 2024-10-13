@@ -1,4 +1,4 @@
-import { UserBreakdownTableProps } from "./UserBreakdownTable.types";
+import { UserBreakdownResult } from "@/api";
 
 export default function UserBreakdownTable({
   userBreakdown,
@@ -27,4 +27,8 @@ export default function UserBreakdownTable({
       </tbody>
     </table>
   );
+}
+
+export interface UserBreakdownTableProps {
+  userBreakdown: UserBreakdownResult[];
 }

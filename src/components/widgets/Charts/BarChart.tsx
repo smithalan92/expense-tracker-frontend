@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import { Bar } from "react-chartjs-2";
-import { makeChartData, makeBarChartOptions } from "../utils";
-import { BarChartProps } from "./BarChart.types";
+import { makeBarChartOptions, makeChartData } from "./utils";
 
 export default function BarChart({
   labels,
@@ -13,7 +12,7 @@ export default function BarChart({
 }: BarChartProps) {
   const data = useMemo(
     () => makeChartData(labels, values, dataLabel, useSingleColor),
-    [labels, values, dataLabel]
+    [labels, values, dataLabel, useSingleColor]
   );
   const options = useMemo(
     () => makeBarChartOptions(isCurrencyValue, isVerticalChart),
@@ -21,4 +20,13 @@ export default function BarChart({
   );
 
   return useMemo(() => <Bar data={data} options={options} />, [data, options]);
+}
+
+export interface BarChartProps {
+  labels: (string | number)[];
+  values: (string | number)[];
+  isCurrencyValue: boolean;
+  isVerticalChart: boolean;
+  dataLabel: string;
+  useSingleColor?: boolean;
 }

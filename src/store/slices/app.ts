@@ -1,5 +1,5 @@
 import * as api from "@/api";
-import { LoginResponse } from "@/api.types";
+import { LoginResponse } from "@/api";
 import {
   LOCALSTORAGE_AUTH_KEY,
   deleteAllLocalStorage,
@@ -12,7 +12,6 @@ import {
   createSelector,
   createSlice,
 } from "@reduxjs/toolkit";
-import { AppState, LoginThunkParams } from "./app.types";
 import { resetState as resetTripDataState } from "./tripData";
 import { resetState as resetTripsState } from "./trips";
 
@@ -104,3 +103,17 @@ export const selectIsLoggedIn = createSelector(
 );
 
 export default appSlice.reducer;
+
+import { LoginUser } from "@/api";
+
+export interface AppState {
+  user: LoginUser | null;
+  isLoggingIn: boolean;
+  hasFailedToLogin: boolean;
+  authToken: string;
+}
+
+export interface LoginThunkParams {
+  email: string;
+  password: string;
+}

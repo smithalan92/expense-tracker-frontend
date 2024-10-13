@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { CityBreakdownProps, CityBreakdownView } from "./CityBreakdown.types";
-import CityBreakdownTable from "./CityBreakdownTable";
-import CityBreakdownPieChart from "./CityBreakdownPieChart";
+import { CityBreakdownResult } from "@/api";
 import StatSection from "@/components/sections/StatSection/StatSection";
+import { useState } from "react";
+import CityBreakdownPieChart from "./CityBreakdownPieChart";
+import CityBreakdownTable from "./CityBreakdownTable";
 
 export default function CityBreakdown({ cityBreakdown }: CityBreakdownProps) {
   const [activeTab, setActiveTab] = useState<CityBreakdownView>("chart");
@@ -46,3 +46,9 @@ export default function CityBreakdown({ cityBreakdown }: CityBreakdownProps) {
     </StatSection>
   );
 }
+
+export interface CityBreakdownProps {
+  cityBreakdown: CityBreakdownResult[];
+}
+
+export type CityBreakdownView = "chart" | "table";

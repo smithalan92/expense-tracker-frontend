@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { DatePickerProps } from "./DatePicker.types";
 
 export default function CustomDatePicker({
   value,
@@ -31,4 +30,11 @@ export default function CustomDatePicker({
       />
     </div>
   );
+}
+
+export interface DatePickerProps {
+  value: string;
+  useDateOnly?: boolean;
+  dateStringFormatter: (date: Date) => string;
+  onChange: (date: string) => void;
 }

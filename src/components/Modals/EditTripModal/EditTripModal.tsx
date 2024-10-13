@@ -1,5 +1,4 @@
-import { getTripForEditing } from "@/api";
-import { GetTripEditDataResponse } from "@/api.types";
+import { GetTripEditDataResponse, getTripForEditing } from "@/api";
 import SpinnerOverlay from "@/components/widgets/SpinnerOverlay";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { resetUpdateTripStatus, updateTrip } from "@/store/slices/tripData";
@@ -11,8 +10,7 @@ import {
   isTripNameDifferent,
 } from "@/utils/trip";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import TripModalHOC from "../TripModalHOC/TripModalHOC";
-import { TripModalData } from "../TripModalHOC/TripModalHOC.types";
+import TripModalHOC, { type TripModalData } from "../TripModalHOC/TripModalHOC";
 
 export interface EditTripModalProps {
   tripId: number;

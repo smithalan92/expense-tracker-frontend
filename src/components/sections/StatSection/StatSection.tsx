@@ -1,5 +1,3 @@
-import { StatSectionProps } from "./StatSection.types";
-
 export default function StatSection({ title, children }: StatSectionProps) {
   return (
     <div className="w-full rounded-lg border border-solid border-gray-300 shadow-sm p-2">
@@ -7,4 +5,8 @@ export default function StatSection({ title, children }: StatSectionProps) {
       <div className="px-2 py-1 text-center">{children}</div>
     </div>
   );
+}
+
+export interface StatSectionProps extends React.PropsWithChildren {
+  title: string;
 }

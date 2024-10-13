@@ -1,7 +1,6 @@
-import { LineChartProps } from "./LineChart.types";
-import { Line } from "react-chartjs-2";
 import { useMemo } from "react";
-import { makeLineChartData, makeLineChartOptions } from "../utils";
+import { Line } from "react-chartjs-2";
+import { makeLineChartData, makeLineChartOptions } from "./utils";
 
 export default function LineChart({
   labels,
@@ -26,4 +25,11 @@ export default function LineChart({
     ),
     [data, options]
   );
+}
+
+export interface LineChartProps {
+  labels: (string | number)[];
+  values: (string | number)[];
+  isCurrencyValue: boolean;
+  dataLabel: string;
 }

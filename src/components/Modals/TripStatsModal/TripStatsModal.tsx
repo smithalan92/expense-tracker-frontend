@@ -1,5 +1,4 @@
-import { getTripStats } from "@/api";
-import { GetTripStatsResponse } from "@/api.types";
+import { getTripStats, GetTripStatsResponse } from "@/api";
 import Modal from "@/components/Modals/ModalBase/Modal";
 import ModalBody from "@/components/Modals/ModalBase/ModalBody";
 import ModalHeader from "@/components/Modals/ModalBase/ModalHeader";

@@ -2,8 +2,8 @@ import Modal from "@/components/Modals/ModalBase/Modal";
 import ModalBody from "@/components/Modals/ModalBase/ModalBody";
 import ModalFooter from "@/components/Modals/ModalBase/ModalFooter";
 import ModalHeader from "@/components/Modals/ModalBase/ModalHeader";
+import type { PickerOption } from "@/components/widgets/Picker/Picker";
 import Picker from "@/components/widgets/Picker/Picker";
-import { PickerOption } from "@/components/widgets/Picker/Picker.types";
 import { useAppSelector } from "@/store";
 import {
   selectCategories,
@@ -17,7 +17,6 @@ import CityPicker from "./CityPicker/CityPicker";
 import CurrencyPicker from "./CurrencyPicker/CurrencyPicker";
 import ExpenseAmountInput from "./ExpenseAmountInput/ExpenseAmountInput";
 import ExpenseDescription from "./ExpenseDescription/ExpenseDescription";
-import { ExpenseModalHOCProps } from "./ExpenseModalHOC.types";
 
 export default function ExpenseModalHOC({
   expenseId,
@@ -199,4 +198,22 @@ export default function ExpenseModalHOC({
       <ModalFooter>{footer}</ModalFooter>
     </Modal>
   );
+}
+
+export interface ExpenseData {
+  date: string;
+  amount: string | null;
+  countryId: number | null;
+  cityId: number | null;
+  currencyId: number | null;
+  categoryId: number | null;
+  description: string;
+  userId: number;
+}
+
+export interface ExpenseModalHOCProps {
+  expenseId?: number;
+  title: string;
+  footer: JSX.Element | JSX.Element[];
+  onChangeData: (d: ExpenseData) => void;
 }

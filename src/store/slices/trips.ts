@@ -1,5 +1,7 @@
+import type { CreateTripPayload, GetTripEditDataResponse, Trip } from "@/api";
 import * as api from "@/api";
-import { Trip } from "@/api.types";
+import type { TripModalData } from "@/components/Modals/TripModalHOC/TripModalHOC";
+
 import {
   LOCALSTORAGE_TRIPS_KEY,
   getStorageItem,
@@ -12,7 +14,6 @@ import {
   createSlice,
 } from "@reduxjs/toolkit";
 import axios from "axios";
-import { CreateTripThunkPayload, TripsState } from "./trips.types";
 
 const initialState: TripsState = {
   trips: [],
@@ -151,3 +152,24 @@ export const selectHasAddingTripFailed = createSelector(
 );
 
 export default tripSlice.reducer;
+
+export interface TripsState {
+  trips: Trip[];
+  isLoadingTrips: boolean;
+  hasLoadedTrips: boolean;
+  hasFailedToLoadTrips: boolean;
+  shouldShowAddTripModal: boolean;
+  isAddingTrip: boolean;
+  hasAddingTripFailed: boolean;
+}
+
+export interface CreateTripThunkPayload
+  extends Omit<CreateTripPayload, "file"> {
+  file?: File;
+}
+
+export interface UpdateTripThunkPayload {
+  tripId: number;
+  newData: TripModalData;
+  oldData: GetTripEditDataResponse;
+}

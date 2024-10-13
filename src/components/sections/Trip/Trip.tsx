@@ -1,6 +1,6 @@
+import type { Trip as TripType } from "@/api";
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { TripProps } from "./Trip.types";
 
 export default function Trip({ trip }: TripProps) {
   const navigate = useNavigate();
@@ -49,4 +49,8 @@ export default function Trip({ trip }: TripProps) {
       </div>
     </div>
   );
+}
+
+export interface TripProps {
+  trip: TripType;
 }

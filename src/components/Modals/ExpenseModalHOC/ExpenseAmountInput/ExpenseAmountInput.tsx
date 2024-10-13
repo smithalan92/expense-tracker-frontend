@@ -1,5 +1,4 @@
 import { useCallback, useMemo } from "react";
-import { ExpenseAmountInputProps } from "./ExpenseAmountInput.types";
 
 export default function ExpenseAmountInput({
   value,
@@ -30,4 +29,9 @@ export default function ExpenseAmountInput({
       }`}
     />
   );
+}
+
+export interface ExpenseAmountInputProps {
+  value: string | null;
+  onChange: (newAmount: string) => void;
 }

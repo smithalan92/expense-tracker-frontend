@@ -1,6 +1,5 @@
 import { ReactComponent as DeleteIcon } from "@/assets/close.svg";
 import { ChangeEvent, useState } from "react";
-import { ImagePickerProps, SelectedFile } from "./ImagePicker.types";
 
 export default function ImagePicker({
   onChange,
@@ -51,4 +50,11 @@ export default function ImagePicker({
       )}
     </div>
   );
+}
+
+export type SelectedFile = null | string;
+
+export interface ImagePickerProps {
+  initalImage?: string | null;
+  onChange: (file: File | null) => void;
 }

@@ -1,6 +1,6 @@
-import DoughnutChart from "@/components/widgets/Charts/DoughnutChart/DoughnutChart";
+import { CountryBreakdownResult } from "@/api";
+import DoughnutChart from "@/components/widgets/Charts/DoughnutChart";
 import { useMemo } from "react";
-import { CountryBreakdownPieChartProps } from "./CountryBreakdownPieChart.types";
 
 export default function CountryBreakdownPieChart({
   countryBreakdown,
@@ -23,4 +23,8 @@ export default function CountryBreakdownPieChart({
       />
     </div>
   );
+}
+
+export interface CountryBreakdownPieChartProps {
+  countryBreakdown: CountryBreakdownResult[];
 }

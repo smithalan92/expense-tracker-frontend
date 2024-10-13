@@ -1,4 +1,4 @@
-import { TripModalCountry } from "@/components/Modals/TripModalHOC/TripModalHOC.types";
+import type { TripModalCountry } from "@/components/Modals/TripModalHOC/TripModalHOC";
 import { formatDateForTrip } from "./date";
 
 export function isTripNameDifferent(newName: string, oldName: string) {

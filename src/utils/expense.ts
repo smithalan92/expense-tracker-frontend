@@ -1,8 +1,8 @@
-import {
+import type {
   AddExpenseParams,
   ParsedTripExpense,
   TripDataState,
-} from "@/store/slices/tripData.types";
+} from "@/store/slices/tripData";
 
 export function getTempExpense(
   tripDataState: TripDataState,

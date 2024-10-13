@@ -4,8 +4,9 @@ import {
   setShouldShowAddExpenseModal,
 } from "@/store/slices/tripData";
 import { useMemo, useState } from "react";
-import ExpenseModalHOC from "../ExpenseModalHOC/ExpenseModalHOC";
-import { ExpenseData } from "../ExpenseModalHOC/ExpenseModalHOC.types";
+import ExpenseModalHOC, {
+  type ExpenseData,
+} from "../ExpenseModalHOC/ExpenseModalHOC";
 
 export default function AddExpenseModal() {
   const dispatch = useAppDispatch();

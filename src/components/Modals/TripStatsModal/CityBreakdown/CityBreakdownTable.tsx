@@ -1,4 +1,4 @@
-import { CityBreakdownTableProps } from "./CityBreakdownTable.types";
+import { CityBreakdownResult } from "@/api";
 
 export default function CityBreakdownTable({
   cityBreakdown,
@@ -31,4 +31,8 @@ export default function CityBreakdownTable({
       </table>
     </div>
   );
+}
+
+export interface CityBreakdownTableProps {
+  cityBreakdown: CityBreakdownResult[];
 }

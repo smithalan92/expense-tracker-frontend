@@ -1,7 +1,6 @@
 import CustomSelect from "@/components/widgets/CustomSelect/CustomSelect";
 import { useCallback, useMemo } from "react";
 import { OnChangeValue } from "react-select";
-import { PickerOption, PickerProps } from "./Picker.types";
 
 export default function Picker({
   options,
@@ -37,3 +36,27 @@ export default function Picker({
     />
   );
 }
+
+export interface PickerOption {
+  value: number;
+  label: string;
+}
+
+export interface PickerBaseProps {
+  options: PickerOption[];
+  isDisabled?: boolean;
+}
+
+export interface PickerSingleProps extends PickerBaseProps {
+  value: number | null;
+  isMulti: false;
+  onChange: (id: number) => void;
+}
+
+export interface PickerMultiProps extends PickerBaseProps {
+  value: number[];
+  isMulti: true;
+  onChange: (ids: number[]) => void;
+}
+
+export type PickerProps = PickerSingleProps | PickerMultiProps;

@@ -1,5 +1,5 @@
 import { ReactComponent as LocationIcon } from "@/assets/location.svg";
-import { ParsedTripExpense } from "@/store/slices/tripData.types";
+import type { ParsedTripExpense } from "@/store/slices/tripData";
 import { format } from "date-fns";
 import { useMemo } from "react";
 import ExpenseCategoryIcon from "./ExpenseCategoryIcon";

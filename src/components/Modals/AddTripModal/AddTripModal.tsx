@@ -8,8 +8,7 @@ import {
 } from "@/store/slices/trips";
 import { showToast } from "@/utils/toast";
 import { useEffect, useMemo, useState } from "react";
-import TripModalHOC from "../TripModalHOC/TripModalHOC";
-import { TripModalData } from "../TripModalHOC/TripModalHOC.types";
+import TripModalHOC, { type TripModalData } from "../TripModalHOC/TripModalHOC";
 
 export default function AddTripModal() {
   const dispatch = useAppDispatch();

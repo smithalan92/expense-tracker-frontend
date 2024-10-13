@@ -5,7 +5,6 @@ import {
   setStorageItem,
 } from "@/utils/localStorage";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { ExpenseViewType, UserSettingsState } from "./userSettings.types";
 
 const initialState: UserSettingsState = {
   disableNativeSelectsOnMobile:
@@ -43,3 +42,10 @@ export const selectUserPreferencesState = ({
 }) => userPreferences;
 
 export default userSettingsSlice.reducer;
+
+export type ExpenseViewType = "table" | "card";
+
+export interface UserSettingsState {
+  disableNativeSelectsOnMobile: boolean;
+  expenseView: ExpenseViewType;
+}

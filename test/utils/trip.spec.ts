@@ -1,4 +1,4 @@
-import { TripModalCountry } from "../../src/components/Modals/TripModalHOC/TripModalHOC.types";
+import type { TripModalCountry } from "../../src/components/Modals/TripModalHOC/TripModalHOC";
 import {
   areUserIdsDifferent,
   isAnyCountryDataDifferent,

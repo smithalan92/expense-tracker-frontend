@@ -1,5 +1,4 @@
-import { loadCitiesForCountry } from "@/api";
-import { City as CityType } from "@/api.types";
+import { City as CityType, loadCitiesForCountry } from "@/api";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import City from "./City";
 import SelectedCitiesPopUp from "./SelectedCitiesPopup";

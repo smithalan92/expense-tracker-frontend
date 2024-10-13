@@ -1,5 +1,5 @@
 import { ChangeEvent, useCallback } from "react";
-import { PickerOption } from "../Picker/Picker.types";
+import type { PickerOption } from "../Picker/Picker";
 
 export interface MobileSelectProps {
   className?: string;

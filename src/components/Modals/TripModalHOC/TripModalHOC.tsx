@@ -6,8 +6,8 @@ import ModalBody from "@/components/Modals/ModalBase/ModalBody";
 import ModalFooter from "@/components/Modals/ModalBase/ModalFooter";
 import ModalHeader from "@/components/Modals/ModalBase/ModalHeader";
 import ImagePicker from "@/components/widgets/ImagePicker/ImagePicker";
+import type { PickerOption } from "@/components/widgets/Picker/Picker";
 import Picker from "@/components/widgets/Picker/Picker";
-import { PickerOption } from "@/components/widgets/Picker/Picker.types";
 import { useAppSelector } from "@/store";
 import { selectUser } from "@/store/slices/app";
 import { formatDateForTrip } from "@/utils/date";
@@ -15,7 +15,6 @@ import { addDays } from "date-fns";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import CustomDatePicker from "../../widgets/DatePicker/DatePicker";
 import AddCountryModal from "../AddCountryModal/AddCountryModal";
-import { TripModalCountry, TripModalHOCProps } from "./TripModalHOC.types";
 
 export default function TripModalHOC({
   title,
@@ -225,4 +224,26 @@ export default function TripModalHOC({
       )}
     </>
   );
+}
+
+import { CreateTripCountry, GetTripEditDataResponse } from "@/api";
+
+export interface TripModalCountry extends CreateTripCountry {
+  name: string;
+}
+
+export interface TripModalData {
+  file?: File;
+  name: string;
+  startDate: string;
+  endDate: string;
+  countries: TripModalCountry[];
+  userIds: number[];
+}
+
+export interface TripModalHOCProps {
+  title: string;
+  footer: JSX.Element | JSX.Element[];
+  initalData?: GetTripEditDataResponse | null;
+  onChangeData: (data: TripModalData) => void;
 }

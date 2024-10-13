@@ -1,4 +1,4 @@
-import { CategoryBreakdownTableProps } from "./CategoryBreakdownTable.types";
+import { CategoryBreakdownResult } from "@/api";
 
 export default function CategoryBreakdownTable({
   categoryBreakdown,
@@ -27,4 +27,8 @@ export default function CategoryBreakdownTable({
       </tbody>
     </table>
   );
+}
+
+export interface CategoryBreakdownTableProps {
+  categoryBreakdown: CategoryBreakdownResult[];
 }

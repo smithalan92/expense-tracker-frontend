@@ -3,11 +3,11 @@ import ModalBody from "@/components/Modals/ModalBase/ModalBody";
 import ModalHeader from "@/components/Modals/ModalBase/ModalHeader";
 import CustomSelect from "@/components/widgets/CustomSelect/CustomSelect";
 import { useAppDispatch, useAppSelector } from "@/store";
+import type { ExpenseViewType } from "@/store/slices/userSettings";
 import {
   setExpenseViewType,
   toggleNativeMobileSelectsDisabled,
 } from "@/store/slices/userSettings";
-import { ExpenseViewType } from "@/store/slices/userSettings.types";
 import { useCallback, useMemo } from "react";
 
 interface ExpenseViewPickerOption {

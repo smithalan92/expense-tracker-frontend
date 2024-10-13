@@ -1,7 +1,7 @@
+import { DailyCostBreakdownResult } from "@/api";
 import StatSection from "@/components/sections/StatSection/StatSection";
 import { useState } from "react";
-import { DayBreakdownProps, DayBreakdownView } from "./DayBreakdown.types";
-import DayBreakdownChart from "./DayBreakdownChart/DayBreakdownChart";
+import DayBreakdownChart from "./DayBreakdownChart";
 import DayBreakdownTable from "./DayBreakdownTable";
 
 export default function DayBreakdown({
@@ -51,3 +51,9 @@ export default function DayBreakdown({
     </StatSection>
   );
 }
+
+export interface DayBreakdownProps {
+  dailyCostBreakdown: DailyCostBreakdownResult[];
+}
+
+export type DayBreakdownView = "chart" | "table";

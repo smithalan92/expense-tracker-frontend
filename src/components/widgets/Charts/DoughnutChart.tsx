@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import { Doughnut } from "react-chartjs-2";
-import { makeDoughnutChartOptions, makeChartData } from "../utils";
-import { DoughnutChartProps } from "./DoughnutChart.types";
+import { makeChartData, makeDoughnutChartOptions } from "./utils";
 
 export default function DoughnutChart({
   labels,
@@ -26,4 +25,11 @@ export default function DoughnutChart({
     ),
     [data, options]
   );
+}
+
+export interface DoughnutChartProps {
+  labels: (string | number)[];
+  values: (string | number)[];
+  isCurrencyValue: boolean;
+  dataLabel: string;
 }

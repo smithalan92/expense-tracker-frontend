@@ -1,7 +1,7 @@
-import { DayBreakdownChartProps } from "./DayBreakdownChart.types";
-import { useMemo } from "react";
-import LineChart from "@/components/widgets/Charts/LineChart/LineChart";
+import { DailyCostBreakdownResult } from "@/api";
+import LineChart from "@/components/widgets/Charts/LineChart";
 import format from "date-fns/format";
+import { useMemo } from "react";
 
 export default function DayBreakdownChart({
   dailyCostBreakdown,
@@ -24,4 +24,8 @@ export default function DayBreakdownChart({
       dataLabel="Daily spent"
     />
   );
+}
+
+export interface DayBreakdownChartProps {
+  dailyCostBreakdown: DailyCostBreakdownResult[];
 }

@@ -1,6 +1,6 @@
-import { HourlySpendingBreakdownChartProps } from "./HourlySpendingBreakdownChart.types";
+import { HourlySpendingResult } from "@/api";
+import BarChart from "@/components/widgets/Charts/BarChart";
 import { useMemo } from "react";
-import BarChart from "@/components/widgets/Charts/BarChart/BarChart";
 
 export default function HourlySpendingBreakdownChart({
   hourlySpendingBreakdown,
@@ -23,4 +23,8 @@ export default function HourlySpendingBreakdownChart({
       useSingleColor={true}
     />
   );
+}
+
+export interface HourlySpendingBreakdownChartProps {
+  hourlySpendingBreakdown: HourlySpendingResult[];
 }

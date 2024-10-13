@@ -2,7 +2,6 @@ import Picker from "@/components/widgets/Picker/Picker";
 import { useAppSelector } from "@/store";
 import { selectCitiesForCountryId } from "@/store/slices/tripData";
 import { useEffect, useMemo } from "react";
-import { CityPickerOption, CityPickerProps } from "./CityPicker.types";
 
 export default function CityPicker({
   value,
@@ -49,4 +48,16 @@ export default function CityPicker({
       // isDisabled={!selectedCountryId}
     />
   );
+}
+
+export interface CityPickerProps {
+  value: number | null;
+  selectedCountryId: number | null;
+  onChange: (selectedId: number | null) => void;
+}
+
+export interface CityPickerOption {
+  countryId: number;
+  value: number;
+  label: string;
 }

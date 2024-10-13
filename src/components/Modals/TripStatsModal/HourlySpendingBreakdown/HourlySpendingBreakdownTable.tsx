@@ -1,4 +1,4 @@
-import { HourlySpendingBreakdownTableProps } from "./HourlySpendingBreakdownTable.types";
+import { HourlySpendingResult } from "@/api";
 
 export default function UserBreakdownTable({
   hourlySpendingBreakdown,
@@ -27,4 +27,8 @@ export default function UserBreakdownTable({
       </tbody>
     </table>
   );
+}
+
+export interface HourlySpendingBreakdownTableProps {
+  hourlySpendingBreakdown: HourlySpendingResult[];
 }

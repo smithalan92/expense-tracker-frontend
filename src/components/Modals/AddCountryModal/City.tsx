@@ -1,4 +1,4 @@
-import { City as CityType } from "@/api.types";
+import { City as CityType } from "@/api";
 import { ReactComponent as CheckIcon } from "@/assets/check.svg";
 
 interface CityProps {

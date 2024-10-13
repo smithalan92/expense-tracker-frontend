@@ -1,10 +1,7 @@
+import { HourlySpendingResult } from "@/api";
 import StatSection from "@/components/sections/StatSection/StatSection";
 import { useState } from "react";
-import {
-  HourlySpendingBreakdownProps,
-  BreakdownView,
-} from "./HourlySpendingBreakdown.types";
-import BreakdownChart from "./HourlySpendingBreakdownChart/HourlySpendingBreakdownChart";
+import BreakdownChart from "./HourlySpendingBreakdownChart";
 import BreakdownTable from "./HourlySpendingBreakdownTable";
 
 export default function DayBreakdown({
@@ -56,3 +53,9 @@ export default function DayBreakdown({
     </StatSection>
   );
 }
+
+export interface HourlySpendingBreakdownProps {
+  hourlySpendingBreakdown: HourlySpendingResult[];
+}
+
+export type BreakdownView = "chart" | "table";
