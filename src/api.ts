@@ -8,7 +8,7 @@ const PRODUCTION_API_URL = "https://expense-tracker-api.smithy.dev";
 const LOCAL_API_URL = "http://localhost:3520";
 
 const API_URL =
-  process.env.NODE_ENV !== "development" ? LOCAL_API_URL : PRODUCTION_API_URL;
+  process.env.NODE_ENV === "development" ? LOCAL_API_URL : PRODUCTION_API_URL;
 
 export function createInstance(authToken: string) {
   http = axios.create({
