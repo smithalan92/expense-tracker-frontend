@@ -10,8 +10,9 @@ import ModalBody from "@/components/Modals/ModalBase/ModalBody";
 import ModalFooter from "@/components/Modals/ModalBase/ModalFooter";
 import ModalHeader from "@/components/Modals/ModalBase/ModalHeader";
 import ExpenseCategoryIcon from "@/components/sections/ExpenseList/ExpenseListCards/ExpenseCategoryIcon";
-import { useAppDispatch, useAppSelector } from "@/store";
-import { copyExpense, selectExpenseById } from "@/store/slices/tripData";
+import useExpense from "@/hooks/useExpense";
+import { useAppDispatch } from "@/store";
+import { copyExpense } from "@/store/slices/tripData";
 import format from "date-fns/format";
 import { useCallback, useMemo, useState } from "react";
 import { ConfirmModal } from "../ConfirmModal/ConfirmModal";
@@ -27,6 +28,7 @@ interface DataField {
 }
 
 interface ViewExpenseModalProps {
+  tripId: number;
   expenseId: number;
   onClose: () => void;
   onClickEditExpense: () => void;
@@ -34,25 +36,27 @@ interface ViewExpenseModalProps {
 }
 
 export default function ViewExpenseModal({
+  tripId,
   expenseId,
   onClose,
   onClickEditExpense,
   onConfirmDeleteExpense,
 }: ViewExpenseModalProps) {
   const dispatch = useAppDispatch();
-  const expense = useAppSelector((state) =>
-    selectExpenseById(state, expenseId)
-  )!;
+  const expense = useExpense({ tripId, expenseId });
 
   const expenseDate = useMemo(() => {
+    if (!expense) return "";
     return format(new Date(expense.localDateTime), "do MMM yy");
   }, [expense]);
 
   const expenseTime = useMemo(() => {
+    if (!expense) return "";
     return format(new Date(expense.localDateTime), "HH:mm");
   }, [expense]);
 
   const dataFieldsToDisplay = useMemo<DataField[]>(() => {
+    if (!expense) return [];
     return [
       {
         label: "Cost",

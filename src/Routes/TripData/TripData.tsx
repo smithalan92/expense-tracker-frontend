@@ -15,25 +15,22 @@ import ExpenseList from "@/components/sections/ExpenseList/ExpenseList";
 import { withRequireLogin } from "@/components/utility/withRequireLogin";
 import Spinner from "@/components/widgets/Spinner";
 import SpinnerOverlay from "@/components/widgets/SpinnerOverlay";
+import useTripData from "@/hooks/useTripData";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
   deleteExpense,
   deleteTrip,
-  loadTripData,
   resetDeleteStates,
   resetState,
   selectCanShowSyncButton,
   selectDidDeleteExpense,
   selectDidDeletingExpenseFail,
-  selectHasFailedToTripData,
   selectIsAddingExpense,
   selectIsDeletingExpense,
   selectIsLoadingExpenses,
-  selectIsLoadingTripData,
   selectIsSyncingUnSavedExpenses,
   selectShouldShowAddExpenseModal,
   selectShouldShowTripStatsModal,
-  selectTrip,
   setShouldShowAddExpenseModal,
   setShouldShowTripStatsModal,
   syncUnsavedExpenses,
@@ -44,11 +41,14 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 function TripData() {
-  const { tripId } = useParams();
+  const { tripId: rawTripId } = useParams();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const isLoadingData = useAppSelector(selectIsLoadingTripData);
-  const hasFailedToLoadData = useAppSelector(selectHasFailedToTripData);
+
+  const tripId = useMemo(() => parseInt(rawTripId!, 10), [rawTripId]);
+
+  const { tripData, isLoadingTripData, tripDataError } = useTripData(tripId);
+
   const shouldShowAddExpenseModal = useAppSelector(
     selectShouldShowAddExpenseModal
   );
@@ -68,7 +68,6 @@ function TripData() {
     selectIsSyncingUnSavedExpenses
   );
   const isLoadingExpenses = useAppSelector(selectIsLoadingExpenses);
-  const trip = useAppSelector(selectTrip);
   const isDeletingTrip = useAppSelector(
     (state) => state.tripData.isDeletingTrip
   );
@@ -88,7 +87,7 @@ function TripData() {
 
   const onConfirmDeleteTrip = (shouldDelete: boolean) => {
     if (shouldDelete) {
-      dispatch(deleteTrip(trip.id));
+      dispatch(deleteTrip(tripData!.trip.id));
     }
     setIsDeleteTripModalOpen(false);
   };
@@ -109,10 +108,6 @@ function TripData() {
     dispatch(deleteExpense(currentSelectedExpenseID!));
   };
 
-  useEffect(() => {
-    dispatch(loadTripData(parseInt(tripId!, 10)));
-  }, [dispatch, tripId]);
-
   const onClickGoBack = useCallback(() => {
     navigate(-1);
   }, [navigate]);
@@ -130,8 +125,8 @@ function TripData() {
   }, [dispatch]);
 
   const onClickRefresh = useCallback(() => {
-    dispatch(loadTripData(trip.id));
-  }, [dispatch, trip]);
+    // dispatch(loadTripData(trip.id));
+  }, []);
 
   const onCloseEditExpenseModal = () => {
     setShouldShowEditExpenseModal(false);
@@ -170,18 +165,18 @@ function TripData() {
   }, [hasDeletingExpenseFailed, dispatch]);
 
   const tripStartDate = useMemo(() => {
-    if (!trip.startDate) return "";
-    return format(new Date(trip.startDate), "dd MMM yyyy");
-  }, [trip]);
+    if (!tripData) return "";
+    return format(new Date(tripData.trip.startDate), "dd MMM yyyy");
+  }, [tripData]);
 
   const tripEndDate = useMemo(() => {
-    if (!trip.startDate) return "";
-    return format(new Date(trip.endDate), "dd MMM yyyy");
-  }, [trip]);
+    if (!tripData) return "";
+    return format(new Date(tripData.trip.endDate), "dd MMM yyyy");
+  }, [tripData]);
 
   const maybeRenderLoader = useCallback(() => {
     if (
-      !isLoadingData &&
+      !isLoadingTripData &&
       !isSavingExpense &&
       !isSyncingUnsavedExpenses &&
       !isLoadingExpenses
@@ -194,14 +189,14 @@ function TripData() {
       </div>
     );
   }, [
-    isLoadingData,
+    isLoadingTripData,
     isLoadingExpenses,
     isSavingExpense,
     isSyncingUnsavedExpenses,
   ]);
 
   const maybeRenderFailureState = useCallback(() => {
-    if (!hasFailedToLoadData) return null;
+    if (!tripDataError) return null;
 
     return (
       <div className="text-center">
@@ -209,15 +204,17 @@ function TripData() {
         again.
       </div>
     );
-  }, [hasFailedToLoadData]);
+  }, [tripDataError]);
 
   const maybeRenderContent = useCallback(() => {
-    if (isLoadingData || hasFailedToLoadData) return null;
+    if (isLoadingTripData || tripDataError || !tripData) return null;
 
     return (
       <>
         <div className="h-full overflow-hidden pt-4 flex flex-col">
-          <div className="text-center font-bold text-2xl mb-2">{trip.name}</div>
+          <div className="text-center font-bold text-2xl mb-2">
+            {tripData.trip.name}
+          </div>
           <div className="text-center text-md mb-4">
             {tripStartDate} to {tripEndDate}
           </div>
@@ -255,7 +252,7 @@ function TripData() {
             </div>
           </div>
           <div className="overflow-x-auto flex-1">
-            <ExpenseList onClickExpense={onClickExpense} />
+            <ExpenseList tripId={tripId} onClickExpense={onClickExpense} />
           </div>
           <div className="flex justify-center py-6">
             {shouldShowSyncButton && (
@@ -277,15 +274,16 @@ function TripData() {
       </>
     );
   }, [
-    isLoadingData,
-    hasFailedToLoadData,
-    trip.name,
+    isLoadingTripData,
+    tripDataError,
+    tripData,
     tripStartDate,
     tripEndDate,
-    onClickExpense,
     onClickGoBack,
     onClickRefresh,
     onClickViewStats,
+    tripId,
+    onClickExpense,
     shouldShowSyncButton,
     onClickSync,
     onClickAddExpense,
@@ -297,9 +295,12 @@ function TripData() {
       {maybeRenderFailureState()}
       {maybeRenderContent()}
       {shouldShowAddExpenseModal && <AddExpenseModal />}
-      {shouldShowTripStatsModal && <TripStatsModal tripId={trip.id} />}
+      {shouldShowTripStatsModal && (
+        <TripStatsModal tripId={tripData!.trip.id} />
+      )}
       {currentSelectedExpenseID && !shouldShowEditExpenseModal && (
         <ViewExpenseModal
+          tripId={tripId}
           expenseId={currentSelectedExpenseID}
           onClose={onCloseViewExpenseModal}
           onClickEditExpense={onClickEditExpense}
@@ -314,7 +315,7 @@ function TripData() {
       )}
       {isEditTripModalOpen && (
         <EditTripModal
-          tripId={trip.id}
+          tripId={tripData!.trip.id}
           onClose={() => setIsEditTripModalOpen(false)}
         />
       )}
@@ -323,7 +324,7 @@ function TripData() {
           title={
             <span>
               Are you sure you want to delete the{" "}
-              <span className="font-bold">{trip.name}</span> trip?
+              <span className="font-bold">{tripData!.trip.name}</span> trip?
             </span>
           }
           onConfirm={onConfirmDeleteTrip}

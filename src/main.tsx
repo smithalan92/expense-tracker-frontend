@@ -1,27 +1,27 @@
 /// <reference types="vite-plugin-svgr/client" />
 
-import React from "react";
-import ReactDOM from "react-dom/client";
-import "@/styles/index.css";
-import { RouterProvider } from "react-router-dom";
-import { store } from "@/store";
-import { Provider } from "react-redux";
 import router from "@/router";
-import "@/styles/index.css";
+import { store } from "@/store";
 import { restoreLocalStorage } from "@/store/slices/app";
+import "@/styles/index.css";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
-  Chart as ChartJS,
   ArcElement,
-  CategoryScale,
-  LinearScale,
   BarElement,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
+  CategoryScale,
+  Chart as ChartJS,
   Filler,
   Legend,
+  LinearScale,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
 } from "chart.js";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { Provider } from "react-redux";
+import { RouterProvider } from "react-router-dom";
 
 ChartJS.register(
   ArcElement,
@@ -38,10 +38,14 @@ ChartJS.register(
 
 store.dispatch(restoreLocalStorage());
 
+const client = new QueryClient();
+
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <Provider store={store}>
-      <RouterProvider router={router} />
-    </Provider>
+    <QueryClientProvider client={client}>
+      <Provider store={store}>
+        <RouterProvider router={router} />
+      </Provider>
+    </QueryClientProvider>
   </React.StrictMode>
 );

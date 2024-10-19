@@ -1,14 +1,18 @@
 import TableExpense from "@/components/sections/ExpenseList/ExpenseListTable/TableExpense";
-import { useAppSelector } from "@/store";
-import { selectExpenses, selectTrip } from "@/store/slices/tripData";
+import useTripData from "@/hooks/useTripData";
+import { useMemo } from "react";
 
 export default function ExpenseListTable({
+  tripId,
   onClickExpense,
 }: {
+  tripId: number;
   onClickExpense: (id: number) => void;
 }) {
-  const expenses = useAppSelector(selectExpenses)!;
-  const trip = useAppSelector(selectTrip);
+  const { tripData } = useTripData(tripId);
+
+  const trip = useMemo(() => tripData!.trip, [tripData]);
+  const expenses = useMemo(() => tripData!.expenses, [tripData]);
 
   return (
     <div className="overflow-y-scroll overflow-x-auto w-full h-full pr-2">

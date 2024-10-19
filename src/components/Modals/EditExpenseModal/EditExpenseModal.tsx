@@ -1,28 +1,23 @@
 import SpinnerOverlay from "@/components/widgets/SpinnerOverlay";
+import useExpense from "@/hooks/useExpense";
 import { useAppDispatch, useAppSelector } from "@/store";
 import type { EditExpenseParams } from "@/store/slices/tripData";
-import {
-  editExpense,
-  selectExpenseById,
-  selectIsEditingExpense,
-  selectTrip,
-} from "@/store/slices/tripData";
+import { editExpense, selectIsEditingExpense } from "@/store/slices/tripData";
 import { useMemo, useState } from "react";
 import ExpenseModalHOC, {
   type ExpenseData,
 } from "../ExpenseModalHOC/ExpenseModalHOC";
 
 export default function EditExpenseModal({
+  tripId,
   expenseId,
   onClose,
 }: EditExpenseModalProps) {
   const dispatch = useAppDispatch();
-  const trip = useAppSelector(selectTrip);
   const isEditingExpense = useAppSelector(selectIsEditingExpense);
 
-  const expense = useAppSelector((state) =>
-    selectExpenseById(state, expenseId)
-  );
+  const expense = useExpense({ tripId, expenseId });
+
   const [expenseData, setExpenseData] = useState<ExpenseData | null>(null);
 
   const canUpdateExpense = useMemo(() => {
@@ -128,6 +123,7 @@ export default function EditExpenseModal({
 }
 
 export interface EditExpenseModalProps {
+  tripId: number;
   expenseId: number;
   onClose: () => void;
 }

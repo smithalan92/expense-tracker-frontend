@@ -3,31 +3,28 @@ import AddTripModal from "@/components/Modals/AddTripModal/AddTripModal";
 import Trip from "@/components/sections/Trip/Trip";
 import { withRequireLogin } from "@/components/utility/withRequireLogin";
 import Spinner from "@/components/widgets/Spinner";
+import { GET_TRIPS_QUERY } from "@/queries/trips";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
-  loadTrips,
-  selectHasFailedToLoadTrips,
-  selectHasLoadedTrips,
-  selectIsLoadingTrips,
   selectShouldShowAddTripModal,
-  selectTrips,
   setShouldShowAddTripModal,
 } from "@/store/slices/trips";
-import { useCallback, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useCallback, useMemo } from "react";
 
 function TripList() {
   const dispatch = useAppDispatch();
-  const trips = useAppSelector(selectTrips);
-  const isLoadingTrips = useAppSelector(selectIsLoadingTrips);
-  const hasLoadedTrips = useAppSelector(selectHasLoadedTrips);
-  const hasFailedToLoadTrips = useAppSelector(selectHasFailedToLoadTrips);
   const shouldShowAddTripModal = useAppSelector(selectShouldShowAddTripModal);
+  const {
+    isPending: isLoadingTrips,
+    error: hasFailedToLoadTrips,
+    data,
+  } = useQuery(GET_TRIPS_QUERY);
 
-  useEffect(() => {
-    if (!hasLoadedTrips) {
-      dispatch(loadTrips());
-    }
-  }, [dispatch, hasLoadedTrips]);
+  const trips = useMemo(() => {
+    if (!data) return [];
+    return data;
+  }, [data]);
 
   const openAddTripModal = () => {
     dispatch(setShouldShowAddTripModal(true));

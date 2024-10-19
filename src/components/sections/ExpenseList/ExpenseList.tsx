@@ -4,8 +4,10 @@ import ExpenseListCards from "./ExpenseListCards/ExpenseListCards";
 import ExpenseListTable from "./ExpenseListTable/ExpenseListTable";
 
 export default function ExpenseList({
+  tripId,
   onClickExpense,
 }: {
+  tripId: number;
   onClickExpense: (id: number) => void;
 }) {
   const expenseListDisplayType = useAppSelector(
@@ -13,7 +15,7 @@ export default function ExpenseList({
   );
 
   if (expenseListDisplayType === "table")
-    return <ExpenseListTable onClickExpense={onClickExpense} />;
+    return <ExpenseListTable tripId={tripId} onClickExpense={onClickExpense} />;
 
-  return <ExpenseListCards onClickExpense={onClickExpense} />;
+  return <ExpenseListCards tripId={tripId} onClickExpense={onClickExpense} />;
 }
