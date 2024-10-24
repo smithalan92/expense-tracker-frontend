@@ -19,6 +19,10 @@ export function getExpenseViewConfigKey() {
   return "expense-view";
 }
 
+export function getMultiUserExpensePickerKey() {
+  return "multi-user-expense-picker";
+}
+
 export function setStorageItem(key: string, data: unknown) {
   const parsedData = JSON.stringify(data);
 

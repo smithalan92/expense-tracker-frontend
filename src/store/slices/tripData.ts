@@ -97,6 +97,7 @@ export const addExpense = createAsyncThunk<
     categoryId: params.categoryId,
     description: params.description,
     userId: params.userId,
+    userIds: params.userIds,
   };
 
   try {
@@ -104,9 +105,25 @@ export const addExpense = createAsyncThunk<
     await thunkApi.dispatch(loadTripData(tripId));
   } catch (err) {
     console.log(err);
-    const tempExpense = getTempExpense(state.tripData, params);
 
-    thunkApi.dispatch(addUnsavedExpense(tempExpense));
+    const userIdsForExpenses = params.userIds ?? [params.userId!];
+
+    const expenseAmount =
+      Math.round((params.amount / userIdsForExpenses.length) * 100) / 100;
+
+    userIdsForExpenses.forEach((userId) => {
+      const tempExpense = getTempExpense(state.tripData, {
+        date: params.date,
+        amount: expenseAmount,
+        cityId: params.cityId,
+        currencyId: params.currencyId,
+        categoryId: params.categoryId,
+        description: params.description,
+        userId,
+      });
+
+      thunkApi.dispatch(addUnsavedExpense(tempExpense));
+    });
   }
 
   thunkApi.dispatch(setShouldShowAddExpenseModal(false));
@@ -720,7 +737,8 @@ export interface AddExpenseParams {
   currencyId: number;
   categoryId: number;
   description: string;
-  userId: number;
+  userId?: number;
+  userIds?: number[];
 }
 
 export interface EditExpenseParams extends Partial<AddExpenseParams> {

@@ -1,6 +1,7 @@
 import {
   getExpenseViewConfigKey,
   getMobileSelectConfigKey,
+  getMultiUserExpensePickerKey,
   getStorageItem,
   setStorageItem,
 } from "@/utils/localStorage";
@@ -11,6 +12,8 @@ const initialState: UserSettingsState = {
     getStorageItem<boolean>(getMobileSelectConfigKey()) ?? false,
   expenseView:
     getStorageItem<ExpenseViewType>(getExpenseViewConfigKey()) ?? "card",
+  useMultiUserPickerForExpenses:
+    getStorageItem<boolean>(getMultiUserExpensePickerKey()) ?? true,
 };
 
 export const userSettingsSlice = createSlice({
@@ -29,11 +32,23 @@ export const userSettingsSlice = createSlice({
       state.expenseView = action.payload;
       setStorageItem(getExpenseViewConfigKey(), state.expenseView);
     },
+
+    toggleUseMultiUserPickerForExpenses: (state) => {
+      state.useMultiUserPickerForExpenses =
+        !state.useMultiUserPickerForExpenses;
+      setStorageItem(
+        getMultiUserExpensePickerKey(),
+        state.useMultiUserPickerForExpenses
+      );
+    },
   },
 });
 
-export const { toggleNativeMobileSelectsDisabled, setExpenseViewType } =
-  userSettingsSlice.actions;
+export const {
+  toggleNativeMobileSelectsDisabled,
+  setExpenseViewType,
+  toggleUseMultiUserPickerForExpenses,
+} = userSettingsSlice.actions;
 
 export const selectUserPreferencesState = ({
   userPreferences,
@@ -48,4 +63,5 @@ export type ExpenseViewType = "table" | "card";
 export interface UserSettingsState {
   disableNativeSelectsOnMobile: boolean;
   expenseView: ExpenseViewType;
+  useMultiUserPickerForExpenses: boolean;
 }

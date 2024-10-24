@@ -288,7 +288,8 @@ export interface AddExpenseForTripBody {
   currencyId: number;
   categoryId: number;
   description: string;
-  userId: number;
+  userId?: number;
+  userIds?: number[];
 }
 
 export type EditExpenseForTripBody = Partial<AddExpenseForTripBody>;

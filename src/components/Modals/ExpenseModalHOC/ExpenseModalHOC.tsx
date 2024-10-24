@@ -68,6 +68,7 @@ export default function ExpenseModalHOC({
     formatDateForExpense(expense ? new Date(expense.localDateTime) : new Date())
   );
   const [userId, setUserId] = useState(expense?.user.id ?? currentUserId);
+  const [userIds, setUserIds] = useState([currentUserId]);
   const [countryId, setCountryId] = useState<number | null>(
     expense?.country.id ?? null
   );
@@ -82,8 +83,16 @@ export default function ExpenseModalHOC({
   const [description, setDescription] = useState(expense?.description ?? "");
   const [shouldShowAllCurrencies, setShouldShowAllCurrencies] = useState(false);
 
+  const useMultiUserPickerForExpenses = useAppSelector(
+    (state) => state.userSettings.useMultiUserPickerForExpenses
+  );
+
+  const shouldUseMultiUserPicker = useMemo(() => {
+    return useMultiUserPickerForExpenses && expenseId === undefined;
+  }, [expenseId, useMultiUserPickerForExpenses]);
+
   useEffect(() => {
-    onChangeData({
+    const data: ExpenseData = {
       date,
       countryId,
       cityId,
@@ -91,8 +100,15 @@ export default function ExpenseModalHOC({
       currencyId,
       categoryId,
       description,
-      userId,
-    });
+    };
+
+    if (shouldUseMultiUserPicker) {
+      data.userIds = userIds;
+    } else {
+      data.userId = userId;
+    }
+
+    onChangeData(data);
   }, [
     date,
     cityId,
@@ -103,6 +119,8 @@ export default function ExpenseModalHOC({
     description,
     userId,
     onChangeData,
+    shouldUseMultiUserPicker,
+    userIds,
   ]);
 
   useEffect(() => {
@@ -182,13 +200,28 @@ export default function ExpenseModalHOC({
           />
         </div>
         <div className="flex items-center py-4">
-          <div className="w-24">Person</div>
-          <Picker
-            options={userOptions}
-            value={userId}
-            onChange={setUserId}
-            isMulti={false}
-          />
+          {shouldUseMultiUserPicker && (
+            <>
+              <div className="w-24">People</div>
+              <Picker
+                options={userOptions}
+                value={userIds}
+                onChange={setUserIds}
+                isMulti={true}
+              />
+            </>
+          )}
+          {!shouldUseMultiUserPicker && (
+            <>
+              <div className="w-24">Person</div>
+              <Picker
+                options={userOptions}
+                value={userId}
+                onChange={setUserId}
+                isMulti={false}
+              />
+            </>
+          )}
         </div>
         <div className="flex flex-col py-4">
           <div className="w-24 mb-4">Description</div>
@@ -208,7 +241,8 @@ export interface ExpenseData {
   currencyId: number | null;
   categoryId: number | null;
   description: string;
-  userId: number;
+  userId?: number;
+  userIds?: number[];
 }
 
 export interface ExpenseModalHOCProps {

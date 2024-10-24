@@ -6,7 +6,7 @@ import type {
 
 export function getTempExpense(
   tripDataState: TripDataState,
-  params: AddExpenseParams
+  params: TempExpenseParams
 ) {
   const currency = tripDataState.currencies.find(
     (c) => c.id == params.currencyId
@@ -32,7 +32,7 @@ export function getTempExpense(
     },
     country,
     user: {
-      id: 0,
+      id: params.userId,
       firstName: "",
       lastName: "",
     },
@@ -42,4 +42,8 @@ export function getTempExpense(
   };
 
   return expense;
+}
+
+interface TempExpenseParams extends Omit<AddExpenseParams, "userId | userIds"> {
+  userId: number;
 }

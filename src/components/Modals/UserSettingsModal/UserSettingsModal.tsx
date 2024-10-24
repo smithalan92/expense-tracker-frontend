@@ -7,6 +7,7 @@ import type { ExpenseViewType } from "@/store/slices/userSettings";
 import {
   setExpenseViewType,
   toggleNativeMobileSelectsDisabled,
+  toggleUseMultiUserPickerForExpenses,
 } from "@/store/slices/userSettings";
 import { useCallback, useMemo } from "react";
 
@@ -28,8 +29,16 @@ export default function UserSettingsModal({
     (state) => state.userSettings.expenseView
   );
 
+  const useMultiUserPickerForExpenses = useAppSelector(
+    (state) => state.userSettings.useMultiUserPickerForExpenses
+  );
+
   const toggleNativeMobileSelects = useCallback(() => {
     dispatch(toggleNativeMobileSelectsDisabled());
+  }, [dispatch]);
+
+  const toggleShouldUseMultiUserPickerForExpenses = useCallback(() => {
+    dispatch(toggleUseMultiUserPickerForExpenses());
   }, [dispatch]);
 
   const expenseDisplayViewOptions = useMemo<ExpenseViewPickerOption[]>(() => {
@@ -82,6 +91,17 @@ export default function UserSettingsModal({
               menuPortalTarget={document.body}
               isMulti={false}
               isSearchable={false}
+            />
+          </div>
+          <div className="flex mt-4 mb-4 justify-between items-center">
+            <span>Use multi user picker for add expense</span>
+            <input
+              id="useMultiUserPickerForExpenses"
+              name="useMultiUserPickerForExpenses"
+              type="checkbox"
+              className="toggle toggle-primary"
+              checked={useMultiUserPickerForExpenses}
+              onChange={toggleShouldUseMultiUserPickerForExpenses}
             />
           </div>
         </div>
