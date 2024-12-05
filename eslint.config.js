@@ -18,4 +18,9 @@ export default [
   ...vueTsEslintConfig(),
   oxlint.configs["flat/recommended"],
   skipFormatting,
+  {
+    rules: {
+      "vue/multi-word-component-names": 0,
+    },
+  },
 ];
