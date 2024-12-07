@@ -1,4 +1,5 @@
 import useAppStore from "@/stores/appStore";
+import TripDataView from "@/tripData/TripDataView.vue";
 import TripsView from "@/trips/TripsView.vue";
 import LoginView from "@/users/LoginView.vue";
 import { createRouter, createWebHistory } from "vue-router";
@@ -22,6 +23,11 @@ const router = createRouter({
       path: "/trips",
       name: "trips",
       component: TripsView,
+    },
+    {
+      path: "/trips/:tripId",
+      name: "tripData",
+      component: TripDataView,
     },
   ],
 });

@@ -1,14 +1,21 @@
 <script setup lang="ts">
 import type { Trip } from "@/api";
+import { useRouter } from "vue-router";
 const { trip } = defineProps<{
   trip: Trip;
 }>();
+
+const router = useRouter();
+
+const onClick = () => {
+  router.push({ name: "tripData", params: { tripId: trip.id } });
+};
 </script>
 
 <template>
   <div
     class="card card-side w-full bg-base-100 shadow-md border border-solid border-base-200 h-52 mb-4 cursor-pointer"
-    @click="{}"
+    @click="onClick"
   >
     <div
       class="sm:w-48 w-32 bg-cover h-52 flex-shrink-0 rounded-tl-2xl rounded-bl-2xl"
