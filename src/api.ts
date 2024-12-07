@@ -1,7 +1,7 @@
 import axios, { type AxiosInstance } from "axios";
-import useUserStore from "./user/userStore";
+import useAppStore from "./stores/appStore";
 
-let http: AxiosInstance | null = null;
+let http: Nullable<AxiosInstance> = null;
 
 const PRODUCTION_API_URL = "https://expense-tracker-api.smithy.dev";
 const LOCAL_API_URL = "http://localhost:3520";
@@ -17,8 +17,8 @@ export function createInstance(authToken: string) {
   http.interceptors.response.use(undefined, (error) => {
     if (axios.isAxiosError(error)) {
       if (error.response?.status === 401) {
-        const userStore = useUserStore();
-        userStore.logout();
+        const appStore = useAppStore();
+        appStore.logout();
         return;
       }
     }
@@ -110,6 +110,8 @@ export async function loadUsers() {
 }
 
 export async function uploadFile(file: File) {
+  const appStore = useAppStore();
+
   const formData = new FormData();
   formData.append("image", file);
 
@@ -120,7 +122,7 @@ export async function uploadFile(file: File) {
     {
       headers: {
         "Content-Type": "multipart/form-data",
-        Authorization: store.getState().app.authToken,
+        Authorization: `appStore.authToken`,
       },
     },
   );
@@ -284,7 +286,7 @@ export interface CountryWithCities {
 }
 
 export interface GetTripEditDataResponse {
-  image: string | null;
+  image: Nullable<string>;
   name: string;
   startDate: string;
   endDate: string;
@@ -343,8 +345,10 @@ export interface LoadCountriesResponse {
   countries: Country[];
 }
 
+export type CityForCountry = Omit<City, "timezoneName">;
+
 export interface LoadCitiesForCountryResponse {
-  cities: Omit<City, "timezoneName">[];
+  cities: CityForCountry[];
 }
 
 export interface User {

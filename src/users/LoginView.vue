@@ -2,9 +2,9 @@
 import Logo from "@/assets/logo.svg";
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
-import useUserStore from "./userStore";
+import useAppStore from "../stores/appStore";
 
-const userStore = useUserStore();
+const appStore = useAppStore();
 const router = useRouter();
 const email = ref("");
 const password = ref("");
@@ -14,7 +14,7 @@ const canLogin = computed(() => !!email.value.trim() && !!password.value.trim())
 
 const onClickLogin = () => {
   hasFailedToLogin.value = false;
-  userStore
+  appStore
     .loginUser({ email: email.value, password: password.value })
     .then(() => {
       router.push("/trips");

@@ -1,6 +1,6 @@
+import useAppStore from "@/stores/appStore";
 import TripsView from "@/trips/TripsView.vue";
-import LoginView from "@/user/LoginView.vue";
-import useUserStore from "@/user/userStore";
+import LoginView from "@/users/LoginView.vue";
 import { createRouter, createWebHistory } from "vue-router";
 
 const router = createRouter({
@@ -27,9 +27,10 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const userStore = useUserStore();
+  const appStore = useAppStore();
 
-  if (to.name !== "login" && !userStore.isLoggedIn) next({ name: "login" });
+  if (to.name !== "login" && !appStore.isLoggedIn) next({ name: "login" });
+  if (to.name === "login" && appStore.isLoggedIn) next({ name: "trips" });
   else next();
 });
 
