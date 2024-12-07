@@ -169,7 +169,7 @@ onMounted(() => {
           <div>
             <button
               ref="add-country-button"
-              className="mt-2 p-1 bg-slate-500 text-white rounded flex items-center hover:bg-slate-400"
+              class="mt-2 p-1 bg-slate-500 text-white rounded flex items-center hover:bg-slate-400"
               @click="isAddCountryModalOpen = true"
             >
               <fa-icon :icon="['fas', 'plus']" class="ml-1 mr-2" />

@@ -29,7 +29,7 @@ const emit = defineEmits<{
         </div>
 
         <div
-          className="flex flex-col overflow-scroll px-6"
+          class="flex flex-col overflow-scroll px-6"
           :style="{ height: height ? `${height}px` : '500px' }"
         >
           <slot name="body" />

@@ -84,8 +84,8 @@ const toggleViewSelectedCitiesModal = () => {
       @close="toggleViewSelectedCitiesModal"
     >
       <template v-slot:body>
-        <div className="py-4 w-full">
-          <span v-if="selectedCityIds.length === 0" className="text-center"
+        <div class="py-4 w-full">
+          <span v-if="selectedCityIds.length === 0" class="text-center"
             >No cities have been selected.</span
           >
 

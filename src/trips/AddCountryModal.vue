@@ -45,7 +45,7 @@ const onClickSave = () => {
         <span class="mb-4 font-bold">Pick a country</span>
         <Picker :options="countryOptions" v-model="selectedCountryId" />
       </div>
-      <div v-if="selectedCountryId" className="flex flex-col py-4">
+      <div v-if="selectedCountryId" class="flex flex-col py-4">
         <CityPickerList :countryId="selectedCountryId" v-model="selectedCityIds" />
       </div>
     </template>
