@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Logo from "@/assets/logo.svg";
 import { RouterLink } from "vue-router";
+import UserDropdown from "./UserDropdown.vue";
 </script>
 
 <template>
@@ -10,6 +11,8 @@ import { RouterLink } from "vue-router";
         <Logo class="w-32" />
       </RouterLink>
     </div>
-    <div class="navbar-end">X</div>
+    <div class="navbar-end">
+      <UserDropdown />
+    </div>
   </div>
 </template>
