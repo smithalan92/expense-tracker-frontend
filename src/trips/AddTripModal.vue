@@ -31,8 +31,6 @@ const endDate = ref(format(addDays(new Date(), 1), "yyyy-MM-dd"));
 const selectedCountries = ref<TripModalCountry[]>([]);
 const selectedCountryToEdit = ref<Nullable<TripModalCountry>>(null);
 const isAddCountryModalOpen = ref(false);
-const selectedUserIds = ref<number[]>([user!.id]);
-const isCreatingTrip = ref(false);
 
 const userOptions = computed<PickerOption[]>(() => {
   return users.map((u) => ({
@@ -41,20 +39,27 @@ const userOptions = computed<PickerOption[]>(() => {
   }));
 });
 
+const selectedUsers = ref<PickerOption[]>([userOptions.value.find((u) => u.value === user!.id)!]);
+
+const isCreatingTrip = ref(false);
+
 const canSaveTrip = computed(() => {
   return (
     tripName.value.trim().length > 0 &&
     startDate.value &&
     endDate.value &&
-    selectedCountries.value.length > 0
+    selectedCountries.value.length > 0 &&
+    selectedUsers.value.length > 0
   );
 });
 
 const nameInput = useTemplateRef("name-input");
 const addCountryButton = useTemplateRef("add-country-button");
 
-const onClickSelectedCountry = (country: TripModalCountry) => {
+const onClickSelectedCountry = async (country: TripModalCountry) => {
+  console.log(typeof country);
   selectedCountryToEdit.value = country;
+  await nextTick();
   isAddCountryModalOpen.value = true;
 };
 
@@ -91,7 +96,7 @@ const onSaveTrip = async () => {
     startDate: startDate.value,
     endDate: endDate.value,
     countries: selectedCountries.value,
-    userIds: selectedUserIds.value,
+    userIds: selectedUsers.value.map((u) => u.value),
   };
 
   try {
@@ -183,7 +188,7 @@ onMounted(() => {
         <span class="col-span-1 content-center">Users</span>
         <Picker
           class="col-span-3 z-50"
-          v-model="selectedUserIds"
+          v-model="selectedUsers"
           :options="userOptions"
           :is-multi="true"
         />

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import Modal from "@/modal/Modal.vue";
-import Picker from "@/pickers/Picker.vue";
-import { computed, ref } from "vue";
+import Picker, { type PickerOption } from "@/pickers/Picker.vue";
+import { ref, watch } from "vue";
 import type { TripModalCountry } from "./AddTripModal.vue";
 import CityPickerList from "./CityPickerList.vue";
 import useAddCountryModalOptions from "./hooks/useAddCountryModalOptions";
 
-const { countrySelectionToEdit } = defineProps<{
+const props = defineProps<{
   countrySelectionToEdit?: Nullable<TripModalCountry>;
 }>();
 
@@ -17,11 +17,23 @@ const emit = defineEmits<{
 
 const { countryOptions } = useAddCountryModalOptions();
 
-const selectedCountryId = ref<Nullable<number>>(countrySelectionToEdit?.countryId ?? null);
-const selectedCityIds = ref<number[]>(countrySelectionToEdit?.cityIds ?? []);
+const selectedCountry = ref<Nullable<PickerOption>>();
+const selectedCityIds = ref<number[]>([]);
 
-const selectedCountry = computed(() =>
-  countryOptions.value.find((c) => c.value === selectedCountryId.value),
+watch(
+  () => props.countrySelectionToEdit,
+  () => {
+    if (props.countrySelectionToEdit) {
+      selectedCountry.value = {
+        label: props.countrySelectionToEdit.name,
+        value: props.countrySelectionToEdit.countryId,
+      };
+      selectedCityIds.value = props.countrySelectionToEdit.cityIds ?? [];
+    }
+  },
+  {
+    immediate: true,
+  },
 );
 
 const onClickSave = () => {
@@ -42,11 +54,12 @@ const onClickSave = () => {
   <Modal title="Add a Country">
     <template v-slot:body>
       <div class="flex flex-col py-4">
+        {{ countrySelectionToEdit?.name }}
         <span class="mb-4 font-bold">Pick a country</span>
-        <Picker :options="countryOptions" v-model="selectedCountryId" />
+        <Picker :options="countryOptions" v-model="selectedCountry" />
       </div>
-      <div v-if="selectedCountryId" class="flex flex-col py-4">
-        <CityPickerList :countryId="selectedCountryId" v-model="selectedCityIds" />
+      <div v-if="selectedCountry" class="flex flex-col py-4">
+        <CityPickerList :countryId="selectedCountry.value" v-model="selectedCityIds" />
       </div>
     </template>
 
