@@ -50,6 +50,27 @@ const useTripDataStore = defineStore("tripData", {
         this.isLoading = false;
       }
     },
+    resetState() {
+      this.trip = {
+        id: 0,
+        name: "",
+        startDate: "",
+        endDate: "",
+        status: "deleted",
+        image: "",
+        totalLocalAmount: 0,
+        totalExpenseAmount: 0,
+      };
+
+      this.expenses = [];
+      this.countries = [];
+      this.cities = [];
+      this.currencies = [];
+      this.categories = [];
+      this.users = {};
+      this.isLoading = false;
+      this.hasFailedToLoad = false;
+    },
   },
   persist: false,
 });

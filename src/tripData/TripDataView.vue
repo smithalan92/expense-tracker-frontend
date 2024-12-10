@@ -1,19 +1,35 @@
 <script setup lang="ts">
+import { deleteTrip } from "@/api";
 import Spinner from "@/app/Spinner.vue";
+import DeleteModal from "@/modal/DeleteModal.vue";
 import useTripData from "@/stores/tripDataStore";
 import AddOrEditTripModal from "@/trips/AddOrEditTripModal.vue";
+import { useToast } from "@/utils/useToast";
 import { storeToRefs } from "pinia";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import ExpenseList from "./ExpenseList.vue";
 import useGetCurrentTripId from "./hooks/useGetCurrentTripId";
 
+const toast = useToast();
 const router = useRouter();
 const store = useTripData();
 const { trip, isLoading, hasFailedToLoad } = storeToRefs(store);
-const { loadTrip } = store;
+const { loadTrip, resetState } = store;
 const currentTripID = useGetCurrentTripId();
 const isEditTripModalOpen = ref(false);
+const showConfirmDelete = ref(false);
+
+const onClickDelete = async () => {
+  try {
+    await deleteTrip(trip.value.id);
+    resetState();
+    router.push("/");
+  } catch (err) {
+    console.log(err);
+    toast.error("Failed to delete trip.");
+  }
+};
 
 onMounted(() => {
   loadTrip(currentTripID.value);
@@ -52,7 +68,11 @@ onMounted(() => {
           >
             <fa-icon :icon="['fas', 'pen-to-square']" size="lg" />
           </button>
-          <button name="delete-trip" class="ml-2 px-1 text-red-500 hover:opacity-70" @click="{}">
+          <button
+            name="delete-trip"
+            class="ml-2 px-1 text-red-500 hover:opacity-70"
+            @click="showConfirmDelete = true"
+          >
             <fa-icon :icon="['fas', 'trash-can']" size="lg" />
           </button>
         </div>
@@ -72,4 +92,12 @@ onMounted(() => {
     :trip-id-to-edit="currentTripID"
     @close="isEditTripModalOpen = false"
   />
+  <DeleteModal v-if="showConfirmDelete" @delete="onClickDelete" @cancel="showConfirmDelete = false">
+    <div class="px-4 py-8 flex items-center justify-center text-center">
+      <p>
+        Are you sure you want to delete "<span class="font-bold">{{ trip.name }}</span
+        >"
+      </p>
+    </div>
+  </DeleteModal>
 </template>

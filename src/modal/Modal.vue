@@ -1,14 +1,21 @@
 <script setup lang="ts">
 import Spinner from "@/app/Spinner.vue";
+import { computed } from "vue";
 
 const { position, includeCloseButton, title, height, alignFooter } = defineProps<{
   position?: "center" | "bottom";
   includeCloseButton?: boolean;
   title: string;
-  height?: number;
+  height?: number | "auto";
   alignFooter?: "flex-end" | "center";
   isLoading?: boolean;
 }>();
+
+const bodyHeight = computed(() => {
+  if (height === "auto") return "auto";
+  if (!height) return "500px";
+  return `${height}px`;
+});
 
 const emit = defineEmits<{
   (e: "close"): void;
@@ -32,10 +39,7 @@ const emit = defineEmits<{
             </div>
           </div>
 
-          <div
-            class="flex flex-col overflow-scroll px-6"
-            :style="{ height: height ? `${height}px` : '500px' }"
-          >
+          <div class="flex flex-col overflow-scroll px-6" :style="{ height: bodyHeight }">
             <slot name="body" />
           </div>
 
