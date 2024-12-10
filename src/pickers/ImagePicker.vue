@@ -1,15 +1,29 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, toRefs, watch } from "vue";
 
-const { initalImage } = defineProps<{
+const props = defineProps<{
   initalImage: Nullable<string>;
 }>();
+
+const { initalImage } = toRefs(props);
 
 const emit = defineEmits<{
   (e: "change-image", file: Nullable<File>): void;
 }>();
 
-const selectedImage = ref<null | string>(initalImage);
+const selectedImage = ref<null | string>(initalImage.value);
+
+console.log(initalImage.value);
+
+watch(
+  initalImage,
+  (newValue) => {
+    if (newValue) selectedImage.value = newValue;
+  },
+  {
+    immediate: true,
+  },
+);
 
 const onFileChanged = ($event: Event) => {
   const target = $event.target as HTMLInputElement;

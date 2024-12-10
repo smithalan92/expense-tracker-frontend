@@ -2,7 +2,7 @@
 import Modal from "@/modal/Modal.vue";
 import Picker, { type PickerOption } from "@/pickers/Picker.vue";
 import { ref, watch } from "vue";
-import type { TripModalCountry } from "./AddTripModal.vue";
+import type { TripModalCountry } from "./AddOrEditTripModal.vue";
 import CityPickerList from "./CityPickerList.vue";
 import useAddCountryModalOptions from "./hooks/useAddCountryModalOptions";
 

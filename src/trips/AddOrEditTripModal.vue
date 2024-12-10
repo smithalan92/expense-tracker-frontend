@@ -1,20 +1,32 @@
 <script setup lang="ts">
-import { createTrip, uploadFile, type CreateTripCountry, type CreateTripPayload } from "@/api";
+import {
+  createTrip,
+  getTripForEditing,
+  updateTrip,
+  uploadFile,
+  type CreateTripCountry,
+  type CreateTripPayload,
+} from "@/api";
 import Modal from "@/modal/Modal.vue";
 import DatePicker from "@/pickers/DatePicker.vue";
 import ImagePicker from "@/pickers/ImagePicker.vue";
 import Picker, { type PickerOption } from "@/pickers/Picker.vue";
 import useAppStore from "@/stores/appStore";
+import useTripDataStore from "@/stores/tripDataStore";
 import useTripsStore from "@/stores/tripsStore";
 import { useToast } from "@/utils/useToast";
 import { addDays } from "date-fns";
 import { format } from "date-fns/format";
-import { computed, nextTick, onMounted, ref, useTemplateRef } from "vue";
+import { computed, nextTick, onBeforeMount, onMounted, ref, useTemplateRef } from "vue";
 import AddCountryModal from "./AddCountryModal.vue";
 
 export interface TripModalCountry extends CreateTripCountry {
   name: string;
 }
+
+const { tripIdToEdit } = defineProps<{
+  tripIdToEdit?: number;
+}>();
 
 const emit = defineEmits<{
   (e: "close"): void;
@@ -22,15 +34,18 @@ const emit = defineEmits<{
 
 const { user, users } = useAppStore();
 const { loadTrips } = useTripsStore();
+const { loadTrip } = useTripDataStore();
 const $toast = useToast();
 
 const selectedImage = ref<Nullable<File>>(null);
+const initalImage = ref<Nullable<string>>(null);
 const tripName = ref("");
 const startDate = ref(format(new Date(), "yyyy-MM-dd"));
 const endDate = ref(format(addDays(new Date(), 1), "yyyy-MM-dd"));
 const selectedCountries = ref<TripModalCountry[]>([]);
 const selectedCountryToEdit = ref<Nullable<TripModalCountry>>(null);
 const isAddCountryModalOpen = ref(false);
+const isLoadingTripToEdit = ref(false);
 
 const userOptions = computed<PickerOption[]>(() => {
   return users.map((u) => ({
@@ -40,6 +55,32 @@ const userOptions = computed<PickerOption[]>(() => {
 });
 
 const selectedUsers = ref<PickerOption[]>([userOptions.value.find((u) => u.value === user!.id)!]);
+
+onBeforeMount(async () => {
+  if (tripIdToEdit) {
+    try {
+      isLoadingTripToEdit.value = true;
+      const trip = await getTripForEditing(tripIdToEdit);
+      initalImage.value = trip.image;
+      tripName.value = trip.name;
+      startDate.value = format(new Date(trip.startDate), "yyyy-MM-dd");
+      endDate.value = format(new Date(trip.endDate), "yyyy-MM-dd");
+      selectedCountries.value = trip.countries.map((c) => {
+        if (!c.cityIds) c.cityIds = [];
+        return c;
+      });
+      selectedUsers.value = trip.userIds.map((id) => {
+        return userOptions.value.find((u) => u.value === id)!;
+      });
+    } catch (error) {
+      console.error(error);
+      $toast.error("Failed to load trip data for editing.");
+      emit("close");
+    } finally {
+      isLoadingTripToEdit.value = false;
+    }
+  }
+});
 
 const isCreatingTrip = ref(false);
 
@@ -57,7 +98,6 @@ const nameInput = useTemplateRef("name-input");
 const addCountryButton = useTemplateRef("add-country-button");
 
 const onClickSelectedCountry = async (country: TripModalCountry) => {
-  console.log(typeof country);
   selectedCountryToEdit.value = country;
   await nextTick();
   isAddCountryModalOpen.value = true;
@@ -104,9 +144,20 @@ const onSaveTrip = async () => {
       const file = await uploadFile(selectedImage.value);
       payload.file = file;
     }
+  } catch (err) {
+    console.error(err);
+    $toast.error("Failed to upload image for trip.");
+    return;
+  }
+  try {
+    if (tripIdToEdit) {
+      await updateTrip(tripIdToEdit, payload);
+      loadTrip(tripIdToEdit);
+    } else {
+      await createTrip(payload);
+      loadTrips();
+    }
 
-    await createTrip(payload);
-    loadTrips();
     emit("close");
   } catch (err) {
     console.error(err);
@@ -122,14 +173,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <Modal title="Add Trip" @close="emit('close')">
+  <Modal title="Add Trip" :is-loading="isLoadingTripToEdit" @close="emit('close')">
     <template v-slot:body>
       <div class="grid grid-cols-4 gap-1 py-4">
         <span class="col-span-1 content-center">Image</span>
         <ImagePicker
           class="col-span-3"
           @change-image="(val) => (selectedImage = val)"
-          :initalImage="null"
+          :initalImage="initalImage"
         />
       </div>
 

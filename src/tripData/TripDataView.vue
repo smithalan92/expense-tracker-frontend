@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import Spinner from "@/app/Spinner.vue";
 import useTripData from "@/stores/tripDataStore";
+import AddOrEditTripModal from "@/trips/AddOrEditTripModal.vue";
 import { storeToRefs } from "pinia";
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import ExpenseList from "./ExpenseList.vue";
 import useGetCurrentTripId from "./hooks/useGetCurrentTripId";
@@ -12,6 +13,7 @@ const store = useTripData();
 const { trip, isLoading, hasFailedToLoad } = storeToRefs(store);
 const { loadTrip } = store;
 const currentTripID = useGetCurrentTripId();
+const isEditTripModalOpen = ref(false);
 
 onMounted(() => {
   loadTrip(currentTripID.value);
@@ -43,7 +45,11 @@ onMounted(() => {
           </button>
         </div>
         <div class="flex">
-          <button name="edit-trip" class="ml-2 px-1 text-primary hover:opacity-70" @click="{}">
+          <button
+            name="edit-trip"
+            class="ml-2 px-1 text-primary hover:opacity-70"
+            @click="isEditTripModalOpen = true"
+          >
             <fa-icon :icon="['fas', 'pen-to-square']" size="lg" />
           </button>
           <button name="delete-trip" class="ml-2 px-1 text-red-500 hover:opacity-70" @click="{}">
@@ -61,4 +67,9 @@ onMounted(() => {
       </div>
     </div>
   </div>
+  <AddOrEditTripModal
+    v-if="isEditTripModalOpen"
+    :trip-id-to-edit="currentTripID"
+    @close="isEditTripModalOpen = false"
+  />
 </template>

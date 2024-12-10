@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import Spinner from "@/app/Spinner.vue";
-import useAppStore from "@/stores/appStore";
 import useTripsStore from "@/stores/tripsStore";
 import { onMounted, ref } from "vue";
-import AddTripModal from "./AddTripModal.vue";
+import AddOrEditTripModal from "./AddOrEditTripModal.vue";
 import Trip from "./Trip.vue";
 
-const appStore = useAppStore();
 const isAddTripModalOpen = ref(false);
 
 const openAddTripModal = () => {
@@ -55,5 +53,5 @@ onMounted(() => {
       </div>
     </div>
   </div>
-  <AddTripModal v-if="isAddTripModalOpen" @close="closeAddTripModal" />
+  <AddOrEditTripModal v-if="isAddTripModalOpen" @close="closeAddTripModal" />
 </template>
