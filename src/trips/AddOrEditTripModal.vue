@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {
   createTrip,
+  GetTripEditDataResponse,
   getTripForEditing,
   updateTrip,
   uploadFile,
@@ -36,6 +37,7 @@ const { user, users } = useAppStore();
 const { loadTrips } = useTripsStore();
 const { loadTrip } = useTripDataStore();
 const $toast = useToast();
+const originalTrip = ref<GetTripEditDataResponse | null>(null);
 
 const selectedImage = ref<Nullable<File>>(null);
 const initalImage = ref<Nullable<string>>(null);
@@ -46,6 +48,11 @@ const selectedCountries = ref<TripModalCountry[]>([]);
 const selectedCountryToEdit = ref<Nullable<TripModalCountry>>(null);
 const isAddCountryModalOpen = ref(false);
 const isLoadingTripToEdit = ref(false);
+
+const modalTitle = computed(() => {
+  if (tripIdToEdit) return `Edit ${originalTrip.value?.name ?? "trip"}`;
+  return "Add trip";
+});
 
 const userOptions = computed<PickerOption[]>(() => {
   return users.map((u) => ({
@@ -61,6 +68,7 @@ onBeforeMount(async () => {
     try {
       isLoadingTripToEdit.value = true;
       const trip = await getTripForEditing(tripIdToEdit);
+      originalTrip.value = trip;
       initalImage.value = trip.image;
       tripName.value = trip.name;
       startDate.value = format(new Date(trip.startDate), "yyyy-MM-dd");
@@ -173,7 +181,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Modal title="Add Trip" :is-loading="isLoadingTripToEdit" @close="emit('close')">
+  <Modal :title="modalTitle" :is-loading="isLoadingTripToEdit" @close="emit('close')">
     <template v-slot:body>
       <div class="grid grid-cols-4 gap-1 py-4">
         <span class="col-span-1 content-center">Image</span>
