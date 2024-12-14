@@ -8,6 +8,7 @@ import { useToast } from "@/utils/useToast";
 import { storeToRefs } from "pinia";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import AddOrEditExpenseModal from "./AddOrEditExpenseModal.vue";
 import ExpenseList from "./ExpenseList.vue";
 import useGetCurrentTripId from "./hooks/useGetCurrentTripId";
 
@@ -19,6 +20,7 @@ const { loadTrip, resetState } = store;
 const currentTripID = useGetCurrentTripId();
 const isEditTripModalOpen = ref(false);
 const showConfirmDelete = ref(false);
+const showAddExpenseModal = ref(false);
 
 const onClickDelete = async () => {
   try {
@@ -81,7 +83,10 @@ onMounted(() => {
         <ExpenseList />
       </div>
       <div class="flex justify-center py-6">
-        <button class="btn btn-primary font-bold text-md text-white" @click="{}">
+        <button
+          class="btn btn-primary font-bold text-md text-white"
+          @click="showAddExpenseModal = true"
+        >
           <fa-icon :icon="['fas', 'plus']" class="w-6 mr-1" size="xl" /> Expense
         </button>
       </div>
@@ -92,6 +97,7 @@ onMounted(() => {
     :trip-id-to-edit="currentTripID"
     @close="isEditTripModalOpen = false"
   />
+  <AddOrEditExpenseModal v-if="showAddExpenseModal" @close="showAddExpenseModal = false" />
   <DeleteModal v-if="showConfirmDelete" @delete="onClickDelete" @cancel="showConfirmDelete = false">
     <div class="px-4 py-8 flex items-center justify-center text-center">
       <p>

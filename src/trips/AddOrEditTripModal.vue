@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import {
   createTrip,
-  GetTripEditDataResponse,
   getTripForEditing,
   updateTrip,
   uploadFile,
   type CreateTripCountry,
   type CreateTripPayload,
+  type GetTripEditDataResponse,
 } from "@/api";
 import Modal from "@/modal/Modal.vue";
 import DatePicker from "@/pickers/DatePicker.vue";

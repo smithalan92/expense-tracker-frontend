@@ -11,6 +11,12 @@ const { position, includeCloseButton, title, height, alignFooter } = defineProps
   isLoading?: boolean;
 }>();
 
+const slots = defineSlots<{
+  title?(): any;
+  body(): any;
+  footer(): any;
+}>();
+
 const bodyHeight = computed(() => {
   if (height === "auto") return "auto";
   if (!height) return "500px";
@@ -27,13 +33,16 @@ const emit = defineEmits<{
     <div class="et-modal-backdrop overflow-hidden">
       <div
         :class="{
-          'animate-slide-in-bottom et-modal overflow-hidden box-content w-[390px] md:w-full p-0': true,
+          'animate-slide-in-bottom et-modal overflow-hidden box-content w-[420px] md:w-full p-0': true,
           'absolute bottom-0 md:relative': position !== 'center',
         }"
       >
         <div class="relative">
           <div class="flex justify-between items-center bg-primary py-4 px-6 text-white">
-            <h2 class="font-bold text-2xl">{{ title }}</h2>
+            <h2 v-if="!slots.title" class="font-bold text-2xl">{{ title }}</h2>
+            <div v-if="slots.title" class="flex-1">
+              <slot name="title" />
+            </div>
             <div v-if="includeCloseButton" class="p-1 hover:cursor-pointer" @click="emit('close')">
               <fa-icon :icon="['fas', 'xmark']" class="fill-white" size="2x" />
             </div>
@@ -43,7 +52,7 @@ const emit = defineEmits<{
             <slot name="body" />
           </div>
 
-          <div class="flex pt-6 px-6 pb-4" :style="{ justifyContent: alignFooter ?? '' }">
+          <div class="flex pt-6 px-6 pb-4" :style="{ justifyContent: alignFooter ?? 'flex-end' }">
             <slot name="footer" />
           </div>
 

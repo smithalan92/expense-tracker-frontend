@@ -12,7 +12,7 @@ const { useOverlay } = defineProps<{
 
   <div
     v-if="useOverlay"
-    className="absolute w-screen h-screen bg-base-100/30 z-10 flex items-center justify-center top-0 left-0"
+    className="absolute w-screen h-screen bg-base-100/50 z-10 flex items-center justify-center top-0 left-0"
   >
     <div
       class="radial-progress animate-spin"

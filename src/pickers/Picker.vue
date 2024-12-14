@@ -4,22 +4,23 @@ import Multiselect from "vue-multiselect";
 
 export interface PickerOption {
   label: string;
-  value: any;
+  value: number;
 }
 
-const { options, placeholder, ...props } = defineProps<{
+const { options, placeholder, isMulti, disabled, ...props } = defineProps<{
   options: PickerOption[];
   placeholder?: string;
   class?: string;
   isMulti?: boolean;
+  disabled?: boolean;
 }>();
 
-const value = defineModel<T>();
+const value = defineModel<Nullable<PickerOption | PickerOption[]>>({ required: true });
 </script>
 
 <template>
   <multiselect
-    class="p-1"
+    class="h-[43px]"
     :class="props.class"
     v-if="!isMobileDevice || isMulti"
     v-model="value"
@@ -28,10 +29,27 @@ const value = defineModel<T>();
     label="label"
     :multiple="isMulti"
     :placeholder="placeholder ?? 'Select...'"
-  />
+    :disabled="disabled"
+    :showLabels="false"
+  >
+    <template #singleLabel="props">
+      <div class="truncate text-ellipsis overflow-hidden">{{ props.option.label }}</div>
+    </template>
 
-  <select v-if="isMobileDevice && !isMulti" :class="props.class" v-model="value">
-    <option hidden>{{ placeholder ?? "Select..." }}</option>
+    <template #option="props">
+      <div class="truncate text-ellipsis overflow-hidden">{{ props.option.label }}</div>
+    </template>
+  </multiselect>
+
+  <select
+    v-if="isMobileDevice && !isMulti"
+    required
+    class="select select-bordered rounded-lg bg-white w-full outline-none focus:outline-none"
+    :class="props.class"
+    :disabled="disabled"
+    v-model="value"
+  >
+    <option value="null" disabled hidden selected>{{ placeholder ?? "Select..." }}</option>
     <option v-for="option in options" :value="option" :key="option.value">
       {{ option.label }}
     </option>
@@ -41,5 +59,10 @@ const value = defineModel<T>();
 <style lang="css">
 .vue-select .search-input {
   padding: 8px !important;
+}
+
+.multiselect--disabled .multiselect__current,
+.multiselect--disabled .multiselect__select {
+  background: #fdfcfb !important;
 }
 </style>
