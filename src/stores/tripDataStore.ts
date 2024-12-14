@@ -7,6 +7,8 @@ import {
   type Trip,
   type TripExpense,
 } from "@/api";
+import { getTripFromLocalStorage, writeTripDataToLocalStorage } from "@/utils/localstorage";
+import { isNetworkError } from "@/utils/network";
 import { acceptHMRUpdate, defineStore } from "pinia";
 
 const useTripDataStore = defineStore("tripData", {
@@ -31,8 +33,23 @@ const useTripDataStore = defineStore("tripData", {
     hasFailedToLoad: false,
   }),
   actions: {
+    syncStateToLocalStorage() {
+      writeTripDataToLocalStorage(this.$state);
+    },
+
+    restoreStateFromLocalStorage(tripId: number) {
+      const retrievedState = getTripFromLocalStorage(tripId);
+
+      if (retrievedState) {
+        this.$patch(retrievedState);
+      } else {
+        throw new Error("failed to retrieve from local storage");
+      }
+    },
+
     async loadTrip(tripId: number) {
       try {
+        this.resetState();
         this.isLoading = true;
         this.hasFailedToLoad = false;
         const data = await getTripData(tripId);
@@ -43,9 +60,20 @@ const useTripDataStore = defineStore("tripData", {
         this.currencies = data.currencies;
         this.categories = data.categories;
         this.users = data.users;
-      } catch (err) {
-        this.hasFailedToLoad = true;
-        throw err;
+
+        this.syncStateToLocalStorage();
+      } catch (err: any) {
+        if (isNetworkError(err)) {
+          try {
+            this.restoreStateFromLocalStorage(tripId);
+          } catch (_) {
+            this.hasFailedToLoad = true;
+            throw err;
+          }
+        } else {
+          this.hasFailedToLoad = true;
+          throw err;
+        }
       } finally {
         this.isLoading = false;
       }
@@ -72,7 +100,7 @@ const useTripDataStore = defineStore("tripData", {
       this.hasFailedToLoad = false;
     },
   },
-  persist: false,
+  persist: false, // We need manual persistance due to saving different trips
 });
 
 export default useTripDataStore;
@@ -81,7 +109,7 @@ if (import.meta.hot) {
   import.meta.hot.accept(acceptHMRUpdate(useTripDataStore, import.meta.hot));
 }
 
-interface TripDataState {
+export interface TripDataState {
   trip: Trip;
   expenses: TripExpense[];
   countries: Country[];

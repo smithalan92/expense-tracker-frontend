@@ -1,4 +1,5 @@
 import { createInstance, loadUsers, login, type LoginUser, type User } from "@/api";
+import { isNetworkError } from "@/utils/network";
 import { acceptHMRUpdate, defineStore } from "pinia";
 
 const useAppStore = defineStore("app", {
@@ -20,8 +21,14 @@ const useAppStore = defineStore("app", {
     },
 
     async loadAppData() {
-      const users = await loadUsers();
-      this.users = users;
+      try {
+        const users = await loadUsers();
+        this.users = users;
+      } catch (err: any) {
+        if (!isNetworkError(err)) {
+          console.log(err);
+        }
+      }
     },
   },
   persist: true,

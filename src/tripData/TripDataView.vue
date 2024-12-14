@@ -42,11 +42,31 @@ onMounted(() => {
   <div class="w-full h-full">
     <Spinner v-if="isLoading" :use-overlay="true" />
 
-    <div v-if="hasFailedToLoad" class="text-center">
-      Something went wrong loading expenses. Please refresh the page and try again.
+    <div v-if="hasFailedToLoad" class="h-full overflow-hidden pt-4 flex flex-col">
+      <div class="flex space-between mb-4">
+        <div class="flex flex-1">
+          <button name="back" class="px-1 hover:opacity-70" @click="router.go(-1)">
+            <fa-icon :icon="['fas', 'arrow-left']" size="lg" class="text-primary" />
+          </button>
+          <button
+            name="refresh"
+            class="ml-2 px-1 text-primary hover:opacity-70"
+            @click="loadTrip(currentTripID)"
+          >
+            <fa-icon :icon="['fas', 'rotate-right']" size="lg" class="text-primary" />
+          </button>
+        </div>
+      </div>
+      <div class="flex flex-col flex-1 items-center mt-12">
+        <fa-icon class="text-red-500" :icon="['fas', 'triangle-exclamation']" size="2xl" />
+        <span class="mt-4">Something went wrong loading this trip.</span>
+      </div>
     </div>
 
-    <div v-if="!isLoading && !hasFailedToLoad" class="h-full overflow-hidden pt-4 flex flex-col">
+    <div
+      v-if="!isLoading && !hasFailedToLoad && trip"
+      class="h-full overflow-hidden pt-4 flex flex-col"
+    >
       <div class="text-center font-bold text-2xl mb-2">{{ trip.name }}</div>
       <div class="text-center text-md mb-4">{{ trip.startDate }} to {{ trip.endDate }}</div>
       <div class="flex space-between mb-4">

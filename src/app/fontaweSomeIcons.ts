@@ -22,6 +22,7 @@ import {
   faSmoking,
   faTaxi,
   faTrashCan,
+  faTriangleExclamation,
   faUtensils,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
@@ -52,5 +53,6 @@ export default function registerIconLibrary() {
     faSmoking,
     faTaxi,
     faRoute,
+    faTriangleExclamation,
   );
 }

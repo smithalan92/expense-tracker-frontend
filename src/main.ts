@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { createPinia } from "pinia";
-import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
+import { createPersistedState } from "pinia-plugin-persistedstate";
 import { createApp } from "vue";
 import ToastPlugin from "vue-toast-notification";
 import { createInstance } from "./api";
@@ -9,11 +9,16 @@ import registerIconLibrary from "./app/fontaweSomeIcons";
 import router from "./app/router";
 import useAppStore from "./stores/appStore";
 import "./styles/main.css";
+import { BASE_LOCALSTORAGE_KEY } from "./utils/localstorage";
 
 const app = createApp(App);
 
 const pinia = createPinia();
-pinia.use(piniaPluginPersistedstate);
+pinia.use(
+  createPersistedState({
+    key: (id) => `${BASE_LOCALSTORAGE_KEY}__${id}`,
+  }),
+);
 
 app.use(pinia);
 app.use(router);

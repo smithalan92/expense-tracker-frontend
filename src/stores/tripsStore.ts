@@ -1,4 +1,5 @@
 import { getTrips, type Trip } from "@/api";
+import { isNetworkError } from "@/utils/network";
 import { acceptHMRUpdate, defineStore } from "pinia";
 
 const useTripsStore = defineStore("trips", {
@@ -15,9 +16,11 @@ const useTripsStore = defineStore("trips", {
         this.hasFailedToLoad = false;
         const data = await getTrips();
         this.trips = data;
-      } catch (err) {
-        this.hasFailedToLoad = true;
-        throw err;
+      } catch (err: any) {
+        if (!isNetworkError(err)) {
+          this.hasFailedToLoad = true;
+          throw err;
+        }
       } finally {
         this.isLoading = false;
       }
