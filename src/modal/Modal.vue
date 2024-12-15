@@ -2,13 +2,14 @@
 import Spinner from "@/app/Spinner.vue";
 import { computed } from "vue";
 
-const { position, includeCloseButton, title, height, alignFooter } = defineProps<{
+const { position, includeCloseButton, title, height, alignFooter, width } = defineProps<{
   position?: "center" | "bottom";
   includeCloseButton?: boolean;
   title?: string;
   height?: number | "auto";
   alignFooter?: "flex-end" | "center" | "space-between";
   isLoading?: boolean;
+  width?: number;
 }>();
 
 const slots = defineSlots<{
@@ -35,6 +36,9 @@ const emit = defineEmits<{
         :class="{
           'animate-slide-in-bottom et-modal overflow-hidden box-content w-[420px] md:w-full p-0': true,
           'absolute bottom-0 md:relative': position !== 'center',
+        }"
+        :style="{
+          width: width ? `${width}px` : '',
         }"
       >
         <div class="relative">

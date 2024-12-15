@@ -2,7 +2,7 @@
 import type { TripExpense } from "@/api";
 import useTripData from "@/stores/tripDataStore";
 import { storeToRefs } from "pinia";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import AddOrEditExpenseModal from "./AddOrEditExpenseModal.vue";
 import Expense from "./Expense.vue";
 import ViewExpenseModal from "./ViewExpenseModal.vue";
@@ -10,9 +10,20 @@ import ViewExpenseModal from "./ViewExpenseModal.vue";
 const { expenses } = storeToRefs(useTripData());
 
 const showViewExpenseModal = ref(false);
-const showEditExpenseModal = ref(false);
+const isEditingExpense = ref(false);
+const isCopyExpense = ref(false);
 
 const selectedExpense = ref<Nullable<TripExpense>>(null);
+
+const expenseToEdit = computed(() => {
+  if (isEditingExpense.value) return selectedExpense.value;
+  return null;
+});
+
+const expenseToCopy = computed(() => {
+  if (isCopyExpense.value) return selectedExpense.value;
+  return null;
+});
 
 const onClickExpense = (expense: TripExpense) => {
   selectedExpense.value = expense;
@@ -25,13 +36,16 @@ const onCloseViewExpenseModal = () => {
 };
 
 const onEditExpense = () => {
-  showEditExpenseModal.value = true;
-  showViewExpenseModal.value = false;
+  isEditingExpense.value = true;
 };
 
-const onCloseEditExpenseModal = () => {
-  showEditExpenseModal.value = false;
-  selectedExpense.value = null;
+const onCopyExpense = () => {
+  isCopyExpense.value = true;
+};
+
+const onCloseAddOrEditExpenseModal = () => {
+  isEditingExpense.value = false;
+  isCopyExpense.value = false;
 };
 </script>
 
@@ -54,11 +68,13 @@ const onCloseEditExpenseModal = () => {
     v-if="showViewExpenseModal && selectedExpense"
     :expense="selectedExpense"
     @edit="onEditExpense"
+    @copy="onCopyExpense"
     @close="onCloseViewExpenseModal"
   />
   <AddOrEditExpenseModal
-    v-if="showEditExpenseModal"
-    :expenseToEdit="selectedExpense"
-    @close="onCloseEditExpenseModal"
+    v-if="isEditingExpense || isCopyExpense"
+    :expenseToEdit="expenseToEdit"
+    :expenseToCopy="expenseToCopy"
+    @close="onCloseAddOrEditExpenseModal"
   />
 </template>

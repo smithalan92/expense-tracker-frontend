@@ -18,8 +18,9 @@ import { format } from "date-fns";
 import { computed, onBeforeMount, ref, watch } from "vue";
 import useAddOrEditExpenseModalOptions from "./hooks/useAddOrEditExpenseModalOptions";
 
-const { expenseToEdit } = defineProps<{
+const { expenseToEdit, expenseToCopy } = defineProps<{
   expenseToEdit?: Nullable<TripExpense>;
+  expenseToCopy?: Nullable<TripExpense>;
 }>();
 
 const emit = defineEmits<{
@@ -27,7 +28,11 @@ const emit = defineEmits<{
 }>();
 
 const isEditingExpense = computed(() => {
-  return expenseToEdit !== null && expenseToEdit !== undefined;
+  return !!expenseToEdit;
+});
+
+const isCopyingExpense = computed(() => {
+  return !!expenseToCopy;
 });
 
 const { user } = useAppStore();
@@ -109,35 +114,48 @@ const onClickAddExpense = async () => {
     emit("close");
   } catch (err) {
     console.error(err);
-    $toast.error("Failed to add expense.");
+    $toast.error("Failed to add or update expense.");
   } finally {
     isAddingExpense.value = false;
   }
 };
 
 onBeforeMount(() => {
-  if (isEditingExpense.value && expenseToEdit) {
-    selectedCountry.value = countryOptions.value.find((c) => c.value === expenseToEdit.country.id)!;
+  if (!isEditingExpense.value && !isCopyingExpense.value) return;
 
-    const localDateTime = new Date(expenseToEdit.localDateTime);
-    expenseDate.value = format(localDateTime, "yyyy-MM-dd");
-    expenseTime.value = format(localDateTime, "HH:mm");
+  const expenseToUseForHydration = isEditingExpense.value ? expenseToEdit! : expenseToCopy!;
 
-    selectedCity.value = cityOptions.value.find((c) => c.value === expenseToEdit.city.id)!;
+  selectedCountry.value = countryOptions.value.find(
+    (c) => c.value === expenseToUseForHydration.country.id,
+  )!;
 
-    selectedCurrency.value = currencyOptions.value.find(
-      (c) => c.value === expenseToEdit.currency.id,
-    )!;
+  const localDateTime = new Date(expenseToUseForHydration.localDateTime);
+  expenseDate.value = format(localDateTime, "yyyy-MM-dd");
+  expenseTime.value = format(localDateTime, "HH:mm");
 
-    amount.value = parseFloat(expenseToEdit.amount);
+  selectedCity.value = cityOptions.value.find((c) => c.value === expenseToUseForHydration.city.id)!;
 
-    selectedCategory.value = categoryOptions.value.find(
-      (c) => c.value === expenseToEdit.category.id,
-    )!;
+  selectedCurrency.value = currencyOptions.value.find(
+    (c) => c.value === expenseToUseForHydration.currency.id,
+  )!;
 
-    selectedUser.value = userOptions.value.find((u) => u.value === expenseToEdit.user.id)!;
+  amount.value = parseFloat(expenseToUseForHydration.amount);
 
-    description.value = expenseToEdit.description;
+  selectedCategory.value = categoryOptions.value.find(
+    (c) => c.value === expenseToUseForHydration.category.id,
+  )!;
+
+  selectedUser.value = userOptions.value.find((u) => u.value === expenseToUseForHydration.user.id)!;
+
+  if (isCopyingExpense.value) {
+    const initalText =
+      expenseToUseForHydration.description.length > 0
+        ? `${expenseToUseForHydration.description} | `
+        : "";
+
+    description.value = `${initalText}Copied at ${new Date()}`;
+  } else {
+    description.value = expenseToUseForHydration.description;
   }
 });
 </script>
@@ -236,8 +254,9 @@ onBeforeMount(() => {
         :disabled="!canAddExpense"
         @click="onClickAddExpense"
       >
-        <span v-if="!isEditingExpense">Add expense</span>
+        <span v-if="!isEditingExpense && !isCopyingExpense">Add expense</span>
         <span v-if="isEditingExpense">Edit expense</span>
+        <span v-if="isCopyingExpense">Copy expense</span>
       </button>
     </template>
   </Modal>

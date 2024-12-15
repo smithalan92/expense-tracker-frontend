@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { deleteTrip } from "@/api";
 import Spinner from "@/app/Spinner.vue";
-import DeleteModal from "@/modal/DeleteModal.vue";
+import ConfirmModal from "@/modal/ConfirmModal.vue";
 import useTripData from "@/stores/tripDataStore";
 import AddOrEditTripModal from "@/trips/AddOrEditTripModal.vue";
 import { useToast } from "@/utils/useToast";
@@ -118,12 +118,17 @@ onMounted(() => {
     @close="isEditTripModalOpen = false"
   />
   <AddOrEditExpenseModal v-if="showAddExpenseModal" @close="showAddExpenseModal = false" />
-  <DeleteModal v-if="showConfirmDelete" @delete="onClickDelete" @cancel="showConfirmDelete = false">
+  <ConfirmModal
+    v-if="showConfirmDelete"
+    title="Confirm delete"
+    @confirm="onClickDelete"
+    @cancel="showConfirmDelete = false"
+  >
     <div class="px-4 py-8 flex items-center justify-center text-center">
       <p>
         Are you sure you want to delete "<span class="font-bold">{{ trip.name }}</span
         >"
       </p>
     </div>
-  </DeleteModal>
+  </ConfirmModal>
 </template>

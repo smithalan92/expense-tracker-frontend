@@ -47,6 +47,15 @@ const useTripDataStore = defineStore("tripData", {
       }
     },
 
+    deleteExpense(expenseId: number) {
+      const expenseIdx = this.expenses.findIndex((e) => e.id === expenseId);
+
+      if (expenseIdx > -1) {
+        this.expenses.splice(expenseIdx, 1);
+        this.syncStateToLocalStorage();
+      }
+    },
+
     async loadTrip(tripId: number) {
       try {
         this.resetState();
