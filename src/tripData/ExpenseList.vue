@@ -5,21 +5,33 @@ import { storeToRefs } from "pinia";
 import { ref } from "vue";
 import AddOrEditExpenseModal from "./AddOrEditExpenseModal.vue";
 import Expense from "./Expense.vue";
+import ViewExpenseModal from "./ViewExpenseModal.vue";
 
 const { expenses } = storeToRefs(useTripData());
 
+const showViewExpenseModal = ref(false);
 const showEditExpenseModal = ref(false);
 
-const expenseToEdit = ref<Nullable<TripExpense>>(null);
+const selectedExpense = ref<Nullable<TripExpense>>(null);
 
 const onClickExpense = (expense: TripExpense) => {
-  expenseToEdit.value = expense;
+  selectedExpense.value = expense;
+  showViewExpenseModal.value = true;
+};
+
+const onCloseViewExpenseModal = () => {
+  selectedExpense.value = null;
+  showViewExpenseModal.value = false;
+};
+
+const onEditExpense = () => {
   showEditExpenseModal.value = true;
+  showViewExpenseModal.value = false;
 };
 
 const onCloseEditExpenseModal = () => {
-  expenseToEdit.value = null;
   showEditExpenseModal.value = false;
+  selectedExpense.value = null;
 };
 </script>
 
@@ -38,9 +50,15 @@ const onCloseEditExpenseModal = () => {
       />
     </div>
   </div>
+  <ViewExpenseModal
+    v-if="showViewExpenseModal && selectedExpense"
+    :expense="selectedExpense"
+    @edit="onEditExpense"
+    @close="onCloseViewExpenseModal"
+  />
   <AddOrEditExpenseModal
     v-if="showEditExpenseModal"
-    :expenseToEdit="expenseToEdit"
+    :expenseToEdit="selectedExpense"
     @close="onCloseEditExpenseModal"
   />
 </template>

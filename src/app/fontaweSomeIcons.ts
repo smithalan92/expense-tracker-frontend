@@ -8,6 +8,7 @@ import {
   faGem,
   faGifts,
   faHandHoldingDollar,
+  faLayerGroup,
   faLocationDot,
   faMartiniGlass,
   faMoneyBills,
@@ -20,12 +21,16 @@ import {
   faRoute,
   faShirt,
   faSmoking,
+  faTag,
   faTaxi,
   faTrashCan,
   faTriangleExclamation,
+  faUser,
   faUtensils,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
+
+import { faClipboard, faCopy } from "@fortawesome/free-regular-svg-icons";
 
 export default function registerIconLibrary() {
   library.add(
@@ -54,5 +59,10 @@ export default function registerIconLibrary() {
     faTaxi,
     faRoute,
     faTriangleExclamation,
+    faTag,
+    faLayerGroup,
+    faUser,
+    faClipboard,
+    faCopy,
   );
 }

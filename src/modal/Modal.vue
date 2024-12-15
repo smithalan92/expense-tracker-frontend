@@ -5,9 +5,9 @@ import { computed } from "vue";
 const { position, includeCloseButton, title, height, alignFooter } = defineProps<{
   position?: "center" | "bottom";
   includeCloseButton?: boolean;
-  title: string;
+  title?: string;
   height?: number | "auto";
-  alignFooter?: "flex-end" | "center";
+  alignFooter?: "flex-end" | "center" | "space-between";
   isLoading?: boolean;
 }>();
 
