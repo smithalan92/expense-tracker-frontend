@@ -8,6 +8,7 @@ import App from "./app/App.vue";
 import registerIconLibrary from "./app/fontaweSomeIcons";
 import router from "./app/router";
 import useAppStore from "./stores/appStore";
+import useTripDataStoreSync from "./stores/useTripDataStoreSync";
 import "./styles/main.css";
 import { BASE_LOCALSTORAGE_KEY } from "./utils/localstorage";
 
@@ -28,6 +29,8 @@ registerIconLibrary();
 app.component("fa-icon", FontAwesomeIcon);
 
 const appStore = useAppStore();
+
+useTripDataStoreSync();
 
 if (appStore.authToken) {
   createInstance(appStore.authToken);

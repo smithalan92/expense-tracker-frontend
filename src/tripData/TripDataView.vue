@@ -16,7 +16,7 @@ const toast = useToast();
 const router = useRouter();
 const store = useTripData();
 const { trip, isLoading, hasFailedToLoad } = storeToRefs(store);
-const { loadTrip, resetState } = store;
+const { loadTripData, resetState } = store;
 const currentTripID = useGetCurrentTripId();
 const isEditTripModalOpen = ref(false);
 const showConfirmDelete = ref(false);
@@ -34,7 +34,7 @@ const onClickDelete = async () => {
 };
 
 onMounted(() => {
-  loadTrip(currentTripID.value);
+  loadTripData(currentTripID.value);
 });
 </script>
 
@@ -51,7 +51,7 @@ onMounted(() => {
           <button
             name="refresh"
             class="ml-2 px-1 text-primary hover:opacity-70"
-            @click="loadTrip(currentTripID)"
+            @click="loadTripData(currentTripID)"
           >
             <fa-icon :icon="['fas', 'rotate-right']" size="lg" class="text-primary" />
           </button>
@@ -77,7 +77,7 @@ onMounted(() => {
           <button
             name="refresh"
             class="ml-2 px-1 text-primary hover:opacity-70"
-            @click="loadTrip(currentTripID)"
+            @click="loadTripData(currentTripID)"
           >
             <fa-icon :icon="['fas', 'rotate-right']" size="lg" class="text-primary" />
           </button>

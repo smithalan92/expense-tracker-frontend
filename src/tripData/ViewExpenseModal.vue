@@ -59,8 +59,8 @@ const onClickConfirm = async () => {
 
     try {
       await apiDeleteExpense(currentTripID.value, expense.value.id);
-      $toast.success("Your expense has been deleted.");
       deleteExpense(expense.value.id);
+      $toast.success("Your expense has been deleted.");
       emit("close");
     } catch (e) {
       $toast.error("Something went wrong deleting the expense. Try again.");

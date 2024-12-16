@@ -7,7 +7,7 @@ import {
   type Trip,
   type TripExpense,
 } from "@/api";
-import { getTripFromLocalStorage, writeTripDataToLocalStorage } from "@/utils/localstorage";
+import { getTripFromLocalStorage } from "@/utils/localstorage";
 import { isNetworkError } from "@/utils/network";
 import { acceptHMRUpdate, defineStore } from "pinia";
 
@@ -33,10 +33,6 @@ const useTripDataStore = defineStore("tripData", {
     hasFailedToLoad: false,
   }),
   actions: {
-    syncStateToLocalStorage() {
-      writeTripDataToLocalStorage(this.$state);
-    },
-
     restoreStateFromLocalStorage(tripId: number) {
       const retrievedState = getTripFromLocalStorage(tripId);
 
@@ -47,16 +43,8 @@ const useTripDataStore = defineStore("tripData", {
       }
     },
 
-    deleteExpense(expenseId: number) {
-      const expenseIdx = this.expenses.findIndex((e) => e.id === expenseId);
-
-      if (expenseIdx > -1) {
-        this.expenses.splice(expenseIdx, 1);
-        this.syncStateToLocalStorage();
-      }
-    },
-
-    async loadTrip(tripId: number) {
+    // syncd to localStorage by name. If name change, update sync
+    async loadTripData(tripId: number) {
       try {
         this.resetState();
         this.isLoading = true;
@@ -69,24 +57,34 @@ const useTripDataStore = defineStore("tripData", {
         this.currencies = data.currencies;
         this.categories = data.categories;
         this.users = data.users;
-
-        this.syncStateToLocalStorage();
       } catch (err: any) {
         if (isNetworkError(err)) {
           try {
             this.restoreStateFromLocalStorage(tripId);
           } catch (_) {
             this.hasFailedToLoad = true;
-            throw err;
           }
         } else {
           this.hasFailedToLoad = true;
-          throw err;
         }
+
+        throw err;
       } finally {
         this.isLoading = false;
       }
     },
+
+    // syncd to localStorage by name. If name change, update sync
+    deleteExpense(expenseId: number) {
+      const expenseIdx = this.expenses.findIndex((e) => e.id === expenseId);
+
+      if (expenseIdx > -1) {
+        this.expenses.splice(expenseIdx, 1);
+      } else {
+        throw new Error("Could not find expense to delete");
+      }
+    },
+
     resetState() {
       this.trip = {
         id: 0,

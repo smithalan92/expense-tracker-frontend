@@ -36,7 +36,7 @@ const isCopyingExpense = computed(() => {
 });
 
 const { user } = useAppStore();
-const { trip, loadTrip, cities } = useTripDataStore();
+const { trip, loadTripData, cities } = useTripDataStore();
 const $toast = useToast();
 
 const selectedCountry = ref<Nullable<PickerOption>>(null);
@@ -110,7 +110,7 @@ const onClickAddExpense = async () => {
       await addExpenseToTrip(trip.id, payload);
     }
 
-    loadTrip(trip.id);
+    loadTripData(trip.id);
     emit("close");
   } catch (err) {
     console.error(err);

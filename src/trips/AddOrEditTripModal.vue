@@ -35,7 +35,7 @@ const emit = defineEmits<{
 
 const { user, users } = useAppStore();
 const { loadTrips } = useTripsStore();
-const { loadTrip } = useTripDataStore();
+const { loadTripData } = useTripDataStore();
 const $toast = useToast();
 const originalTrip = ref<GetTripEditDataResponse | null>(null);
 
@@ -160,7 +160,8 @@ const onSaveTrip = async () => {
   try {
     if (tripIdToEdit) {
       await updateTrip(tripIdToEdit, payload);
-      loadTrip(tripIdToEdit);
+      loadTrips();
+      loadTripData(tripIdToEdit);
     } else {
       await createTrip(payload);
       loadTrips();
