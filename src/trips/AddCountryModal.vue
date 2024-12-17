@@ -17,7 +17,7 @@ const emit = defineEmits<{
 
 const { countryOptions } = useAddCountryModalOptions();
 
-const selectedCountry = ref<Nullable<PickerOption>>();
+const selectedCountry = ref<Nullable<PickerOption>>(null);
 const selectedCityIds = ref<number[]>([]);
 
 watch(
