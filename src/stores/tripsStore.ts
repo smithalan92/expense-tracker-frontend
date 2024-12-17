@@ -1,4 +1,4 @@
-import { getTrips, type Trip } from "@/api";
+import { createTrip, getTrips, uploadFile, type CreateTripPayload, type Trip } from "@/api";
 import { isNetworkError } from "@/utils/network";
 import { acceptHMRUpdate, defineStore } from "pinia";
 
@@ -24,6 +24,20 @@ const useTripsStore = defineStore("trips", {
       } finally {
         this.isLoading = false;
       }
+    },
+
+    async createTrip(payload: CreateTripPayload, file?: Nullable<File>) {
+      try {
+        if (file) {
+          const fileUrl = await uploadFile(file);
+          payload.file = fileUrl;
+        }
+      } catch (err) {
+        throw new Error("Failed to save file");
+      }
+
+      await createTrip(payload);
+      return this.loadTrips();
     },
   },
   persist: true,

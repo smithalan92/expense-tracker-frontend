@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import {
-  createTrip,
   getTripForEditing,
-  updateTrip,
-  uploadFile,
   type CreateTripCountry,
   type CreateTripPayload,
   type GetTripEditDataResponse,
@@ -36,8 +33,8 @@ const emit = defineEmits<{
 }>();
 
 const { user, users } = useAppStore();
-const { loadTrips } = useTripsStore();
-const { loadTripData } = useTripDataStore();
+const { loadTrips, createTrip } = useTripsStore();
+const { loadTripData, updateTrip } = useTripDataStore();
 const $toast = useToast();
 const isOnline = useOnline();
 const originalTrip = ref<GetTripEditDataResponse | null>(null);
@@ -156,23 +153,11 @@ const onSaveTrip = async () => {
   };
 
   try {
-    if (selectedImage.value) {
-      const file = await uploadFile(selectedImage.value);
-      payload.file = file;
-    }
-  } catch (err) {
-    console.error(err);
-    $toast.error("Failed to upload image for trip.");
-    return;
-  }
-  try {
     if (tripIdToEdit) {
-      await updateTrip(tripIdToEdit, payload);
+      await updateTrip({ tripId: tripIdToEdit, payload, file: selectedImage.value });
       loadTrips();
-      loadTripData(tripIdToEdit);
     } else {
-      await createTrip(payload);
-      loadTrips();
+      createTrip(payload, selectedImage.value);
     }
 
     emit("close");

@@ -1,7 +1,13 @@
 import {
+  addExpenseToTrip,
+  editExpenseForTrip,
   getTripData,
+  updateTrip,
+  uploadFile,
+  type AddExpenseForTripBody,
   type City,
   type Country,
+  type CreateTripPayload,
   type Currency,
   type ExpenseCategory,
   type Trip,
@@ -72,6 +78,44 @@ const useTripDataStore = defineStore("tripData", {
       } finally {
         this.isLoading = false;
       }
+    },
+
+    async updateTrip({
+      tripId,
+      payload,
+      file,
+    }: {
+      tripId: number;
+      payload: CreateTripPayload;
+      file?: Nullable<File>;
+    }) {
+      try {
+        if (file) {
+          const fileUrl = await uploadFile(file);
+          payload.file = fileUrl;
+        }
+      } catch (err) {
+        throw new Error("Failed to save file");
+      }
+
+      await updateTrip(tripId, payload);
+      return this.loadTripData(tripId);
+    },
+
+    async addExpense({ payload }: { payload: AddExpenseForTripBody }) {
+      await addExpenseToTrip(this.trip.id, payload);
+      return this.loadTripData(this.trip.id);
+    },
+
+    async updateExpense({
+      expenseId,
+      payload,
+    }: {
+      expenseId: number;
+      payload: AddExpenseForTripBody;
+    }) {
+      await editExpenseForTrip(this.trip.id, expenseId, payload);
+      return this.loadTripData(this.trip.id);
     },
 
     // syncd to localStorage by name. If name change, update sync

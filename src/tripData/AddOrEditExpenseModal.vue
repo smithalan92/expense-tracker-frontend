@@ -1,10 +1,5 @@
 <script setup lang="ts">
-import {
-  addExpenseToTrip,
-  editExpenseForTrip,
-  type AddExpenseForTripBody,
-  type TripExpense,
-} from "@/api";
+import { type AddExpenseForTripBody, type TripExpense } from "@/api";
 import Spinner from "@/app/Spinner.vue";
 import Modal from "@/modal/Modal.vue";
 import DatePicker from "@/pickers/DatePicker.vue";
@@ -30,7 +25,7 @@ const emit = defineEmits<{
 }>();
 
 const { user } = useAppStore();
-const { trip, loadTripData, cities } = useTripDataStore();
+const { trip, addExpense, updateExpense, cities } = useTripDataStore();
 const $toast = useToast();
 const isOnline = useOnline();
 
@@ -114,12 +109,11 @@ const onClickAddExpense = async () => {
     };
 
     if (isEditingExpense.value) {
-      await editExpenseForTrip(trip.id, expenseToEdit!.id, payload);
+      await updateExpense({ expenseId: expenseToEdit!.id, payload });
     } else {
-      await addExpenseToTrip(trip.id, payload);
+      await addExpense({ payload });
     }
 
-    loadTripData(trip.id);
     emit("close");
   } catch (err) {
     console.error(err);
