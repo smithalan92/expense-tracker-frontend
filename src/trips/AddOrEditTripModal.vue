@@ -20,10 +20,6 @@ import { format } from "date-fns/format";
 import { computed, nextTick, onBeforeMount, onMounted, ref, useTemplateRef } from "vue";
 import AddCountryModal from "./AddCountryModal.vue";
 
-export interface TripModalCountry extends CreateTripCountry {
-  name: string;
-}
-
 const { tripIdToEdit } = defineProps<{
   tripIdToEdit?: number;
 }>();
@@ -277,3 +273,9 @@ onMounted(() => {
     @close="onCloseAddCountryModal"
   />
 </template>
+
+<script lang="ts">
+export interface TripModalCountry extends CreateTripCountry {
+  name: string;
+}
+</script>

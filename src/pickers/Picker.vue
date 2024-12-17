@@ -2,11 +2,6 @@
 import isMobileDevice from "@/utils/isMobile";
 import Multiselect from "vue-multiselect";
 
-export interface PickerOption {
-  label: string;
-  value: number;
-}
-
 const { options, placeholder, isMulti, disabled, ...props } = defineProps<{
   options: PickerOption[];
   placeholder?: string;
@@ -70,3 +65,10 @@ const value = defineModel<Nullable<PickerOption | PickerOption[]>>({ required: t
   white-space: nowrap !important;
 }
 </style>
+
+<script lang="ts">
+export interface PickerOption {
+  label: string;
+  value: number;
+}
+</script>
