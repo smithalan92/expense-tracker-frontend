@@ -12,7 +12,7 @@ import Tooltip from "@/utils/Tooltip.vue";
 import { useToast } from "@/utils/useToast";
 import { useOnline } from "@vueuse/core";
 import { format } from "date-fns";
-import { computed, onBeforeMount, ref, watch } from "vue";
+import { computed, onBeforeMount, reactive, ref, toRefs, watch } from "vue";
 import useAddOrEditExpenseModalOptions from "./hooks/useAddOrEditExpenseModalOptions";
 
 const { expenseToEdit, expenseToCopy } = defineProps<{
@@ -29,27 +29,28 @@ const { trip, addExpense, updateExpense, cities } = useTripDataStore();
 const $toast = useToast();
 const isOnline = useOnline();
 
-const selectedCountry = ref<Nullable<PickerOption>>(null);
+const expenseData = reactive<ExpenseData>({
+  selectedCountry: null,
+  expenseDate: format(new Date(), "yyyy-MM-dd"),
+  expenseTime: format(new Date(), "HH:mm"),
+  selectedCity: null,
+  selectedCurrency: null,
+  selectedCategory: null,
+  selectedUser: null,
+  description: "",
+  amount: 0,
+});
+
+const { selectedCountry } = toRefs(expenseData);
 
 const { countryOptions, cityOptions, currencyOptions, categoryOptions, userOptions } =
   useAddOrEditExpenseModalOptions({ selectedCountry });
 
-const expenseDate = ref(format(new Date(), "yyyy-MM-dd"));
-const expenseTime = ref(format(new Date(), "HH:mm"));
-const selectedCity = ref<Nullable<PickerOption>>(null);
-const selectedCurrency = ref<Nullable<PickerOption>>(null);
-const amount = ref<Nullable<number | string>>(null);
 const parsedAmount = computed(() => {
-  if (!amount.value) return 0;
-  if (typeof amount.value === "string") return parseFloat(amount.value as string);
-  return amount.value as number;
+  if (!expenseData.amount) return 0;
+  if (typeof expenseData.amount === "string") return parseFloat(expenseData.amount as string);
+  return expenseData.amount as number;
 });
-
-const selectedCategory = ref<Nullable<PickerOption>>(null);
-const selectedUser = ref<Nullable<PickerOption>>(
-  userOptions.value.find((u) => u.value === user!.id)!,
-);
-const description = ref("");
 
 const isAddingExpense = ref(false);
 
@@ -57,14 +58,14 @@ const canAddExpense = computed(() => {
   const isAmountValid = parsedAmount.value > 0;
 
   return (
-    !!expenseDate.value &&
-    !!expenseTime.value &&
-    selectedCountry.value !== null &&
-    selectedCity.value !== null &&
-    selectedCurrency.value !== null &&
+    !!expenseData.expenseDate &&
+    !!expenseData.expenseTime &&
+    expenseData.selectedCountry !== null &&
+    expenseData.selectedCity !== null &&
+    expenseData.selectedCurrency !== null &&
     isAmountValid &&
-    selectedCategory.value !== null &&
-    selectedUser.value !== null
+    expenseData.selectedCategory !== null &&
+    expenseData.selectedUser !== null
   );
 });
 
@@ -83,11 +84,11 @@ const tooltipOfflineMessage = computed(() => {
 });
 
 watch(
-  () => selectedCountry.value?.value,
+  () => expenseData.selectedCountry?.value,
   (countryId) => {
-    const city = cities.find((o) => o.id === selectedCity.value?.value)!;
+    const city = cities.find((o) => o.id === expenseData.selectedCity?.value)!;
 
-    if (countryId !== city?.countryId) selectedCity.value = null;
+    if (countryId !== city?.countryId) expenseData.selectedCity = null;
   },
 );
 
@@ -97,15 +98,15 @@ const onClickAddExpense = async () => {
   try {
     const payload: AddExpenseForTripBody = {
       localDateTime: format(
-        new Date(`${expenseDate.value} ${expenseTime.value}:00`),
+        new Date(`${expenseData.expenseDate} ${expenseData.expenseTime}:00`),
         "yyyy-MM-dd'T'HH:mm:ss",
       ),
-      cityId: selectedCity.value!.value,
+      cityId: expenseData.selectedCity!.value,
       amount: parsedAmount.value,
-      currencyId: selectedCurrency.value!.value,
-      categoryId: selectedCategory.value!.value,
-      description: description.value,
-      userId: selectedUser.value!.value,
+      currencyId: expenseData.selectedCurrency!.value,
+      categoryId: expenseData.selectedCategory!.value,
+      description: expenseData.description,
+      userId: expenseData.selectedUser!.value,
     };
 
     if (isEditingExpense.value) {
@@ -124,7 +125,10 @@ const onClickAddExpense = async () => {
 };
 
 onBeforeMount(() => {
-  if (!isEditingExpense.value && !isCopyingExpense.value) return;
+  if (!isEditingExpense.value && !isCopyingExpense.value) {
+    expenseData.selectedUser = userOptions.value.find((u) => u.value === user?.id) ?? null;
+    return;
+  }
 
   const expenseToUseForHydration = isEditingExpense.value ? expenseToEdit! : expenseToCopy!;
 
@@ -133,22 +137,26 @@ onBeforeMount(() => {
   )!;
 
   const localDateTime = new Date(expenseToUseForHydration.localDateTime);
-  expenseDate.value = format(localDateTime, "yyyy-MM-dd");
-  expenseTime.value = format(localDateTime, "HH:mm");
+  expenseData.expenseDate = format(localDateTime, "yyyy-MM-dd");
+  expenseData.expenseTime = format(localDateTime, "HH:mm");
 
-  selectedCity.value = cityOptions.value.find((c) => c.value === expenseToUseForHydration.city.id)!;
+  expenseData.selectedCity = cityOptions.value.find(
+    (c) => c.value === expenseToUseForHydration.city.id,
+  )!;
 
-  selectedCurrency.value = currencyOptions.value.find(
+  expenseData.selectedCurrency = currencyOptions.value.find(
     (c) => c.value === expenseToUseForHydration.currency.id,
   )!;
 
-  amount.value = parseFloat(expenseToUseForHydration.amount);
+  expenseData.amount = parseFloat(expenseToUseForHydration.amount);
 
-  selectedCategory.value = categoryOptions.value.find(
+  expenseData.selectedCategory = categoryOptions.value.find(
     (c) => c.value === expenseToUseForHydration.category.id,
   )!;
 
-  selectedUser.value = userOptions.value.find((u) => u.value === expenseToUseForHydration.user.id)!;
+  expenseData.selectedUser = userOptions.value.find(
+    (u) => u.value === expenseToUseForHydration.user.id,
+  )!;
 
   if (isCopyingExpense.value) {
     const initalText =
@@ -156,9 +164,9 @@ onBeforeMount(() => {
         ? `${expenseToUseForHydration.description} | `
         : "";
 
-    description.value = `${initalText}Copied at ${new Date()}`;
+    expenseData.description = `${initalText}Copied at ${new Date()}`;
   } else {
-    description.value = expenseToUseForHydration.description;
+    expenseData.description = expenseToUseForHydration.description;
   }
 });
 </script>
@@ -168,8 +176,8 @@ onBeforeMount(() => {
     <template v-slot:body>
       <div class="grid grid-cols-5 gap-x-4 py-4">
         <span class="col-span-1 content-center">When</span>
-        <span class="col-span-2"> <DatePicker v-model="expenseDate" /> </span>
-        <span class="col-span-2"><TimePicker v-model="expenseTime" /></span>
+        <span class="col-span-2"> <DatePicker v-model="expenseData.expenseDate" /> </span>
+        <span class="col-span-2"><TimePicker v-model="expenseData.expenseTime" /></span>
       </div>
 
       <div class="grid grid-cols-5 gap-1 py-4">
@@ -183,7 +191,7 @@ onBeforeMount(() => {
         <Picker
           class="col-span-2"
           :options="cityOptions"
-          v-model="selectedCity"
+          v-model="expenseData.selectedCity"
           placeholder="Select city"
           :disabled="!selectedCountry"
         />
@@ -194,7 +202,7 @@ onBeforeMount(() => {
         <Picker
           class="col-span-2"
           :options="currencyOptions"
-          v-model="selectedCurrency"
+          v-model="expenseData.selectedCurrency"
           placeholder="Select currency"
         />
         <!-- this input will force the numpad on Safari on IOS, unlike type=-->
@@ -205,7 +213,7 @@ onBeforeMount(() => {
           type="text"
           inputmode="numeric"
           pattern="\d*"
-          v-model="amount"
+          v-model="expenseData.amount"
         />
         <input
           v-if="!isMobileDevice"
@@ -214,7 +222,7 @@ onBeforeMount(() => {
           type="number"
           step=".01"
           min="0"
-          v-model="amount"
+          v-model="expenseData.amount"
         />
       </div>
 
@@ -223,7 +231,7 @@ onBeforeMount(() => {
         <Picker
           class="col-span-4"
           :options="categoryOptions"
-          v-model="selectedCategory"
+          v-model="expenseData.selectedCategory"
           placeholder="Select category"
         />
       </div>
@@ -233,7 +241,7 @@ onBeforeMount(() => {
         <Picker
           class="col-span-4"
           :options="userOptions"
-          v-model="selectedUser"
+          v-model="expenseData.selectedUser"
           placeholder="Select user"
         />
       </div>
@@ -242,7 +250,7 @@ onBeforeMount(() => {
         <span class="col-span-1 content-center">Notes</span>
         <input
           class="col-span-4 textarea rounded-md bg-white textarea-bordered outline-none focus:outline-none"
-          v-model="description"
+          v-model="expenseData.description"
         />
       </div>
     </template>
@@ -272,3 +280,16 @@ onBeforeMount(() => {
   </Modal>
   <Spinner v-if="isAddingExpense" :use-overlay="true" />
 </template>
+<script lang="ts">
+interface ExpenseData {
+  selectedCountry: Nullable<PickerOption>;
+  expenseDate: string;
+  expenseTime: string;
+  selectedCity: Nullable<PickerOption>;
+  selectedCurrency: Nullable<PickerOption>;
+  selectedCategory: Nullable<PickerOption>;
+  selectedUser: Nullable<PickerOption>;
+  description: string;
+  amount: number;
+}
+</script>
