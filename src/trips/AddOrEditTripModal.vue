@@ -15,7 +15,9 @@ import Picker, { type PickerOption } from "@/pickers/Picker.vue";
 import useAppStore from "@/stores/appStore";
 import useTripDataStore from "@/stores/tripDataStore";
 import useTripsStore from "@/stores/tripsStore";
+import Tooltip from "@/utils/Tooltip.vue";
 import { useToast } from "@/utils/useToast";
+import { useOnline } from "@vueuse/core";
 import { addDays } from "date-fns";
 import { format } from "date-fns/format";
 import { computed, nextTick, onBeforeMount, onMounted, ref, useTemplateRef } from "vue";
@@ -37,6 +39,7 @@ const { user, users } = useAppStore();
 const { loadTrips } = useTripsStore();
 const { loadTripData } = useTripDataStore();
 const $toast = useToast();
+const isOnline = useOnline();
 const originalTrip = ref<GetTripEditDataResponse | null>(null);
 
 const selectedImage = ref<Nullable<File>>(null);
@@ -95,8 +98,8 @@ const isCreatingTrip = ref(false);
 const canSaveTrip = computed(() => {
   return (
     tripName.value.trim().length > 0 &&
-    startDate.value &&
-    endDate.value &&
+    !!startDate.value &&
+    !!endDate.value &&
     selectedCountries.value.length > 0 &&
     selectedUsers.value.length > 0
   );
@@ -104,6 +107,11 @@ const canSaveTrip = computed(() => {
 
 const nameInput = useTemplateRef("name-input");
 const addCountryButton = useTemplateRef("add-country-button");
+
+const tooltipOfflineMessage = computed(() => {
+  if (tripIdToEdit) return "Trip editing is disabled when your offline.";
+  return "You can't add a trip when your offline";
+});
 
 const onClickSelectedCountry = async (country: TripModalCountry) => {
   selectedCountryToEdit.value = country;
@@ -264,14 +272,16 @@ onMounted(() => {
         Cancel
       </button>
 
-      <button
-        class="btn btn-primary font-bold text-md"
-        :disabled="!canSaveTrip || isCreatingTrip"
-        @click="onSaveTrip"
-      >
-        <span v-if="!isCreatingTrip">Save</span>
-        <fa-icon v-if="isCreatingTrip" :icon="['fas', 'circle-notch']" class="animate-spin" />
-      </button>
+      <Tooltip :message="tooltipOfflineMessage" :force-open-on-mobile="true" :disabled="isOnline">
+        <button
+          class="btn btn-primary font-bold text-md"
+          :disabled="!canSaveTrip || isCreatingTrip || !isOnline"
+          @click="onSaveTrip"
+        >
+          <span v-if="!isCreatingTrip">Save</span>
+          <fa-icon v-if="isCreatingTrip" :icon="['fas', 'circle-notch']" class="animate-spin" />
+        </button>
+      </Tooltip>
     </template>
   </Modal>
 

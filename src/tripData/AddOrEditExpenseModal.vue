@@ -13,7 +13,9 @@ import TimePicker from "@/pickers/TimePicker.vue";
 import useAppStore from "@/stores/appStore";
 import useTripDataStore from "@/stores/tripDataStore";
 import isMobileDevice from "@/utils/isMobile";
+import Tooltip from "@/utils/Tooltip.vue";
 import { useToast } from "@/utils/useToast";
+import { useOnline } from "@vueuse/core";
 import { format } from "date-fns";
 import { computed, onBeforeMount, ref, watch } from "vue";
 import useAddOrEditExpenseModalOptions from "./hooks/useAddOrEditExpenseModalOptions";
@@ -27,17 +29,10 @@ const emit = defineEmits<{
   (e: "close"): void;
 }>();
 
-const isEditingExpense = computed(() => {
-  return !!expenseToEdit;
-});
-
-const isCopyingExpense = computed(() => {
-  return !!expenseToCopy;
-});
-
 const { user } = useAppStore();
 const { trip, loadTripData, cities } = useTripDataStore();
 const $toast = useToast();
+const isOnline = useOnline();
 
 const selectedCountry = ref<Nullable<PickerOption>>(null);
 
@@ -76,6 +71,20 @@ const canAddExpense = computed(() => {
     selectedCategory.value !== null &&
     selectedUser.value !== null
   );
+});
+
+const isEditingExpense = computed(() => {
+  return !!expenseToEdit;
+});
+
+const isCopyingExpense = computed(() => {
+  return !!expenseToCopy;
+});
+
+const tooltipOfflineMessage = computed(() => {
+  if (expenseToEdit) return "Trip editing is disabled when your offline.";
+  if (expenseToCopy) return "Trip copying is disabled when your offline.";
+  return "Adding a trip is disabled while offline";
 });
 
 watch(
@@ -249,15 +258,22 @@ onBeforeMount(() => {
         Cancel
       </button>
 
-      <button
-        class="btn btn-primary font-bold text-md"
-        :disabled="!canAddExpense"
-        @click="onClickAddExpense"
+      <Tooltip
+        :message="tooltipOfflineMessage"
+        :forceOpenOnMobile="true"
+        :disabled="isOnline"
+        placement="top"
       >
-        <span v-if="!isEditingExpense && !isCopyingExpense">Add expense</span>
-        <span v-if="isEditingExpense">Edit expense</span>
-        <span v-if="isCopyingExpense">Copy expense</span>
-      </button>
+        <button
+          class="btn btn-primary font-bold text-md"
+          :disabled="!canAddExpense || !isOnline"
+          @click="onClickAddExpense"
+        >
+          <span v-if="!isEditingExpense && !isCopyingExpense">Add expense</span>
+          <span v-if="isEditingExpense">Edit expense</span>
+          <span v-if="isCopyingExpense">Copy expense</span>
+        </button>
+      </Tooltip>
     </template>
   </Modal>
   <Spinner v-if="isAddingExpense" :use-overlay="true" />

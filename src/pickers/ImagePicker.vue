@@ -13,8 +13,6 @@ const emit = defineEmits<{
 
 const selectedImage = ref<null | string>(initalImage.value);
 
-console.log(initalImage.value);
-
 watch(
   initalImage,
   (newValue) => {

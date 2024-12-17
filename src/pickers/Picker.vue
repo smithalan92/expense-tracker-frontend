@@ -65,4 +65,8 @@ const value = defineModel<Nullable<PickerOption | PickerOption[]>>({ required: t
 .multiselect--disabled .multiselect__select {
   background: #fdfcfb !important;
 }
+
+.multiselect__placeholder {
+  white-space: nowrap !important;
+}
 </style>
