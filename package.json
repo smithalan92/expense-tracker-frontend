@@ -8,9 +8,9 @@
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "build-only": "vite build",
-    "type-check": "vue-tsc --build",
-    "lint:oxlint": "oxlint . --fix -D correctness --ignore-path .gitignore",
-    "lint:eslint": "eslint . --fix",
+    "type-check": "vue-tsc --project tsconfig.app.json",
+    "lint:oxlint": "oxlint . -D correctness --ignore-path .gitignore",
+    "lint:eslint": "eslint .",
     "lint": "run-s lint:*",
     "format": "prettier --write src/"
   },
