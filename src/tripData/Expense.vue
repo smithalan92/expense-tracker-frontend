@@ -21,6 +21,7 @@ const userInitals = computed(() => {
   const lastNameLetter = expense.user.lastName.slice(0, 1).toUpperCase();
   return `${firstNameLetter}${lastNameLetter}`;
 });
+const isUnsavedExpense = computed(() => expense.id < 0);
 </script>
 
 <template>
@@ -29,7 +30,12 @@ const userInitals = computed(() => {
     class="flex border-t border-b border-l even:border-t-0 even:border-b-0 border-solid border-gray-300 cursor-pointer hover:bg-gray-200"
     @click="emit('click')"
   >
-    <div class="flex px-1 py-1 bg-primary text-white border-b border-solid border-white">
+    <div
+      class="flex px-1 py-1 bg-primary text-white border-b border-solid border-white"
+      :class="{
+        'bg-amber-500': isUnsavedExpense,
+      }"
+    >
       <div class="flex h-full flex-col items-center justify-center w-16">
         <span class="font-bold text-sm"> {{ expenseDay }} {{ expenseMonth }} </span>
         <span class="text-xs">{{ expenseTime }}</span>
@@ -50,9 +56,14 @@ const userInitals = computed(() => {
       </div>
     </div>
     <div class="flex items-center justify-center px-4">
-      <span class="font-bold">€{{ expense.euroAmount }}</span>
+      <span class="font-bold"><span v-if="!isUnsavedExpense">€</span>{{ expense.euroAmount }}</span>
     </div>
-    <div class="flex items-center justify-center bg-primary w-10">
+    <div
+      class="flex items-center justify-center bg-primary w-10"
+      :class="{
+        'bg-amber-500': isUnsavedExpense,
+      }"
+    >
       <span class="text-white font-bold">{{ userInitals }}</span>
     </div>
   </div>

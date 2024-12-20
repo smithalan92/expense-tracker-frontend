@@ -1,9 +1,11 @@
 import { writeTripDataToLocalStorage } from "@/utils/localstorage";
 import useTripDataStore from "./tripDataStore";
 
-const ACTIONS_TO_SYNC = ["loadTrip", "deleteExpense"];
+type StorePropery = keyof ReturnType<typeof useTripDataStore>;
 
-function shouldSyncAction(action: string) {
+const ACTIONS_TO_SYNC: StorePropery[] = ["loadTripData", "deleteExpense", "addUnsavedExpense"];
+
+function shouldSyncAction(action: StorePropery) {
   return ACTIONS_TO_SYNC.includes(action);
 }
 

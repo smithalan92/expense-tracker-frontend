@@ -83,6 +83,16 @@ const tooltipOfflineMessage = computed(() => {
   return "Adding a trip is disabled while offline";
 });
 
+const shouldDisableTooltip = computed(() => {
+  return isOnline.value || (!isOnline.value && !isEditingExpense.value && !isCopyingExpense.value);
+});
+
+const shouldDisableSaveButton = computed(() => {
+  return (
+    !canAddExpense.value || (!isOnline.value && (isEditingExpense.value || isCopyingExpense.value))
+  );
+});
+
 watch(
   () => expenseData.selectedCountry?.value,
   (countryId) => {
@@ -263,12 +273,12 @@ onBeforeMount(() => {
       <Tooltip
         :message="tooltipOfflineMessage"
         :forceOpenOnMobile="true"
-        :disabled="isOnline"
+        :disabled="shouldDisableTooltip"
         placement="top"
       >
         <button
           class="btn btn-primary font-bold text-md"
-          :disabled="!canAddExpense || !isOnline"
+          :disabled="shouldDisableSaveButton"
           @click="onClickAddExpense"
         >
           <span v-if="!isEditingExpense && !isCopyingExpense">Add expense</span>

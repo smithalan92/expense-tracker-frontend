@@ -4,7 +4,7 @@ import useAppStore from "./stores/appStore";
 let http: Nullable<AxiosInstance> = null;
 
 const PRODUCTION_API_URL = "https://expense-tracker-api.smithy.dev";
-const LOCAL_API_URL = "http://localhost:3520";
+// const LOCAL_API_URL = "http://localhost:3520";
 
 const API_URL = PRODUCTION_API_URL;
 
@@ -110,8 +110,6 @@ export async function loadUsers() {
 }
 
 export async function uploadFile(file: File) {
-  const appStore = useAppStore();
-
   const formData = new FormData();
   formData.append("image", file);
 
@@ -263,8 +261,7 @@ export interface AddExpenseForTripBody {
   currencyId: number;
   categoryId: number;
   description: string;
-  userId?: number;
-  userIds?: number[];
+  userId: number;
 }
 
 export type EditExpenseForTripBody = Partial<AddExpenseForTripBody>;

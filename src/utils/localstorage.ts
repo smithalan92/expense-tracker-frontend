@@ -15,6 +15,7 @@ export function writeTripDataToLocalStorage(state: TripDataState) {
   const dataToStore: SavedTripData = {
     trip: state.trip,
     expenses: state.expenses,
+    unsavedExpenses: state.unsavedExpenses,
     countries: state.countries,
     cities: state.cities,
     currencies: state.currencies,
@@ -35,4 +36,4 @@ export function getTripFromLocalStorage(tripId: number) {
   return getFromLocalStorage<SavedTripData>(`${TRIP_DATA_KEY}__${tripId}`);
 }
 
-type SavedTripData = Omit<TripDataState, "isLoading" | "hasFailedToLoad">;
+type SavedTripData = Omit<TripDataState, "isLoadingTripData" | "hasFailedToLoadTripData">;

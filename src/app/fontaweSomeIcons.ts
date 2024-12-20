@@ -17,6 +17,7 @@ import {
   faPlane,
   faPlus,
   faQuestion,
+  faRotate,
   faRotateRight,
   faRoute,
   faShirt,
@@ -64,5 +65,6 @@ export default function registerIconLibrary() {
     faUser,
     faClipboard,
     faCopy,
+    faRotate,
   );
 }

@@ -32,7 +32,7 @@ const useTripsStore = defineStore("trips", {
           const fileUrl = await uploadFile(file);
           payload.file = fileUrl;
         }
-      } catch (err) {
+      } catch {
         throw new Error("Failed to save file");
       }
 

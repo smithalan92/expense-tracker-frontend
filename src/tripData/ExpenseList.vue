@@ -1,19 +1,28 @@
 <script setup lang="ts">
 import type { TripExpense } from "@/api";
 import useTripData from "@/stores/tripDataStore";
-import { storeToRefs } from "pinia";
 import { computed, ref } from "vue";
 import AddOrEditExpenseModal from "./AddOrEditExpenseModal.vue";
 import Expense from "./Expense.vue";
 import ViewExpenseModal from "./ViewExpenseModal.vue";
 
-const { expenses } = storeToRefs(useTripData());
+const { expenses, unsavedExpenses } = useTripData();
 
 const showViewExpenseModal = ref(false);
 const isEditingExpense = ref(false);
 const isCopyExpense = ref(false);
 
 const selectedExpense = ref<Nullable<TripExpense>>(null);
+
+const expensesToDisplay = computed(() => {
+  const exp: TripExpense[] = [...unsavedExpenses, ...expenses];
+
+  exp.sort((a, b) => {
+    return new Date(b.localDateTime).getTime() - new Date(a.localDateTime).getTime();
+  });
+
+  return exp;
+});
 
 const expenseToEdit = computed(() => {
   if (isEditingExpense.value) return selectedExpense.value;
@@ -57,7 +66,7 @@ const onCloseAddOrEditExpenseModal = () => {
       </div>
 
       <Expense
-        v-for="expense in expenses"
+        v-for="expense in expensesToDisplay"
         :key="expense.id"
         :expense="expense"
         @click="onClickExpense(expense)"

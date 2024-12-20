@@ -30,13 +30,14 @@ const useTripDataStore = defineStore("tripData", {
       totalExpenseAmount: 0,
     },
     expenses: [],
+    unsavedExpenses: [],
     countries: [],
     cities: [],
     currencies: [],
     categories: [],
     users: {},
-    isLoading: false,
-    hasFailedToLoad: false,
+    isLoadingTripData: false,
+    hasFailedToLoadTripData: false,
   }),
   actions: {
     restoreStateFromLocalStorage(tripId: number) {
@@ -49,12 +50,20 @@ const useTripDataStore = defineStore("tripData", {
       }
     },
 
+    restoreUnsavedExpensesFromLocalStorage(tripId: number) {
+      const retrievedState = getTripFromLocalStorage(tripId);
+
+      if (retrievedState?.unsavedExpenses.length) {
+        this.$patch({ unsavedExpenses: retrievedState.unsavedExpenses });
+      }
+    },
+
     // syncd to localStorage by name. If name change, update sync
     async loadTripData(tripId: number) {
       try {
         this.resetState();
-        this.isLoading = true;
-        this.hasFailedToLoad = false;
+        this.isLoadingTripData = true;
+        this.hasFailedToLoadTripData = false;
         const data = await getTripData(tripId);
         this.trip = data.trip;
         this.expenses = data.expenses;
@@ -63,20 +72,22 @@ const useTripDataStore = defineStore("tripData", {
         this.currencies = data.currencies;
         this.categories = data.categories;
         this.users = data.users;
+
+        this.restoreUnsavedExpensesFromLocalStorage(tripId);
       } catch (err: any) {
         if (isNetworkError(err)) {
           try {
             this.restoreStateFromLocalStorage(tripId);
-          } catch (_) {
-            this.hasFailedToLoad = true;
+          } catch {
+            this.hasFailedToLoadTripData = true;
           }
         } else {
-          this.hasFailedToLoad = true;
+          this.hasFailedToLoadTripData = true;
         }
 
         throw err;
       } finally {
-        this.isLoading = false;
+        this.isLoadingTripData = false;
       }
     },
 
@@ -94,7 +105,7 @@ const useTripDataStore = defineStore("tripData", {
           const fileUrl = await uploadFile(file);
           payload.file = fileUrl;
         }
-      } catch (err) {
+      } catch {
         throw new Error("Failed to save file");
       }
 
@@ -103,8 +114,49 @@ const useTripDataStore = defineStore("tripData", {
     },
 
     async addExpense({ payload }: { payload: AddExpenseForTripBody }) {
-      await addExpenseToTrip(this.trip.id, payload);
-      return this.loadTripData(this.trip.id);
+      try {
+        await addExpenseToTrip(this.trip.id, payload);
+        return this.loadTripData(this.trip.id);
+      } catch (err: any) {
+        if (isNetworkError(err)) {
+          this.addUnsavedExpense({ payload });
+        } else {
+          throw err;
+        }
+      }
+    },
+
+    addUnsavedExpense({ payload }: { payload: AddExpenseForTripBody }) {
+      const currency = this.currencies.find((c) => c.id === payload.currencyId);
+      const category = this.categories.find((c) => c.id === payload.categoryId);
+      const city = this.cities.find((c) => c.id === payload.cityId);
+      const country = this.countries.find((c) => c.id === city?.countryId);
+      const user = this.users[payload.userId];
+
+      if (!currency || !category || !city || !country || !user) {
+        throw new Error("Incomplete data to add unsaved expense");
+      }
+
+      this.unsavedExpenses.push({
+        id: Math.ceil(Math.random() * 10000) * -1,
+        amount: payload.amount.toFixed(2),
+        currency,
+        euroAmount: `${payload.amount} ${currency.code}`,
+        localDateTime: payload.localDateTime,
+        description: payload.description,
+        category,
+        city: {
+          ...city,
+          timezone: "",
+        },
+        country,
+        user: {
+          id: payload.userId,
+          ...user,
+        },
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
     },
 
     async updateExpense({
@@ -130,25 +182,7 @@ const useTripDataStore = defineStore("tripData", {
     },
 
     resetState() {
-      this.trip = {
-        id: 0,
-        name: "",
-        startDate: "",
-        endDate: "",
-        status: "deleted",
-        image: "",
-        totalLocalAmount: 0,
-        totalExpenseAmount: 0,
-      };
-
-      this.expenses = [];
-      this.countries = [];
-      this.cities = [];
-      this.currencies = [];
-      this.categories = [];
-      this.users = {};
-      this.isLoading = false;
-      this.hasFailedToLoad = false;
+      this.$reset();
     },
   },
   persist: false, // We need manual persistance due to saving different trips
@@ -163,11 +197,12 @@ if (import.meta.hot) {
 export interface TripDataState {
   trip: Trip;
   expenses: TripExpense[];
+  unsavedExpenses: TripExpense[];
   countries: Country[];
   cities: City[];
   currencies: Currency[];
   categories: ExpenseCategory[];
   users: Record<string, { firstName: string; lastName: string }>;
-  isLoading: boolean;
-  hasFailedToLoad: boolean;
+  isLoadingTripData: boolean;
+  hasFailedToLoadTripData: boolean;
 }
