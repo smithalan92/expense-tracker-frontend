@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import type { TripExpense } from "@/api";
 import useTripData from "@/stores/tripDataStore";
-import { computed, ref } from "vue";
+import { computed, ref, toRefs } from "vue";
 import AddOrEditExpenseModal from "./AddOrEditExpenseModal.vue";
 import Expense from "./Expense.vue";
 import ViewExpenseModal from "./ViewExpenseModal.vue";
 
-const { expenses, unsavedExpenses } = useTripData();
+const store = useTripData();
+const { expenses, unsavedExpenses } = toRefs(store);
 
 const showViewExpenseModal = ref(false);
 const isEditingExpense = ref(false);
@@ -15,7 +16,7 @@ const isCopyExpense = ref(false);
 const selectedExpense = ref<Nullable<TripExpense>>(null);
 
 const expensesToDisplay = computed(() => {
-  const exp: TripExpense[] = [...unsavedExpenses, ...expenses];
+  const exp: TripExpense[] = [...unsavedExpenses.value, ...expenses.value];
 
   exp.sort((a, b) => {
     return new Date(b.localDateTime).getTime() - new Date(a.localDateTime).getTime();

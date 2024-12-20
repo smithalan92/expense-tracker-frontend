@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { deleteExpense as apiDeleteExpense, type TripExpense } from "@/api";
+import { type TripExpense } from "@/api";
 import Spinner from "@/app/Spinner.vue";
 import ConfirmModal from "@/modal/ConfirmModal.vue";
 import Modal from "@/modal/Modal.vue";
@@ -7,7 +7,6 @@ import useTripDataStore from "@/stores/tripDataStore";
 import { useToast } from "@/utils/useToast";
 import { format } from "date-fns";
 import { computed, ref, toRefs } from "vue";
-import useGetCurrentTripId from "./hooks/useGetCurrentTripId";
 import useViewExpenseData from "./hooks/useViewExpenseData";
 
 const props = defineProps<{
@@ -15,7 +14,6 @@ const props = defineProps<{
 }>();
 
 const { expense } = toRefs(props);
-const currentTripID = useGetCurrentTripId();
 const $toast = useToast();
 const { deleteExpense } = useTripDataStore();
 
@@ -58,8 +56,7 @@ const onClickConfirm = async () => {
     isDeletingExpense.value = true;
 
     try {
-      await apiDeleteExpense(currentTripID.value, expense.value.id);
-      deleteExpense(expense.value.id);
+      await deleteExpense(expense.value.id);
       $toast.success("Your expense has been deleted.");
       emit("close");
     } catch (e) {
@@ -81,12 +78,7 @@ const onCloseConfirm = () => {
 const dataToDisplay = useViewExpenseData(expense);
 </script>
 <template>
-  <Modal
-    :includeCloseButton="true"
-    :height="330"
-    alignFooter="space-between"
-    @close="emit('close')"
-  >
+  <Modal :includeCloseButton="true" :height="330" alignFooter="space-between" @close="emit('close')">
     <template #title>
       <div class="flex flex-col items-center flex-1">
         <span class="font-bold text-2xl">{{ expenseDateAndTime.date }}</span>

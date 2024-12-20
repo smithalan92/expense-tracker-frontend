@@ -77,6 +77,10 @@ export async function addExpenseToTrip(tripId: number, expense: AddExpenseForTri
   });
 }
 
+export function addExpensesToTrip(tripId: number, expenses: NewExpenseData[]) {
+  return http!.post<AddExpensesToTripResponse>(`/v2/expenses/${tripId}/add`, { expenses });
+}
+
 export async function editExpenseForTrip(
   tripId: number,
   expenseId: number,
@@ -114,16 +118,12 @@ export async function uploadFile(file: File) {
   formData.append("image", file);
 
   // We always want to hit the production API URL for file uploads
-  const { data } = await axios.post<UploadFileResponse>(
-    `${PRODUCTION_API_URL}/files/upload`,
-    formData,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: `appStore.authToken`,
-      },
+  const { data } = await axios.post<UploadFileResponse>(`${PRODUCTION_API_URL}/files/upload`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `appStore.authToken`,
     },
-  );
+  });
 
   return data.file;
 }
@@ -264,6 +264,8 @@ export interface AddExpenseForTripBody {
   userId: number;
 }
 
+export type NewExpenseData = AddExpenseForTripBody;
+
 export type EditExpenseForTripBody = Partial<AddExpenseForTripBody>;
 
 export interface GetTripDataResponse {
@@ -381,3 +383,7 @@ export interface CreateTripResponse {
 }
 
 export type UpdateTripPayload = Partial<CreateTripPayload>;
+
+export interface AddExpensesToTripResponse {
+  expenses: TripExpense[];
+}

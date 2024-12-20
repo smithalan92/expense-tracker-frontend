@@ -1,5 +1,7 @@
 import {
+  addExpensesToTrip,
   addExpenseToTrip,
+  deleteExpense,
   editExpenseForTrip,
   getTripData,
   updateTrip,
@@ -10,6 +12,7 @@ import {
   type CreateTripPayload,
   type Currency,
   type ExpenseCategory,
+  type NewExpenseData,
   type Trip,
   type TripExpense,
 } from "@/api";
@@ -39,6 +42,11 @@ const useTripDataStore = defineStore("tripData", {
     isLoadingTripData: false,
     hasFailedToLoadTripData: false,
   }),
+  getters: {
+    hasUnsavedExpenses: (state) => {
+      return state.unsavedExpenses.length > 0;
+    },
+  },
   actions: {
     restoreStateFromLocalStorage(tripId: number) {
       const retrievedState = getTripFromLocalStorage(tripId);
@@ -126,6 +134,30 @@ const useTripDataStore = defineStore("tripData", {
       }
     },
 
+    async syncUnsavedExpenses() {
+      const expenses = this.unsavedExpenses.reduce<NewExpenseData[]>((acc, exp) => {
+        const expense: NewExpenseData = {
+          localDateTime: exp.localDateTime,
+          cityId: exp.city.id,
+          amount: parseFloat(exp.amount),
+          currencyId: exp.currency.id,
+          categoryId: exp.category.id,
+          description: exp.description,
+          userId: exp.user.id,
+        };
+
+        acc.push(expense);
+        return acc;
+      }, []);
+
+      const result = await addExpensesToTrip(this.trip.id, expenses);
+
+      this.$patch({
+        expenses: [...this.expenses, ...result.data.expenses],
+        unsavedExpenses: [],
+      });
+    },
+
     addUnsavedExpense({ payload }: { payload: AddExpenseForTripBody }) {
       const currency = this.currencies.find((c) => c.id === payload.currencyId);
       const category = this.categories.find((c) => c.id === payload.categoryId);
@@ -159,22 +191,27 @@ const useTripDataStore = defineStore("tripData", {
       });
     },
 
-    async updateExpense({
-      expenseId,
-      payload,
-    }: {
-      expenseId: number;
-      payload: AddExpenseForTripBody;
-    }) {
+    async updateExpense({ expenseId, payload }: { expenseId: number; payload: AddExpenseForTripBody }) {
       await editExpenseForTrip(this.trip.id, expenseId, payload);
       return this.loadTripData(this.trip.id);
     },
 
     // syncd to localStorage by name. If name change, update sync
-    deleteExpense(expenseId: number) {
+    async deleteExpense(expenseId: number) {
+      if (expenseId < 0) {
+        const expenseIdx = this.unsavedExpenses.findIndex((e) => e.id === expenseId);
+        if (expenseIdx > -1) {
+          this.unsavedExpenses.splice(expenseIdx, 1);
+        } else {
+          throw new Error("Could not find expense to delete");
+        }
+        return;
+      }
+
       const expenseIdx = this.expenses.findIndex((e) => e.id === expenseId);
 
       if (expenseIdx > -1) {
+        await deleteExpense(this.trip.id, expenseId);
         this.expenses.splice(expenseIdx, 1);
       } else {
         throw new Error("Could not find expense to delete");

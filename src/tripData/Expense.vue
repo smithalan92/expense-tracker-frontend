@@ -31,8 +31,9 @@ const isUnsavedExpense = computed(() => expense.id < 0);
     @click="emit('click')"
   >
     <div
-      class="flex px-1 py-1 bg-primary text-white border-b border-solid border-white"
+      class="flex px-1 py-1 text-white border-b border-solid border-white"
       :class="{
+        'bg-primary': !isUnsavedExpense,
         'bg-amber-500': isUnsavedExpense,
       }"
     >
@@ -59,8 +60,9 @@ const isUnsavedExpense = computed(() => expense.id < 0);
       <span class="font-bold"><span v-if="!isUnsavedExpense">€</span>{{ expense.euroAmount }}</span>
     </div>
     <div
-      class="flex items-center justify-center bg-primary w-10"
+      class="flex items-center justify-center w-10"
       :class="{
+        'bg-primary': !isUnsavedExpense,
         'bg-amber-500': isUnsavedExpense,
       }"
     >

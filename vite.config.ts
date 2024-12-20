@@ -13,10 +13,6 @@ export default defineConfig({
     vueDevTools(),
     svgLoader(),
     checker({
-      eslint: {
-        lintCommand: "eslint .",
-        useFlatConfig: true,
-      },
       vueTsc: { tsconfigPath: "tsconfig.app.json" },
       enableBuild: false,
     }),

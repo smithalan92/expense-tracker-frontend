@@ -3,7 +3,12 @@ import useTripDataStore from "./tripDataStore";
 
 type StorePropery = keyof ReturnType<typeof useTripDataStore>;
 
-const ACTIONS_TO_SYNC: StorePropery[] = ["loadTripData", "deleteExpense", "addUnsavedExpense"];
+const ACTIONS_TO_SYNC: StorePropery[] = [
+  "loadTripData",
+  "deleteExpense",
+  "addUnsavedExpense",
+  "syncUnsavedExpenses",
+];
 
 function shouldSyncAction(action: StorePropery) {
   return ACTIONS_TO_SYNC.includes(action);

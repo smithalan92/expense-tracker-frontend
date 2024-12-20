@@ -15,13 +15,13 @@ import useGetCurrentTripId from "./hooks/useGetCurrentTripId";
 const toast = useToast();
 const router = useRouter();
 const store = useTripData();
-const { trip, isLoadingTripData, hasFailedToLoadTripData } = storeToRefs(store);
-const { loadTripData, resetState } = store;
+const { trip, hasUnsavedExpenses, isLoadingTripData, hasFailedToLoadTripData } = storeToRefs(store);
+const { loadTripData, resetState, syncUnsavedExpenses } = store;
 const currentTripID = useGetCurrentTripId();
 const isEditTripModalOpen = ref(false);
 const showConfirmDelete = ref(false);
 const showAddExpenseModal = ref(false);
-const x = "foo";
+const isSyncingExpenses = ref(false);
 
 const onClickDelete = async () => {
   try {
@@ -34,7 +34,18 @@ const onClickDelete = async () => {
   }
 };
 
-const onClickSyncExpenses = async () => {};
+const onClickSyncExpenses = async () => {
+  try {
+    isSyncingExpenses.value = true;
+    await syncUnsavedExpenses();
+    toast.success("Expenses have been sync'd");
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to sync expenses");
+  } finally {
+    isSyncingExpenses.value = false;
+  }
+};
 
 onMounted(() => {
   loadTripData(currentTripID.value);
@@ -43,7 +54,7 @@ onMounted(() => {
 
 <template>
   <div class="w-full h-full">
-    <Spinner v-if="isLoadingTripData" :use-overlay="true" />
+    <Spinner v-if="isLoadingTripData || isSyncingExpenses" :use-overlay="true" />
 
     <div v-if="hasFailedToLoadTripData" class="h-full overflow-hidden pt-4 flex flex-col">
       <div class="flex space-between mb-4">
@@ -106,17 +117,17 @@ onMounted(() => {
         <ExpenseList />
       </div>
       <div class="flex justify-center py-6">
-        <button
-          class="btn btn-primary font-bold text-md text-white"
-          @click="showAddExpenseModal = true"
-        >
-          <fa-icon :icon="['fas', 'plus']" class="w-6 mr-1" size="xl" /> Expense
+        <button class="btn btn-primary font-bold text-md text-white" @click="showAddExpenseModal = true">
+          <fa-icon :icon="['fas', 'plus']" class="w-6 mr-1" size="xl" />
+          Expense
         </button>
         <button
+          v-if="hasUnsavedExpenses"
           class="btn font-bold text-md text-white ml-4 bg-amber-500 hover:bg-amber-400"
           @click="onClickSyncExpenses"
         >
-          <fa-icon :icon="['fas', 'rotate']" class="w-6 mr-1" size="xl" /> Sync
+          <fa-icon :icon="['fas', 'rotate']" class="w-6 mr-1" size="xl" />
+          Sync
         </button>
       </div>
     </div>
