@@ -7,7 +7,7 @@ import Expense from "./Expense.vue";
 import ViewExpenseModal from "./ViewExpenseModal.vue";
 
 const store = useTripData();
-const { expenses, unsavedExpenses } = toRefs(store);
+const { expenses, unsavedExpenses, trip } = toRefs(store);
 
 const showViewExpenseModal = ref(false);
 const isEditingExpense = ref(false);
@@ -60,9 +60,9 @@ const onCloseAddOrEditExpenseModal = () => {
 </script>
 
 <template>
-  <div className="relative">
-    <div className="overflow-y-scroll overflow-x-auto w-full h-full pr-2 flex flex-col">
-      <div v-if="!expenses.length" className="flex flex-1 justify-center items-center py-8">
+  <div class="relative">
+    <div class="overflow-y-scroll overflow-x-auto w-full h-full pr-2 flex flex-col">
+      <div v-if="!expenses.length" class="flex flex-1 justify-center items-center py-8">
         <span>No expenses available.</span>
       </div>
 
@@ -72,6 +72,9 @@ const onCloseAddOrEditExpenseModal = () => {
         :expense="expense"
         @click="onClickExpense(expense)"
       />
+    </div>
+    <div v-if="expenses.length" class="sticky bottom-[-1px] select-none bg-base-200 mr-2">
+      <div class="text-right w-full py-2 pr-4 font-semibold">Total: €{{ trip.totalExpenseAmount }}</div>
     </div>
   </div>
   <ViewExpenseModal

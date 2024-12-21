@@ -29,7 +29,6 @@ const useTripDataStore = defineStore("tripData", {
       endDate: "",
       status: "deleted",
       image: "",
-      totalLocalAmount: 0,
       totalExpenseAmount: 0,
     },
     expenses: [],
