@@ -19,11 +19,10 @@ const { needRefresh, updateServiceWorker } = useRegisterSW({
 });
 </script>
 <template>
-  <div
-    v-if="needRefresh"
-    class="shadow-lg absolute bottom-5 right-[10%] flex bg-accent p-4 rounded-lg items-center"
-  >
-    <div class="font-bold text-lg pr-4">An update is available.</div>
-    <button class="btn btn-sm btn-primary" @click="updateServiceWorker(true)">Reload</button>
+  <div v-if="needRefresh" class="absolute w-full h-full flex justify-center items-end py-8">
+    <div class="shadow-lg flex bg-accent p-4 rounded-lg items-center z-50">
+      <div class="font-bold text-lg pr-4">An app update is available.</div>
+      <button class="btn btn-sm btn-primary" @click="updateServiceWorker(true)">Reload</button>
+    </div>
   </div>
 </template>
