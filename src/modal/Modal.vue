@@ -14,6 +14,7 @@ const { position, includeCloseButton, title, height, alignFooter, width } = defi
 
 const slots = defineSlots<{
   title?(): any;
+  alert?(): any;
   body(): any;
   footer(): any;
 }>();
@@ -51,6 +52,8 @@ const emit = defineEmits<{
               <fa-icon :icon="['fas', 'xmark']" class="fill-white" size="2x" />
             </div>
           </div>
+
+          <slot name="alert" />
 
           <div class="flex flex-col overflow-scroll px-6" :style="{ height: bodyHeight }">
             <slot name="body" />

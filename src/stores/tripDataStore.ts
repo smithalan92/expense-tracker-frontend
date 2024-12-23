@@ -1,6 +1,5 @@
 import {
   addExpensesToTrip,
-  addExpenseToTrip,
   deleteExpense,
   editExpenseForTrip,
   getTripData,
@@ -132,8 +131,12 @@ const useTripDataStore = defineStore("tripData", {
 
     async addExpense({ payload }: { payload: AddExpenseForTripBody }) {
       try {
-        await addExpenseToTrip(this.trip.id, payload);
-        return this.loadTripData(this.trip.id);
+        const result = await addExpensesToTrip(this.trip.id, [payload]);
+
+        this.$patch({
+          expenses: [...this.expenses, ...result.data.expenses],
+          unsavedExpenses: [],
+        });
       } catch (err: any) {
         if (isNetworkError(err)) {
           this.addUnsavedExpense({ payload });
@@ -201,8 +204,54 @@ const useTripDataStore = defineStore("tripData", {
     },
 
     async updateExpense({ expenseId, payload }: { expenseId: number; payload: AddExpenseForTripBody }) {
-      await editExpenseForTrip(this.trip.id, expenseId, payload);
-      return this.loadTripData(this.trip.id);
+      if (expenseId > 0) {
+        await editExpenseForTrip(this.trip.id, expenseId, payload);
+        return this.loadTripData(this.trip.id);
+      } else {
+        this.updateUnsavedExpense({ expenseId, payload });
+      }
+    },
+
+    async updateUnsavedExpense({
+      expenseId,
+      payload,
+    }: {
+      expenseId: number;
+      payload: AddExpenseForTripBody;
+    }) {
+      const expense = this.unsavedExpenses.find((e) => e.id === expenseId);
+
+      if (!expense) throw new Error("Could not find matching unsaved expense");
+
+      const currency = this.currencies.find((c) => c.id === payload.currencyId);
+      const category = this.categories.find((c) => c.id === payload.categoryId);
+      const city = this.cities.find((c) => c.id === payload.cityId);
+      const country = this.countries.find((c) => c.id === city?.countryId);
+      const user = this.users[payload.userId];
+
+      if (!currency || !category || !city || !country || !user) {
+        throw new Error("Incomplete data to add unsaved expense");
+      }
+
+      expense.amount = payload.amount.toFixed(2);
+      expense.euroAmount = `${payload.amount} ${currency.code}`;
+      expense.id = expenseId;
+      expense.amount = payload.amount.toFixed(2);
+      expense.currency = currency;
+      expense.euroAmount = `${payload.amount} ${currency.code}`;
+      expense.localDateTime = payload.localDateTime;
+      expense.description = payload.description;
+      expense.category = category;
+      expense.city = {
+        ...city,
+        timezone: "",
+      };
+      expense.country = country;
+      expense.user = {
+        id: payload.userId,
+        ...user,
+      };
+      expense.updatedAt = new Date().toISOString();
     },
 
     // syncd to localStorage by name. If name change, update sync

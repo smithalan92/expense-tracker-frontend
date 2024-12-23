@@ -78,19 +78,22 @@ const isCopyingExpense = computed(() => {
 });
 
 const tooltipOfflineMessage = computed(() => {
-  if (expenseToEdit) return "Trip editing is disabled when your offline.";
-  if (expenseToCopy) return "Trip copying is disabled when your offline.";
-  return "Adding a trip is disabled while offline";
+  if (expenseToEdit) return "Expense editing is disabled when your offline.";
+  return "";
 });
 
 const shouldDisableTooltip = computed(() => {
-  return isOnline.value || (!isOnline.value && !isEditingExpense.value && !isCopyingExpense.value);
+  if (isOnline.value) return true;
+  if (!isOnline.value && isEditingExpense.value && expenseToEdit!.id > 0) return false;
+  return true;
 });
 
 const shouldDisableSaveButton = computed(() => {
-  return (
-    !canAddExpense.value || (!isOnline.value && (isEditingExpense.value || isCopyingExpense.value))
-  );
+  if (!canAddExpense.value) return true;
+
+  if (!isOnline.value && isEditingExpense.value && expenseToEdit!.id > 0) return true;
+
+  return false;
 });
 
 watch(
@@ -142,17 +145,13 @@ onBeforeMount(() => {
 
   const expenseToUseForHydration = isEditingExpense.value ? expenseToEdit! : expenseToCopy!;
 
-  selectedCountry.value = countryOptions.value.find(
-    (c) => c.value === expenseToUseForHydration.country.id,
-  )!;
+  selectedCountry.value = countryOptions.value.find((c) => c.value === expenseToUseForHydration.country.id)!;
 
   const localDateTime = new Date(expenseToUseForHydration.localDateTime);
   expenseData.expenseDate = format(localDateTime, "yyyy-MM-dd");
   expenseData.expenseTime = format(localDateTime, "HH:mm");
 
-  expenseData.selectedCity = cityOptions.value.find(
-    (c) => c.value === expenseToUseForHydration.city.id,
-  )!;
+  expenseData.selectedCity = cityOptions.value.find((c) => c.value === expenseToUseForHydration.city.id)!;
 
   expenseData.selectedCurrency = currencyOptions.value.find(
     (c) => c.value === expenseToUseForHydration.currency.id,
@@ -164,15 +163,11 @@ onBeforeMount(() => {
     (c) => c.value === expenseToUseForHydration.category.id,
   )!;
 
-  expenseData.selectedUser = userOptions.value.find(
-    (u) => u.value === expenseToUseForHydration.user.id,
-  )!;
+  expenseData.selectedUser = userOptions.value.find((u) => u.value === expenseToUseForHydration.user.id)!;
 
   if (isCopyingExpense.value) {
     const initalText =
-      expenseToUseForHydration.description.length > 0
-        ? `${expenseToUseForHydration.description} | `
-        : "";
+      expenseToUseForHydration.description.length > 0 ? `${expenseToUseForHydration.description} | ` : "";
 
     expenseData.description = `${initalText}Copied at ${new Date()}`;
   } else {
@@ -266,9 +261,7 @@ onBeforeMount(() => {
     </template>
 
     <template v-slot:footer>
-      <button class="btn btn-secondary font-bold text-md mr-4" @click="emit('close')">
-        Cancel
-      </button>
+      <button class="btn btn-secondary font-bold text-md mr-4" @click="emit('close')">Cancel</button>
 
       <Tooltip
         :message="tooltipOfflineMessage"
