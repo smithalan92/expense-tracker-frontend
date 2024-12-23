@@ -7,7 +7,7 @@ import Expense from "./Expense.vue";
 import ViewExpenseModal from "./ViewExpenseModal.vue";
 
 const store = useTripData();
-const { expenses, unsavedExpenses, trip } = toRefs(store);
+const { expenses, unsavedExpenses, totalExpenseAmount } = toRefs(store);
 
 const showViewExpenseModal = ref(false);
 const isEditingExpense = ref(false);
@@ -74,7 +74,7 @@ const onCloseAddOrEditExpenseModal = () => {
       />
     </div>
     <div v-if="expenses.length" class="sticky bottom-[-1px] select-none bg-base-200 mr-2">
-      <div class="text-right w-full py-2 pr-4 font-semibold">Total: €{{ trip.totalExpenseAmount }}</div>
+      <div class="text-right w-full py-2 pr-4 font-semibold">Total: {{ totalExpenseAmount }}</div>
     </div>
   </div>
   <ViewExpenseModal

@@ -45,6 +45,16 @@ const useTripDataStore = defineStore("tripData", {
     hasUnsavedExpenses: (state) => {
       return state.unsavedExpenses.length > 0;
     },
+    totalExpenseAmount: (state) => {
+      const total = state.expenses.reduce((acc, exp) => {
+        return acc + parseFloat(exp.euroAmount);
+      }, 0);
+
+      return Intl.NumberFormat("en-IE", {
+        style: "currency",
+        currency: "EUR",
+      }).format(total);
+    },
   },
   actions: {
     restoreStateFromLocalStorage(tripId: number) {
