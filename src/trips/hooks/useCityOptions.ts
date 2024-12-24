@@ -1,10 +1,7 @@
-import { loadCitiesForCountry, type CityForCountry } from "@/api";
+import { loadCitiesForCountry, type CityForCountry } from "@/api/country";
 import { computed, ref, watch, type Ref } from "vue";
 
-export default function useCityOptions(
-  countryId: Ref<number, number>,
-  searchTerm: Ref<string, string>,
-) {
+export default function useCityOptions(countryId: Ref<number, number>, searchTerm: Ref<string, string>) {
   const cities = ref<CityForCountry[]>([]);
 
   watch(
@@ -26,9 +23,7 @@ export default function useCityOptions(
     }));
 
     if (searchTerm) {
-      return options.filter(({ label }) =>
-        label.toLowerCase().includes(searchTerm.value.toLowerCase()),
-      );
+      return options.filter(({ label }) => label.toLowerCase().includes(searchTerm.value.toLowerCase()));
     }
 
     return options;

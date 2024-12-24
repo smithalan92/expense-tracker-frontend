@@ -3,7 +3,7 @@ import { createPinia } from "pinia";
 import { createPersistedState } from "pinia-plugin-persistedstate";
 import { createApp } from "vue";
 import ToastPlugin from "vue-toast-notification";
-import { createInstance } from "./api";
+import { createInstance } from "./api/axios";
 import App from "./app/App.vue";
 import registerIconLibrary from "./app/fontaweSomeIcons";
 import router from "./app/router";

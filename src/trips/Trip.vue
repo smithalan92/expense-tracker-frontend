@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Trip } from "@/api";
+import type { Trip } from "@/api/trip";
 import { useRouter } from "vue-router";
 const { trip } = defineProps<{
   trip: Trip;

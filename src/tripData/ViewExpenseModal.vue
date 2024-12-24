@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type TripExpense } from "@/api";
+import { type TripExpense } from "@/api/expense";
 import Spinner from "@/app/Spinner.vue";
 import ConfirmModal from "@/modal/ConfirmModal.vue";
 import Modal from "@/modal/Modal.vue";

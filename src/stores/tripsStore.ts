@@ -1,4 +1,5 @@
-import { createTrip, getTrips, uploadFile, type CreateTripPayload, type Trip } from "@/api";
+import { uploadFile } from "@/api/file";
+import { createTrip, getTrips, type CreateTripPayload, type Trip } from "@/api/trip";
 import { isNetworkError } from "@/utils/network";
 import { acceptHMRUpdate, defineStore } from "pinia";
 

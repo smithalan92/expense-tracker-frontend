@@ -1,18 +1,20 @@
-import { createInstance, loadUsers, login, type LoginUser, type User } from "@/api";
+import loadAppData, { type CountryWithCurrency } from "@/api/app";
+import { createInstance } from "@/api/axios";
+import { login, type LoginUser, type User } from "@/api/user";
 import { isNetworkError } from "@/utils/network";
 import { acceptHMRUpdate, defineStore } from "pinia";
 
 const useAppStore = defineStore("app", {
-  state: (): AppState => ({ user: null, authToken: null, users: [] }),
+  state: (): AppState => ({ user: null, authToken: null, users: [], countries: [] }),
   getters: {
     isLoggedIn: (state) => state.authToken !== null,
   },
   actions: {
     async loginUser({ email, password }: { email: string; password: string }) {
-      const data = await login({ email, password });
-      createInstance(data.token.token);
-      this.user = data.user;
-      this.authToken = data.token.token;
+      const { token, user } = await login({ email, password });
+      createInstance(token.token);
+      this.user = user;
+      this.authToken = token.token;
       this.loadAppData();
     },
     logout() {
@@ -22,8 +24,9 @@ const useAppStore = defineStore("app", {
 
     async loadAppData() {
       try {
-        const users = await loadUsers();
+        const { users, countries } = await loadAppData();
         this.users = users;
+        this.countries = countries;
       } catch (err: any) {
         if (!isNetworkError(err)) {
           console.log(err);
@@ -41,7 +44,8 @@ if (import.meta.hot) {
 }
 
 interface AppState {
+  authToken: Nullable<string>;
+  countries: CountryWithCurrency[];
   user: Nullable<LoginUser>;
   users: User[];
-  authToken: Nullable<string>;
 }

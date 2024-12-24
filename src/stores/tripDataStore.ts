@@ -2,19 +2,21 @@ import {
   addExpensesToTrip,
   deleteExpense,
   editExpenseForTrip,
+  type ExpenseCategory,
+  type ExpensePayload,
+  type TripExpense,
+} from "@/api/expense";
+import { uploadFile } from "@/api/file";
+import {
   getTripData,
   updateTrip,
-  uploadFile,
-  type AddExpenseForTripBody,
   type City,
   type Country,
   type CreateTripPayload,
   type Currency,
-  type ExpenseCategory,
-  type NewExpenseData,
   type Trip,
-  type TripExpense,
-} from "@/api";
+} from "@/api/trip";
+
 import { getTripFromLocalStorage } from "@/utils/localstorage";
 import { isNetworkError } from "@/utils/network";
 import { acceptHMRUpdate, defineStore } from "pinia";
@@ -129,7 +131,7 @@ const useTripDataStore = defineStore("tripData", {
       return this.loadTripData(tripId);
     },
 
-    async addExpense({ payload }: { payload: AddExpenseForTripBody }) {
+    async addExpense({ payload }: { payload: ExpensePayload }) {
       try {
         const result = await addExpensesToTrip(this.trip.id, [payload]);
 
@@ -147,8 +149,8 @@ const useTripDataStore = defineStore("tripData", {
     },
 
     async syncUnsavedExpenses() {
-      const expenses = this.unsavedExpenses.reduce<NewExpenseData[]>((acc, exp) => {
-        const expense: NewExpenseData = {
+      const expenses = this.unsavedExpenses.reduce<ExpensePayload[]>((acc, exp) => {
+        const expense: ExpensePayload = {
           localDateTime: exp.localDateTime,
           cityId: exp.city.id,
           amount: parseFloat(exp.amount),
@@ -170,7 +172,7 @@ const useTripDataStore = defineStore("tripData", {
       });
     },
 
-    addUnsavedExpense({ payload }: { payload: AddExpenseForTripBody }) {
+    addUnsavedExpense({ payload }: { payload: ExpensePayload }) {
       const currency = this.currencies.find((c) => c.id === payload.currencyId);
       const category = this.categories.find((c) => c.id === payload.categoryId);
       const city = this.cities.find((c) => c.id === payload.cityId);
@@ -203,7 +205,7 @@ const useTripDataStore = defineStore("tripData", {
       });
     },
 
-    async updateExpense({ expenseId, payload }: { expenseId: number; payload: AddExpenseForTripBody }) {
+    async updateExpense({ expenseId, payload }: { expenseId: number; payload: ExpensePayload }) {
       if (expenseId > 0) {
         await editExpenseForTrip(this.trip.id, expenseId, payload);
         return this.loadTripData(this.trip.id);
@@ -212,13 +214,7 @@ const useTripDataStore = defineStore("tripData", {
       }
     },
 
-    async updateUnsavedExpense({
-      expenseId,
-      payload,
-    }: {
-      expenseId: number;
-      payload: AddExpenseForTripBody;
-    }) {
+    async updateUnsavedExpense({ expenseId, payload }: { expenseId: number; payload: ExpensePayload }) {
       const expense = this.unsavedExpenses.find((e) => e.id === expenseId);
 
       if (!expense) throw new Error("Could not find matching unsaved expense");

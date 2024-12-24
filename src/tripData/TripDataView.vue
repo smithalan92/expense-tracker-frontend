@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { deleteTrip } from "@/api";
+import { deleteTrip } from "@/api/trip";
 import Spinner from "@/app/Spinner.vue";
 import ConfirmModal from "@/modal/ConfirmModal.vue";
 import useTripData from "@/stores/tripDataStore";

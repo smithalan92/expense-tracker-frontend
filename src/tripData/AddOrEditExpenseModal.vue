@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type AddExpenseForTripBody, type TripExpense } from "@/api";
+import { type ExpensePayload, type TripExpense } from "@/api/expense";
 import Spinner from "@/app/Spinner.vue";
 import Modal from "@/modal/Modal.vue";
 import DatePicker from "@/pickers/DatePicker.vue";
@@ -109,7 +109,7 @@ const onClickAddExpense = async () => {
   isAddingExpense.value = true;
 
   try {
-    const payload: AddExpenseForTripBody = {
+    const payload: ExpensePayload = {
       localDateTime: format(
         new Date(`${expenseData.expenseDate} ${expenseData.expenseTime}:00`),
         "yyyy-MM-dd'T'HH:mm:ss",

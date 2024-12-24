@@ -4,7 +4,7 @@ import {
   type CreateTripCountry,
   type CreateTripPayload,
   type GetTripEditDataResponse,
-} from "@/api";
+} from "@/api/trip";
 import Modal from "@/modal/Modal.vue";
 import DatePicker from "@/pickers/DatePicker.vue";
 import ImagePicker from "@/pickers/ImagePicker.vue";

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { TripExpense } from "@/api";
+import type { TripExpense } from "@/api/expense";
 import { format } from "date-fns";
 import { computed } from "vue";
 import ExpenseCategoryIcon from "./ExpenseCategoryIcon.vue";

@@ -1,4 +1,4 @@
-import type { TripExpense } from "@/api";
+import type { TripExpense } from "@/api/expense";
 import { computed, type Ref } from "vue";
 
 export default function useViewExpenseData(expense: Ref<TripExpense, TripExpense>) {

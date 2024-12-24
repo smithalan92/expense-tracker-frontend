@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { TripExpense } from "@/api";
+import type { TripExpense } from "@/api/expense";
 import useTripData from "@/stores/tripDataStore";
 import { computed, ref, toRefs } from "vue";
 import AddOrEditExpenseModal from "./AddOrEditExpenseModal.vue";

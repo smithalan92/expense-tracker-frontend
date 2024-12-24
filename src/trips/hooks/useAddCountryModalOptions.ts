@@ -1,17 +1,12 @@
-import { loadCountries, type Country } from "@/api";
 import type { PickerOption } from "@/pickers/Picker.vue";
-import { computed, onMounted, ref } from "vue";
+import useAppStore from "@/stores/appStore";
+import { computed } from "vue";
 
 export default function useAddCountryModalOptions() {
-  const countries = ref<Country[]>([]);
-
-  onMounted(async () => {
-    const data = await loadCountries();
-    countries.value = data;
-  });
+  const store = useAppStore();
 
   const countryOptions = computed<PickerOption[]>(() => {
-    return countries.value.map((country) => ({
+    return store.countries.map((country) => ({
       label: country.name,
       value: country.id,
     }));
