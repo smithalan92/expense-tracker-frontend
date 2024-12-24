@@ -11,7 +11,7 @@ const { expenses, unsavedExpenses, totalExpenseAmount } = toRefs(store);
 
 const showViewExpenseModal = ref(false);
 const isEditingExpense = ref(false);
-const isCopyExpense = ref(false);
+const isCopyingExpense = ref(false);
 
 const selectedExpense = ref<Nullable<TripExpense>>(null);
 
@@ -31,7 +31,7 @@ const expenseToEdit = computed(() => {
 });
 
 const expenseToCopy = computed(() => {
-  if (isCopyExpense.value) return selectedExpense.value;
+  if (isCopyingExpense.value) return selectedExpense.value;
   return null;
 });
 
@@ -41,7 +41,7 @@ const onClickExpense = (expense: TripExpense) => {
 };
 
 const onCloseViewExpenseModal = () => {
-  selectedExpense.value = null;
+  if (!isEditingExpense.value && !isCopyingExpense.value) selectedExpense.value = null;
   showViewExpenseModal.value = false;
 };
 
@@ -50,12 +50,12 @@ const onEditExpense = () => {
 };
 
 const onCopyExpense = () => {
-  isCopyExpense.value = true;
+  isCopyingExpense.value = true;
 };
 
 const onCloseAddOrEditExpenseModal = () => {
   isEditingExpense.value = false;
-  isCopyExpense.value = false;
+  isCopyingExpense.value = false;
 };
 </script>
 
@@ -85,7 +85,7 @@ const onCloseAddOrEditExpenseModal = () => {
     @close="onCloseViewExpenseModal"
   />
   <AddOrEditExpenseModal
-    v-if="isEditingExpense || isCopyExpense"
+    v-if="isEditingExpense || isCopyingExpense"
     :expenseToEdit="expenseToEdit"
     :expenseToCopy="expenseToCopy"
     @close="onCloseAddOrEditExpenseModal"
