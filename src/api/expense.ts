@@ -4,14 +4,16 @@ export function addExpensesToTrip(tripId: number, expenses: ExpensePayload[]) {
   return getAxios().post<AddExpensesToTripResponse>(`/v2/expenses/${tripId}/add`, { expenses });
 }
 
-export async function editExpenseForTrip(tripId: number, expenseId: number, expenseData: ExpensePayload) {
-  await getAxios().patch(`/trips/${tripId}/expense/${expenseId}`, {
-    ...expenseData,
-  });
+export async function deleteExpense(expenseId: number) {
+  return getAxios().delete(`/v2/expenses/${expenseId}`);
 }
 
-export async function deleteExpense(tripId: number, expenseId: number) {
-  return getAxios().delete(`/trips/${tripId}/expense/${expenseId}`);
+export async function updateExpense(expenseId: number, payload: UpdateExpensePayload) {
+  const { data } = await getAxios().patch<UpdateExpenseResponse>(`/v2/expenses/${expenseId}`, {
+    ...payload,
+  });
+
+  return data;
 }
 
 export interface ExpensePayload {
@@ -70,3 +72,9 @@ export interface ExpenseCity {
 export interface AddExpensesToTripResponse {
   expenses: TripExpense[];
 }
+
+export interface UpdateExpenseResponse {
+  expense: TripExpense;
+}
+
+export type UpdateExpensePayload = Partial<ExpensePayload>;

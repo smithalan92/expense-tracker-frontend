@@ -2,7 +2,7 @@ import getAxios from "./axios";
 import type { ExpenseCategory, TripExpense } from "./expense";
 
 export async function getTrips() {
-  const { data } = await getAxios().get<GetTripsResponse>("/trips");
+  const { data } = await getAxios().get<GetTripsResponse>("/v2/trips");
 
   return data.trips;
 }
@@ -10,9 +10,9 @@ export async function getTrips() {
 export async function createTrip(payload: CreateTripPayload) {
   // If a files been uploaded, we have to hit prod, since the files are always uploaded
   // to prod
-  const url = payload.file ? import.meta.env.VITE_PRODUCTION_API_URL : "/trips";
+  const base = payload.file ? import.meta.env.VITE_PRODUCTION_API_URL : "";
 
-  const { data } = await getAxios().post<CreateTripResponse>(url, payload);
+  const { data } = await getAxios().post<CreateTripResponse>(`${base}/v2/trip`, payload);
 
   return data.trip;
 }
@@ -49,7 +49,6 @@ export interface Trip {
   name: string;
   startDate: string;
   endDate: string;
-  status: "active" | "deleted";
   image: string;
   totalExpenseAmount: number;
 }

@@ -6,6 +6,11 @@ import { acceptHMRUpdate, defineStore } from "pinia";
 const useTripsStore = defineStore("trips", {
   state: (): TripsState => ({ trips: [], isLoading: false, hasFailedToLoad: false }),
   getters: {
+    getTrips: (state) => {
+      return [...state.trips].sort(
+        (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime(),
+      );
+    },
     getTripById: (state) => {
       return (tripId: number) => state.trips.find(({ id }) => id === tripId);
     },
@@ -37,8 +42,8 @@ const useTripsStore = defineStore("trips", {
         throw new Error("Failed to save file");
       }
 
-      await createTrip(payload);
-      return this.loadTrips();
+      const trip = await createTrip(payload);
+      this.trips.push(trip);
     },
   },
   persist: true,

@@ -30,10 +30,7 @@ onMounted(() => {
       </button>
     </div>
     <div class="w-full h-full">
-      <div
-        v-if="tripsStore.isLoading"
-        class="w-full h-full flex flex-1 justify-center items-center"
-      >
+      <div v-if="tripsStore.isLoading" class="w-full h-full flex flex-1 justify-center items-center">
         <Spinner />
       </div>
 
@@ -48,8 +45,8 @@ onMounted(() => {
         No trips available
       </div>
 
-      <div v-if="tripsStore.trips.length">
-        <Trip v-for="trip in tripsStore.trips" :key="trip.id" :trip="trip" />
+      <div v-if="tripsStore.getTrips">
+        <Trip v-for="trip in tripsStore.getTrips" :key="trip.id" :trip="trip" />
       </div>
     </div>
   </div>

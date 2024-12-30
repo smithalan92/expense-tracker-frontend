@@ -6,12 +6,11 @@ export async function uploadFile(file: File) {
 
   // We always want to hit the production API URL for file uploads
   const { data } = await getAxios().post<UploadFileResponse>(
-    `${import.meta.env.PRODUCTION_API_URL}/files/upload`,
+    `${import.meta.env.VITE_PRODUCTION_API_URL}/v2/files/upload`,
     formData,
     {
       headers: {
         "Content-Type": "multipart/form-data",
-        Authorization: `appStore.authToken`,
       },
     },
   );

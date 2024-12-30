@@ -157,7 +157,7 @@ const onSaveTrip = async () => {
       await updateTrip({ tripId: tripIdToEdit, payload, file: tripData.selectedImage });
       loadTrips();
     } else {
-      createTrip(payload, tripData.selectedImage);
+      await createTrip(payload, tripData.selectedImage);
     }
 
     emit("close");

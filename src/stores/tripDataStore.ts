@@ -1,7 +1,7 @@
 import {
   addExpensesToTrip,
   deleteExpense,
-  editExpenseForTrip,
+  updateExpense,
   type ExpenseCategory,
   type ExpensePayload,
   type TripExpense,
@@ -28,7 +28,6 @@ const useTripDataStore = defineStore("tripData", {
       name: "",
       startDate: "",
       endDate: "",
-      status: "deleted",
       image: "",
       totalExpenseAmount: 0,
     },
@@ -207,8 +206,24 @@ const useTripDataStore = defineStore("tripData", {
 
     async updateExpense({ expenseId, payload }: { expenseId: number; payload: ExpensePayload }) {
       if (expenseId > 0) {
-        await editExpenseForTrip(this.trip.id, expenseId, payload);
-        return this.loadTripData(this.trip.id);
+        const existingExpense = this.expenses.find((e) => e.id === expenseId);
+
+        if (!existingExpense) throw new Error("Could not find expense");
+
+        const { expense } = await updateExpense(expenseId, payload);
+
+        existingExpense.id = expense.id;
+        existingExpense.amount = expense.amount;
+        existingExpense.currency = expense.currency;
+        existingExpense.euroAmount = expense.euroAmount;
+        existingExpense.localDateTime = expense.localDateTime;
+        existingExpense.description = expense.description;
+        existingExpense.category = expense.category;
+        existingExpense.city = expense.city;
+        existingExpense.country = expense.country;
+        existingExpense.user = expense.user;
+        existingExpense.createdAt = expense.createdAt;
+        existingExpense.updatedAt = expense.updatedAt;
       } else {
         this.updateUnsavedExpense({ expenseId, payload });
       }
@@ -265,7 +280,7 @@ const useTripDataStore = defineStore("tripData", {
       const expenseIdx = this.expenses.findIndex((e) => e.id === expenseId);
 
       if (expenseIdx > -1) {
-        await deleteExpense(this.trip.id, expenseId);
+        await deleteExpense(expenseId);
         this.expenses.splice(expenseIdx, 1);
       } else {
         throw new Error("Could not find expense to delete");

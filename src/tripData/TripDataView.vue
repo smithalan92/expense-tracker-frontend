@@ -140,15 +140,18 @@ onMounted(() => {
   <AddOrEditExpenseModal v-if="showAddExpenseModal" @close="showAddExpenseModal = false" />
   <ConfirmModal
     v-if="showConfirmDelete"
+    type="danger"
     title="Confirm delete"
     @confirm="onClickDelete"
     @cancel="showConfirmDelete = false"
   >
-    <div class="px-4 py-8 flex items-center justify-center text-center">
-      <p>
-        Are you sure you want to delete "<span class="font-bold">{{ trip.name }}</span
-        >"
-      </p>
-    </div>
+    <template #body>
+      <div class="px-4 py-8 flex items-center justify-center text-center">
+        <p>
+          Are you sure you want to delete "<span class="font-bold">{{ trip.name }}</span
+          >"
+        </p>
+      </div>
+    </template>
   </ConfirmModal>
 </template>
