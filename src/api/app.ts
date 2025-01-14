@@ -1,5 +1,4 @@
 import getAxios from "./axios";
-import type { User } from "./user";
 
 export default async function loadAppData() {
   const { data } = await getAxios().get<GetAppDataResponse>("/v2/app");
@@ -26,4 +25,10 @@ export interface GetAppDataResponse {
   countries: CountryWithCurrency[];
   users: User[];
   currencies: Currency[];
+}
+
+export interface User {
+  id: number;
+  firstName: string;
+  lastName: string;
 }

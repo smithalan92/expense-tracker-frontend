@@ -1,6 +1,6 @@
-import loadAppData, { type CountryWithCurrency, type Currency } from "@/api/app";
+import loadAppData, { type CountryWithCurrency, type Currency, type User } from "@/api/app";
 import { createInstance } from "@/api/axios";
-import { login, type LoginUser, type User } from "@/api/user";
+import { login, type LoginUser } from "@/api/user";
 import { isNetworkError } from "@/utils/network";
 import { acceptHMRUpdate, defineStore } from "pinia";
 

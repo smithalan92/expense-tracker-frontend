@@ -2,7 +2,7 @@ import axios from "axios";
 import { API_URL } from "./axios";
 
 export async function login({ email, password }: { email: string; password: string }) {
-  const { data } = await axios.post<LoginResponse>(`${API_URL}/login`, {
+  const { data } = await axios.post<LoginResponse>(`${API_URL}/v2/login`, {
     email,
     password,
   });
@@ -17,7 +17,6 @@ export interface LoginResponse {
 
 export interface LoginUser {
   id: number;
-  email: string;
   firstName: string;
   lastName: string;
 }
@@ -25,10 +24,4 @@ export interface LoginUser {
 export interface LoginToken {
   expiry: string;
   token: string;
-}
-
-export interface User {
-  id: number;
-  firstName: string;
-  lastName: string;
 }
