@@ -4,7 +4,7 @@ import { isNetworkError } from "@/utils/network";
 import { acceptHMRUpdate, defineStore } from "pinia";
 
 const useTripsStore = defineStore("trips", {
-  state: (): TripsState => ({ trips: [], isLoading: false, hasFailedToLoad: false }),
+  state: (): TripsState => ({ trips: [], isLoading: false, hasFailedToLoad: false, lastTripLoadTime: null }),
   getters: {
     getTrips: (state) => {
       return [...state.trips].sort(
@@ -59,4 +59,5 @@ interface TripsState {
   trips: Trip[];
   isLoading: boolean;
   hasFailedToLoad: boolean;
+  lastTripLoadTime: number | null;
 }

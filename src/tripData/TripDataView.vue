@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { deleteTrip } from "@/api/trip";
 import Spinner from "@/app/Spinner.vue";
 import ConfirmModal from "@/modal/ConfirmModal.vue";
 import useTripData from "@/stores/tripDataStore";
@@ -16,7 +15,7 @@ const toast = useToast();
 const router = useRouter();
 const store = useTripData();
 const { trip, hasUnsavedExpenses, isLoadingTripData, hasFailedToLoadTripData } = storeToRefs(store);
-const { loadTripData, resetState, syncUnsavedExpenses } = store;
+const { loadTripData, resetState, syncUnsavedExpenses, deleteTrip } = store;
 const currentTripID = useGetCurrentTripId();
 const isEditTripModalOpen = ref(false);
 const showConfirmDelete = ref(false);
@@ -25,8 +24,7 @@ const isSyncingExpenses = ref(false);
 
 const onClickDelete = async () => {
   try {
-    await deleteTrip(trip.value.id);
-    resetState();
+    await deleteTrip();
     router.push("/");
   } catch (err) {
     console.log(err);

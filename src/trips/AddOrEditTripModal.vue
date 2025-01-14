@@ -10,6 +10,7 @@ import useTripsStore from "@/stores/tripsStore";
 import Tooltip from "@/utils/Tooltip.vue";
 import { useToast } from "@/utils/useToast";
 import { useOnline } from "@vueuse/core";
+import { addDays } from "date-fns";
 import { format } from "date-fns/format";
 import { computed, nextTick, onBeforeMount, onMounted, reactive, ref, useTemplateRef } from "vue";
 import AddCountryModal from "./AddCountryModal.vue";
@@ -32,8 +33,8 @@ const originalTrip = ref<Trip | null>(null);
 const tripData = reactive<TripData>({
   selectedImage: null,
   tripName: "",
-  startDate: "",
-  endDate: "",
+  startDate: format(new Date(), "yyyy-MM-dd"),
+  endDate: format(addDays(new Date(), 1), "yyyy-MM-dd"),
   selectedCountries: [],
   selectedUsers: [],
 });

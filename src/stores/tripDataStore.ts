@@ -6,7 +6,14 @@ import {
   type ExpensePayload,
   type TripExpense,
 } from "@/api/expense";
-import { getTripData, updateTrip, type CreateTripPayload, type Trip, type TripCountry } from "@/api/trip";
+import {
+  deleteTrip,
+  getTripData,
+  updateTrip,
+  type CreateTripPayload,
+  type Trip,
+  type TripCountry,
+} from "@/api/trip";
 
 import { uploadFile } from "@/api/file";
 import { getTripFromLocalStorage } from "@/utils/localstorage";
@@ -108,8 +115,6 @@ const useTripDataStore = defineStore("tripData", {
       payload: CreateTripPayload;
       file?: Nullable<File>;
     }) {
-      console.log({ tripId, payload, file });
-
       try {
         if (file) {
           const fileUrl = await uploadFile(file);
@@ -127,6 +132,11 @@ const useTripDataStore = defineStore("tripData", {
         userIds,
         countries,
       });
+    },
+
+    async deleteTrip() {
+      await deleteTrip(this.trip.id);
+      this.resetState();
     },
 
     async addExpense({ payload }: { payload: ExpensePayload }) {

@@ -34,7 +34,7 @@ export async function updateTrip(tripId: number, payload: Partial<CreateTripPayl
 }
 
 export async function deleteTrip(tripId: number) {
-  return getAxios().delete(`/trips/${tripId}`);
+  return getAxios().delete(`/v2/trip/${tripId}`);
 }
 
 export interface Trip {
