@@ -1,11 +1,11 @@
-import loadAppData, { type CountryWithCurrency } from "@/api/app";
+import loadAppData, { type CountryWithCurrency, type Currency } from "@/api/app";
 import { createInstance } from "@/api/axios";
 import { login, type LoginUser, type User } from "@/api/user";
 import { isNetworkError } from "@/utils/network";
 import { acceptHMRUpdate, defineStore } from "pinia";
 
 const useAppStore = defineStore("app", {
-  state: (): AppState => ({ user: null, authToken: null, users: [], countries: [] }),
+  state: (): AppState => ({ user: null, authToken: null, users: [], countries: [], currencies: [] }),
   getters: {
     isLoggedIn: (state) => state.authToken !== null,
   },
@@ -24,9 +24,10 @@ const useAppStore = defineStore("app", {
 
     async loadAppData() {
       try {
-        const { users, countries } = await loadAppData();
+        const { users, countries, currencies } = await loadAppData();
         this.users = users;
         this.countries = countries;
+        this.currencies = currencies;
       } catch (err: any) {
         if (!isNetworkError(err)) {
           console.log(err);
@@ -46,6 +47,7 @@ if (import.meta.hot) {
 interface AppState {
   authToken: Nullable<string>;
   countries: CountryWithCurrency[];
+  currencies: Currency[];
   user: Nullable<LoginUser>;
   users: User[];
 }

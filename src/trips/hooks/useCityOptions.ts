@@ -22,14 +22,20 @@ export default function useCityOptions(countryId: Ref<number, number>, searchTer
       value: id,
     }));
 
-    if (searchTerm) {
-      return options.filter(({ label }) => label.toLowerCase().includes(searchTerm.value.toLowerCase()));
-    }
-
     return options;
   });
 
-  return { cityOptions };
+  const filteredCityOptions = computed<CityOption[]>(() => {
+    if (searchTerm) {
+      return cityOptions.value.filter(({ label }) =>
+        label.toLowerCase().includes(searchTerm.value.toLowerCase()),
+      );
+    }
+
+    return cityOptions.value;
+  });
+
+  return { cityOptions, filteredCityOptions };
 }
 
 export interface CityOption {

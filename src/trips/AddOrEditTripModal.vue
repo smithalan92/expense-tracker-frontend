@@ -1,10 +1,5 @@
 <script setup lang="ts">
-import {
-  getTripForEditing,
-  type CreateTripCountry,
-  type CreateTripPayload,
-  type GetTripEditDataResponse,
-} from "@/api/trip";
+import { type CreateTripCountry, type CreateTripPayload, type Trip } from "@/api/trip";
 import Modal from "@/modal/Modal.vue";
 import DatePicker from "@/pickers/DatePicker.vue";
 import ImagePicker from "@/pickers/ImagePicker.vue";
@@ -29,10 +24,10 @@ const emit = defineEmits<{
 
 const { user, users } = useAppStore();
 const { loadTrips, createTrip } = useTripsStore();
-const { updateTrip } = useTripDataStore();
+const { trip, countries, userIds, updateTrip } = useTripDataStore();
 const $toast = useToast();
 const isOnline = useOnline();
-const originalTrip = ref<GetTripEditDataResponse | null>(null);
+const originalTrip = ref<Trip | null>(null);
 
 const tripData = reactive<TripData>({
   selectedImage: null,
@@ -67,18 +62,21 @@ onBeforeMount(async () => {
   }
 
   try {
-    isLoadingTripToEdit.value = true;
-    const trip = await getTripForEditing(tripIdToEdit);
-    originalTrip.value = trip;
+    originalTrip.value = { ...trip };
     initalImage.value = trip.image;
     tripData.tripName = trip.name;
     tripData.startDate = format(new Date(trip.startDate), "yyyy-MM-dd");
     tripData.endDate = format(new Date(trip.endDate), "yyyy-MM-dd");
-    tripData.selectedCountries = trip.countries.map((c) => {
-      if (!c.cityIds) c.cityIds = [];
-      return c;
+    tripData.selectedCountries = countries.map<TripModalCountry>((c) => {
+      const data: TripModalCountry = {
+        name: c.name,
+        countryId: c.id,
+        cityIds: c.cities.map((x) => x.id),
+      };
+
+      return data;
     });
-    tripData.selectedUsers = trip.userIds.map((id) => {
+    tripData.selectedUsers = userIds.map((id) => {
       return userOptions.value.find((u) => u.value === id)!;
     });
   } catch (error) {
@@ -155,7 +153,6 @@ const onSaveTrip = async () => {
   try {
     if (tripIdToEdit) {
       await updateTrip({ tripId: tripIdToEdit, payload, file: tripData.selectedImage });
-      loadTrips();
     } else {
       await createTrip(payload, tripData.selectedImage);
     }

@@ -18,6 +18,7 @@ export async function updateExpense(expenseId: number, payload: UpdateExpensePay
 
 export interface ExpensePayload {
   localDateTime: string;
+  countryId: number;
   cityId: number;
   amount: number;
   currencyId: number;

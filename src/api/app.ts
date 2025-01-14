@@ -16,7 +16,14 @@ export interface CountryWithCurrency {
   };
 }
 
+export interface Currency {
+  id: number;
+  name: string;
+  code: string;
+}
+
 export interface GetAppDataResponse {
   countries: CountryWithCurrency[];
   users: User[];
+  currencies: Currency[];
 }

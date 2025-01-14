@@ -1,10 +1,21 @@
 <script setup lang="ts">
 import useAppStore from "@/stores/appStore";
-import { RouterView } from "vue-router";
+import { watch } from "vue";
+import { RouterView, useRouter } from "vue-router";
 import Header from "./Header.vue";
 import PWAUpdateAlert from "./PWAUpdateAlert.vue";
 
 const appStore = useAppStore();
+const router = useRouter();
+
+watch(
+  () => appStore.isLoggedIn,
+  (currentValue, previousValue) => {
+    if (previousValue && !currentValue) {
+      router.push({ name: "login" });
+    }
+  },
+);
 </script>
 
 <template>

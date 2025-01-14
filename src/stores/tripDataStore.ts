@@ -6,20 +6,13 @@ import {
   type ExpensePayload,
   type TripExpense,
 } from "@/api/expense";
-import { uploadFile } from "@/api/file";
-import {
-  getTripData,
-  updateTrip,
-  type City,
-  type Country,
-  type CreateTripPayload,
-  type Currency,
-  type Trip,
-} from "@/api/trip";
+import { getTripData, updateTrip, type CreateTripPayload, type Trip, type TripCountry } from "@/api/trip";
 
+import { uploadFile } from "@/api/file";
 import { getTripFromLocalStorage } from "@/utils/localstorage";
 import { isNetworkError } from "@/utils/network";
 import { acceptHMRUpdate, defineStore } from "pinia";
+import useAppStore from "./appStore";
 
 const useTripDataStore = defineStore("tripData", {
   state: (): TripDataState => ({
@@ -34,10 +27,9 @@ const useTripDataStore = defineStore("tripData", {
     expenses: [],
     unsavedExpenses: [],
     countries: [],
-    cities: [],
-    currencies: [],
+    currencyIds: [],
     categories: [],
-    users: {},
+    userIds: [],
     isLoadingTripData: false,
     hasFailedToLoadTripData: false,
   }),
@@ -85,10 +77,9 @@ const useTripDataStore = defineStore("tripData", {
         this.trip = data.trip;
         this.expenses = data.expenses;
         this.countries = data.countries;
-        this.cities = data.cities;
-        this.currencies = data.currencies;
+        this.currencyIds = data.currencyIds;
         this.categories = data.categories;
-        this.users = data.users;
+        this.userIds = data.userIds;
 
         this.restoreUnsavedExpensesFromLocalStorage(tripId);
       } catch (err: any) {
@@ -117,6 +108,8 @@ const useTripDataStore = defineStore("tripData", {
       payload: CreateTripPayload;
       file?: Nullable<File>;
     }) {
+      console.log({ tripId, payload, file });
+
       try {
         if (file) {
           const fileUrl = await uploadFile(file);
@@ -126,8 +119,14 @@ const useTripDataStore = defineStore("tripData", {
         throw new Error("Failed to save file");
       }
 
-      await updateTrip(tripId, payload);
-      return this.loadTripData(tripId);
+      const { trip, userIds, currencyIds, countries } = await updateTrip(tripId, payload);
+
+      this.$patch({
+        trip,
+        currencyIds,
+        userIds,
+        countries,
+      });
     },
 
     async addExpense({ payload }: { payload: ExpensePayload }) {
@@ -151,6 +150,7 @@ const useTripDataStore = defineStore("tripData", {
       const expenses = this.unsavedExpenses.reduce<ExpensePayload[]>((acc, exp) => {
         const expense: ExpensePayload = {
           localDateTime: exp.localDateTime,
+          countryId: exp.country.id,
           cityId: exp.city.id,
           amount: parseFloat(exp.amount),
           currencyId: exp.currency.id,
@@ -172,11 +172,14 @@ const useTripDataStore = defineStore("tripData", {
     },
 
     addUnsavedExpense({ payload }: { payload: ExpensePayload }) {
-      const currency = this.currencies.find((c) => c.id === payload.currencyId);
+      const { currencies, users } = useAppStore();
+      const currency = currencies.find((c) => c.id === payload.currencyId);
       const category = this.categories.find((c) => c.id === payload.categoryId);
-      const city = this.cities.find((c) => c.id === payload.cityId);
-      const country = this.countries.find((c) => c.id === city?.countryId);
-      const user = this.users[payload.userId];
+      const country = this.countries.find((c) => c.id === payload.countryId)!;
+
+      const city = country?.cities.find((c) => c.id === payload.cityId);
+
+      const user = users.find((u) => u.id === payload.userId);
 
       if (!currency || !category || !city || !country || !user) {
         throw new Error("Incomplete data to add unsaved expense");
@@ -196,7 +199,6 @@ const useTripDataStore = defineStore("tripData", {
         },
         country,
         user: {
-          id: payload.userId,
           ...user,
         },
         createdAt: new Date().toISOString(),
@@ -234,11 +236,14 @@ const useTripDataStore = defineStore("tripData", {
 
       if (!expense) throw new Error("Could not find matching unsaved expense");
 
-      const currency = this.currencies.find((c) => c.id === payload.currencyId);
+      const { currencies, users } = useAppStore();
+      const currency = currencies.find((c) => c.id === payload.currencyId);
       const category = this.categories.find((c) => c.id === payload.categoryId);
-      const city = this.cities.find((c) => c.id === payload.cityId);
-      const country = this.countries.find((c) => c.id === city?.countryId);
-      const user = this.users[payload.userId];
+      const country = this.countries.find((c) => c.id === payload.countryId)!;
+
+      const city = country?.cities.find((c) => c.id === payload.cityId);
+
+      const user = users.find((u) => u.id === payload.userId);
 
       if (!currency || !category || !city || !country || !user) {
         throw new Error("Incomplete data to add unsaved expense");
@@ -259,7 +264,6 @@ const useTripDataStore = defineStore("tripData", {
       };
       expense.country = country;
       expense.user = {
-        id: payload.userId,
         ...user,
       };
       expense.updatedAt = new Date().toISOString();
@@ -304,11 +308,10 @@ export interface TripDataState {
   trip: Trip;
   expenses: TripExpense[];
   unsavedExpenses: TripExpense[];
-  countries: Country[];
-  cities: City[];
-  currencies: Currency[];
+  countries: TripCountry[];
+  currencyIds: number[];
   categories: ExpenseCategory[];
-  users: Record<string, { firstName: string; lastName: string }>;
+  userIds: number[];
   isLoadingTripData: boolean;
   hasFailedToLoadTripData: boolean;
 }

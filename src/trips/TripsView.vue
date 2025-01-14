@@ -45,7 +45,7 @@ onMounted(() => {
         No trips available
       </div>
 
-      <div v-if="tripsStore.getTrips">
+      <div v-if="!tripsStore.hasFailedToLoad && tripsStore.getTrips">
         <Trip v-for="trip in tripsStore.getTrips" :key="trip.id" :trip="trip" />
       </div>
     </div>

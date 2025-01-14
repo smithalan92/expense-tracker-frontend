@@ -17,10 +17,9 @@ export function writeTripDataToLocalStorage(state: TripDataState) {
     expenses: state.expenses,
     unsavedExpenses: state.unsavedExpenses,
     countries: state.countries,
-    cities: state.cities,
-    currencies: state.currencies,
+    currencyIds: state.currencyIds,
     categories: state.categories,
-    users: state.users,
+    userIds: state.userIds,
   };
 
   writeToLocalStorage(`${TRIP_DATA_KEY}__${dataToStore.trip.id}`, JSON.stringify(dataToStore));

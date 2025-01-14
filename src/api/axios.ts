@@ -13,14 +13,16 @@ export function createInstance(authToken: string) {
 
   http.interceptors.response.use(undefined, (error) => {
     if (axios.isAxiosError(error)) {
+      console.log("im here?");
+      console.log(error.response?.status);
       if (error.response?.status === 401) {
         const appStore = useAppStore();
         appStore.logout();
-        return;
+        return Promise.reject(error);
       }
     }
 
-    throw error;
+    return Promise.reject(error);
   });
 }
 

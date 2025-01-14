@@ -1,5 +1,5 @@
 import getAxios from "./axios";
-import type { ExpenseCategory, TripExpense } from "./expense";
+import type { TripExpense } from "./expense";
 
 export async function getTrips() {
   const { data } = await getAxios().get<GetTripsResponse>("/v2/trips");
@@ -18,7 +18,7 @@ export async function createTrip(payload: CreateTripPayload) {
 }
 
 export async function getTripData(tripId: number) {
-  const { data } = await getAxios().get<GetTripDataResponse>(`/trips/${tripId}/data`);
+  const { data } = await getAxios().get<GetTripDataResponse>(`/v2/trip/${tripId}`);
 
   return data;
 }
@@ -26,22 +26,15 @@ export async function getTripData(tripId: number) {
 export async function updateTrip(tripId: number, payload: Partial<CreateTripPayload>) {
   // If a files been uploaded, we have to hit prod, since the files are always uploaded
   // to prod
-  const url = payload.file ? import.meta.env.VITE_PRODUCTION_API_URL : "/trips";
+  const url = payload.file ? import.meta.env.VITE_PRODUCTION_API_URL : "";
 
-  const { data } = await getAxios().patch<CreateTripResponse>(`${url}/${tripId}`, payload);
+  const { data } = await getAxios().patch<UpdateTripResponse>(`${url}/v2/trip/${tripId}`, payload);
 
-  return data.trip;
+  return data;
 }
 
 export async function deleteTrip(tripId: number) {
   return getAxios().delete(`/trips/${tripId}`);
-}
-
-// TODO - Remove need for this API
-export async function getTripForEditing(tripId: number) {
-  const { data } = await getAxios().get<GetTripEditDataResponse>(`/trips/${tripId}/edit-data`);
-
-  return data;
 }
 
 export interface Trip {
@@ -75,33 +68,31 @@ export interface CreateTripResponse {
   trip: Trip;
 }
 
-export interface GetTripDataResponse {
-  expenses: TripExpense[];
+export interface UpdateTripResponse {
   trip: Trip;
-  countries: Country[];
-  cities: City[];
-  currencies: Currency[];
-  categories: ExpenseCategory[];
-  users: Record<string, { firstName: string; lastName: string }>;
+  countries: TripCountry[];
+  userIds: number[];
+  currencyIds: number[];
 }
 
-export interface Country {
+export interface GetTripDataResponse {
+  trip: Trip;
+  countries: TripCountry[];
+  userIds: number[];
+  currencyIds: number[];
+  categories: Category[];
+  expenses: TripExpense[];
+}
+
+export interface TripCountry {
   id: number;
   name: string;
   currencyId: number;
-  currencyCode: string;
+  cities: Array<{ id: number; name: string }>;
 }
 
-export interface City {
+interface Category {
   id: number;
-  name: string;
-  timezoneName: string;
-  countryId: number;
-}
-
-export interface Currency {
-  id: number;
-  code: string;
   name: string;
 }
 
@@ -114,7 +105,7 @@ export interface GetTripEditDataResponse {
   userIds: number[];
 }
 
-export interface CountryWithCities {
+interface CountryWithCities {
   name: string;
   countryId: number;
   cityIds?: number[];

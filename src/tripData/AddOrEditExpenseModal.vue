@@ -14,6 +14,7 @@ import { useOnline } from "@vueuse/core";
 import { format } from "date-fns";
 import { computed, onBeforeMount, reactive, ref, toRefs, watch } from "vue";
 import useAddOrEditExpenseModalOptions from "./hooks/useAddOrEditExpenseModalOptions";
+import useSyncCurrencyWithSelectedCountry from "./hooks/useSyncCurrencyWithSelectedCountry";
 
 const { expenseToEdit, expenseToCopy } = defineProps<{
   expenseToEdit?: Nullable<TripExpense>;
@@ -25,7 +26,7 @@ const emit = defineEmits<{
 }>();
 
 const { user } = useAppStore();
-const { trip, addExpense, updateExpense, cities } = useTripDataStore();
+const { addExpense, updateExpense, countries } = useTripDataStore();
 const $toast = useToast();
 const isOnline = useOnline();
 
@@ -41,10 +42,12 @@ const expenseData = reactive<ExpenseData>({
   amount: 0,
 });
 
-const { selectedCountry } = toRefs(expenseData);
+const { selectedCountry, selectedCurrency } = toRefs(expenseData);
 
 const { countryOptions, cityOptions, currencyOptions, categoryOptions, userOptions } =
   useAddOrEditExpenseModalOptions({ selectedCountry });
+
+useSyncCurrencyWithSelectedCountry({ selectedCountry, selectedCurrency });
 
 const parsedAmount = computed(() => {
   if (!expenseData.amount) return 0;
@@ -99,9 +102,10 @@ const shouldDisableSaveButton = computed(() => {
 watch(
   () => expenseData.selectedCountry?.value,
   (countryId) => {
-    const city = cities.find((o) => o.id === expenseData.selectedCity?.value)!;
+    const selectedCountry = countries.find((c) => c.id === countryId);
+    const selectedCity = selectedCountry?.cities.find((c) => c.id === expenseData?.selectedCity?.value);
 
-    if (countryId !== city?.countryId) expenseData.selectedCity = null;
+    if (!selectedCountry || !selectedCity) expenseData.selectedCity = null;
   },
 );
 
@@ -114,6 +118,7 @@ const onClickAddExpense = async () => {
         new Date(`${expenseData.expenseDate} ${expenseData.expenseTime}:00`),
         "yyyy-MM-dd'T'HH:mm:ss",
       ),
+      countryId: expenseData.selectedCountry!.value,
       cityId: expenseData.selectedCity!.value,
       amount: parsedAmount.value,
       currencyId: expenseData.selectedCurrency!.value,

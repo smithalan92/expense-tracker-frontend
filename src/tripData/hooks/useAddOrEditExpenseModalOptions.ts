@@ -1,11 +1,13 @@
 import type { PickerOption } from "@/pickers/Picker.vue";
+import useAppStore from "@/stores/appStore";
 import useTripDataStore from "@/stores/tripDataStore";
 import { computed, type Ref } from "vue";
 
 export default function useAddOrEditExpenseModalOptions({
   selectedCountry,
 }: useAddOrEditExpenseModalOptionsArgs) {
-  const { countries, cities, currencies, categories, users } = useTripDataStore();
+  const { countries, categories, userIds } = useTripDataStore();
+  const { users, currencies } = useAppStore();
 
   const countryOptions = computed(() => {
     return countries.map<PickerOption>((c) => ({
@@ -17,12 +19,14 @@ export default function useAddOrEditExpenseModalOptions({
   const cityOptions = computed(() => {
     if (!selectedCountry.value) return [];
 
-    return cities
-      .filter((c) => c.countryId === selectedCountry.value!.value)
-      .map<PickerOption>((c) => ({
-        label: c.name,
-        value: c.id,
-      }));
+    const country = countries.find((c) => c.id === selectedCountry.value?.value);
+
+    if (!country) return [];
+
+    return country.cities.map<PickerOption>((c) => ({
+      label: c.name,
+      value: c.id,
+    }));
   });
 
   const currencyOptions = computed(() => {
@@ -44,12 +48,12 @@ export default function useAddOrEditExpenseModalOptions({
   });
 
   const userOptions = computed(() => {
-    return Object.keys(users).map<PickerOption>((k) => {
-      const u = users[k];
+    return userIds.map<PickerOption>((id) => {
+      const user = users.find((u) => u.id === id)!;
 
       return {
-        label: `${u.firstName} ${u.lastName}`,
-        value: parseInt(k, 10),
+        label: `${user.firstName} ${user.lastName}`,
+        value: user.id,
       };
     });
   });

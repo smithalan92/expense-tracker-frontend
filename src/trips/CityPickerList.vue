@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Modal from "@/modal/Modal.vue";
-import { computed, ref, toRefs } from "vue";
+import { computed, ref, toRefs, watch } from "vue";
 import City from "./City.vue";
 import useCityOptions from "./hooks/useCityOptions";
 
@@ -15,12 +15,21 @@ const selectedCityIds = defineModel<number[]>({ default: [] });
 const searchTerm = ref("");
 const isViewSelectedCitiesModalOpen = ref(false);
 
-const { cityOptions } = useCityOptions(countryId, searchTerm);
+const { cityOptions, filteredCityOptions } = useCityOptions(countryId, searchTerm);
 
 const selectedCities = computed(() => {
-  return selectedCityIds.value.map(
-    (id) => cityOptions.value.find((option) => option.value === id)!,
-  );
+  return selectedCityIds.value.map((id) => cityOptions.value.find((option) => option.value === id)!);
+});
+
+watch(
+  () => selectedCityIds,
+  (newVal) => {
+    console.log(newVal);
+  },
+);
+
+watch(selectedCities, (newVal) => {
+  console.log(newVal);
 });
 
 const onClickCity = (cityId: number) => {
@@ -52,11 +61,11 @@ const toggleViewSelectedCitiesModal = () => {
       />
     </div>
     <div class="mt-4 flex justify-between flex-wrap max-h-[150px] overflow-scroll pr-4">
-      <span v-if="!cityOptions.length && searchTerm">No cities match your search term</span>
+      <span v-if="!filteredCityOptions.length && searchTerm">No cities match your search term</span>
 
-      <div v-if="cityOptions.length" class="grid grid-cols-3 gap-x-2 gap-y-4">
+      <div v-if="filteredCityOptions.length" class="grid grid-cols-3 gap-x-2 gap-y-4">
         <City
-          v-for="city in cityOptions"
+          v-for="city in filteredCityOptions"
           :key="city.value"
           :city="city"
           :is-selected="selectedCityIds.includes(city.value)"
@@ -67,11 +76,7 @@ const toggleViewSelectedCitiesModal = () => {
     </div>
 
     <div class="mt-4 flex justify-center">
-      <button
-        v-if="selectedCityIds.length"
-        class="underline"
-        @click="toggleViewSelectedCitiesModal"
-      >
+      <button v-if="selectedCityIds.length" class="underline" @click="toggleViewSelectedCitiesModal">
         View Selected Cities
       </button>
     </div>
@@ -85,9 +90,7 @@ const toggleViewSelectedCitiesModal = () => {
     >
       <template v-slot:body>
         <div class="py-4 w-full">
-          <span v-if="selectedCityIds.length === 0" class="text-center"
-            >No cities have been selected.</span
-          >
+          <span v-if="selectedCityIds.length === 0" class="text-center">No cities have been selected.</span>
 
           <City
             v-for="city in selectedCities"

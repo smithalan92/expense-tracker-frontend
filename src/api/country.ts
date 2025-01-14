@@ -1,5 +1,4 @@
 import getAxios from "./axios";
-import type { City } from "./trip";
 
 export async function loadCitiesForCountry(countryId: number) {
   const { data } = await getAxios().get<LoadCitiesForCountryResponse>(`/v2/countries/${countryId}/cities`);
@@ -7,7 +6,11 @@ export async function loadCitiesForCountry(countryId: number) {
   return data.cities;
 }
 
-export type CityForCountry = Omit<City, "timezoneName">;
+export interface CityForCountry {
+  id: number;
+  name: string;
+  countryId: number;
+}
 
 export interface LoadCitiesForCountryResponse {
   cities: CityForCountry[];
