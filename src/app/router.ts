@@ -1,4 +1,5 @@
 import useAppStore from "@/stores/appStore";
+import TestingChecklist from "@/testing/TestingChecklist.vue";
 import TripDataView from "@/tripData/TripDataView.vue";
 import TripsView from "@/trips/TripsView.vue";
 import LoginView from "@/users/LoginView.vue";
@@ -28,6 +29,11 @@ const router = createRouter({
       path: "/trips/:tripId",
       name: "tripData",
       component: TripDataView,
+    },
+    {
+      path: "/testing",
+      name: "testing",
+      component: TestingChecklist,
     },
   ],
 });

@@ -10,10 +10,12 @@ import { useRouter } from "vue-router";
 import AddOrEditExpenseModal from "./AddOrEditExpenseModal.vue";
 import ExpenseList from "./ExpenseList.vue";
 import useGetCurrentTripId from "./hooks/useGetCurrentTripId";
+import { useOnline } from "@vueuse/core";
 
 const toast = useToast();
 const router = useRouter();
 const store = useTripData();
+const isOnline = useOnline();
 const { trip, hasUnsavedExpenses, isLoadingTripData, hasFailedToLoadTripData } = storeToRefs(store);
 const { loadTripData, resetState, syncUnsavedExpenses, deleteTrip } = store;
 const currentTripID = useGetCurrentTripId();
@@ -120,7 +122,7 @@ onMounted(() => {
           Expense
         </button>
         <button
-          v-if="hasUnsavedExpenses"
+          v-if="hasUnsavedExpenses && isOnline"
           class="btn font-bold text-md text-white ml-4 bg-amber-500 hover:bg-amber-400"
           @click="onClickSyncExpenses"
         >
