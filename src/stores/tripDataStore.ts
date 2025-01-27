@@ -20,6 +20,7 @@ import { getTripFromLocalStorage } from "@/utils/localstorage";
 import { isNetworkError } from "@/utils/network";
 import { acceptHMRUpdate, defineStore } from "pinia";
 import useAppStore from "./appStore";
+import useTripsStore from "./tripsStore";
 
 const useTripDataStore = defineStore("tripData", {
   state: (): TripDataState => ({
@@ -132,10 +133,27 @@ const useTripDataStore = defineStore("tripData", {
         userIds,
         countries,
       });
+
+      const tripStore = useTripsStore();
+
+      const currentTrips: Trip[] = JSON.parse(JSON.stringify(tripStore.trips));
+      const tripIdx = currentTrips.findIndex((t: Trip) => t.id === trip.id);
+
+      if (tripIdx > -1) {
+        currentTrips[tripIdx] = trip;
+      }
+
+      tripStore.$patch({
+        trips: currentTrips,
+      });
     },
 
     async deleteTrip() {
       await deleteTrip(this.trip.id);
+      const tripStore = useTripsStore();
+      tripStore.$patch({
+        trips: tripStore.trips.filter((t) => t.id !== this.trip.id),
+      });
       this.resetState();
     },
 
