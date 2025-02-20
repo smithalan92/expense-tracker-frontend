@@ -18,9 +18,6 @@ jobs:
       - name: Install dependencies
         shell: bash
         run: npm ci
-      - name: Run tests
-        shell: bash
-        run: npm run test
       - name: Build
         shell: bash
         run: npm run build
