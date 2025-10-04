@@ -73,7 +73,7 @@ const onCloseAddOrEditExpenseModal = () => {
         @click="onClickExpense(expense)"
       />
     </div>
-    <div v-if="expenses.length" class="sticky bottom-[-1px] select-none bg-base-200 mr-2">
+    <div v-if="expenses.length" class="sticky -bottom-px select-none bg-base-200 mr-2">
       <div class="text-right w-full py-2 pr-4 font-semibold">Total: {{ totalExpenseAmount }}</div>
     </div>
   </div>

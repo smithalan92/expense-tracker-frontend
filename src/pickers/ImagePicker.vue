@@ -27,8 +27,8 @@ const onFileChanged = ($event: Event) => {
   const target = $event.target as HTMLInputElement;
   const [file] = target.files!;
   if (file) {
-    selectedImage.value = URL.createObjectURL(target.files![0]);
-    emit("change-image", target.files![0]);
+    selectedImage.value = URL.createObjectURL(target.files![0]!);
+    emit("change-image", target.files![0]!);
   }
 };
 

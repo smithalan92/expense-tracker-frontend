@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
+@import "tw-animate-css";
 @plugin "daisyui" {
   themes:
     light --default,
@@ -9,7 +10,6 @@
 @import "@vuepic/vue-datepicker/dist/main.css";
 @import "vue-toast-notification/dist/theme-default.css";
 @import "vue-multiselect/dist/vue-multiselect.min.css";
-@import "animate.css";
 
 @layer components {
   .et-modal-backdrop {

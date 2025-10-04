@@ -18,7 +18,7 @@ const onClick = () => {
     @click="onClick"
   >
     <div
-      class="sm:w-48 w-32 bg-cover h-52 flex-shrink-0 rounded-tl-2xl rounded-bl-2xl"
+      class="sm:w-48 w-32 bg-cover h-52 shrink-0 rounded-tl-2xl rounded-bl-2xl"
       :style="{
         backgroundImage: `url(${trip.image})`,
       }"
