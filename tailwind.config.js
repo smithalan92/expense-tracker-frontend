@@ -1,5 +1,4 @@
 /** @type {import('tailwindcss').Config} */
-import daisyui from "daisyui";
 
 export default {
   content: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
@@ -79,9 +78,5 @@ export default {
         "fade-out": "fadeOut 0.35s",
       },
     },
-  },
-  plugins: [daisyui],
-  daisyui: {
-    themes: ["cupcake"],
   },
 };

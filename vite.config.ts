@@ -1,3 +1,4 @@
+import tailwindcss from "@tailwindcss/vite";
 import vue from "@vitejs/plugin-vue";
 import { fileURLToPath, URL } from "node:url";
 import { defineConfig } from "vite";
@@ -55,6 +56,7 @@ export default defineConfig({
       enableBuild: false,
     }),
     VitePWA(pwaOptions),
+    tailwindcss(),
   ],
   resolve: {
     alias: {
