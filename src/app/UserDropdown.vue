@@ -36,7 +36,7 @@ onBeforeUnmount(() => {
 <template>
   <div class="relative">
     <button
-      class="focus:ring-4 text-md font-bold px-4 mx-2 rounded-full bg-expensr-blue text-white w-10 h-10 flex items-center justify-center"
+      class="focus:ring-4 text-md font-bold px-4 mx-2 rounded-full bg-expensit-blue text-white w-10 h-10 flex items-center justify-center"
       @click="isDropdownVisible = !isDropdownVisible"
     >
       {{ user!.firstName.substring(0, 1).toUpperCase() }}

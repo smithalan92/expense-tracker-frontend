@@ -8,7 +8,7 @@ const isOnline = useOnline();
 </script>
 
 <template>
-  <div class="navbar bg-base-100 py-6 min-h-20">
+  <div class="navbar bg-base-100 py-6 min-h-[5rem]">
     <div class="navbar-start">
       <RouterLink to="/" class="p-2">
         <Logo class="w-32" />

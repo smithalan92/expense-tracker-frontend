@@ -35,7 +35,7 @@ const emit = defineEmits<{
     <div class="et-modal-backdrop overflow-hidden">
       <div
         :class="{
-          'animate-slide-in-bottom et-modal overflow-hidden box-content w-[420px] md:w-full p-0': true,
+          'animate-slide-in-bottom et-modal overflow-hidden box-content w-[400px] md:w-full p-0': true,
           'absolute bottom-0 md:relative': position !== 'center',
         }"
         :style="{

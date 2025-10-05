@@ -1,0 +1,36 @@
+@theme {
+  --color-expensit-blue: #0284c7;
+
+  --spacing-100: 400px;
+
+  --animate-slide-in-bottom: fade-in 0.2s, slide-in-from-bottom 0.3s linear;
+
+  @keyframes slide-in-from-bottom {
+    0% {
+      transform: translateY(800px);
+      animation-timing-function: ease-in;
+    }
+    60% {
+      transform: translateY(-30px);
+      animation-timing-function: ease-out;
+    }
+    80% {
+      transform: translateY(-10px);
+      animation-timing-function: ease-in-out;
+    }
+    100% {
+      transform: translateY(0);
+      animation-timing-function: ease-out;
+    }
+  }
+
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+    }
+
+    100% {
+      opacity: 1;
+    }
+  }
+}

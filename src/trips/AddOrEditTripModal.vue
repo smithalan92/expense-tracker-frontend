@@ -168,7 +168,8 @@ const onSaveTrip = async () => {
 };
 
 onMounted(() => {
-  nameInput.value?.focus();
+  // Need to set a delay due to the modal opening animation
+  setTimeout(() => nameInput.value?.focus(), 350);
 });
 </script>
 

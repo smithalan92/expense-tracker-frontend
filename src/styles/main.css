@@ -1,11 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
+@import "./tailwind-customisation.css";
 @import "tw-animate-css";
 @plugin "daisyui" {
-  themes:
-    light --default,
-    dark --prefersdark,
-    cupcake;
+  themes: cupcake --default;
 }
 @import "@vuepic/vue-datepicker/dist/main.css";
 @import "vue-toast-notification/dist/theme-default.css";

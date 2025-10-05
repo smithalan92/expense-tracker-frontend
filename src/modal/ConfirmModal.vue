@@ -38,9 +38,7 @@ const emit = defineEmits<{
 
           <div class="flex pt-6 px-6 pb-4 flex-end">
             <div class="flex flex-1 justify-center">
-              <button class="btn font-bold tn-outline text-md mr-4" @click="emit('cancel')">
-                Cancel
-              </button>
+              <button class="btn font-bold tn-outline text-md mr-4" @click="emit('cancel')">Cancel</button>
               <button
                 class="btn font-bold text-md text-white"
                 :class="{
