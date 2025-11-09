@@ -184,7 +184,7 @@ const useTripDataStore = defineStore("tripData", {
           currencyId: exp.currency.id,
           categoryId: exp.category.id,
           description: exp.description,
-          userId: exp.user.id,
+          userIds: exp.users.map((u) => u.id),
         };
 
         acc.push(expense);
@@ -207,9 +207,9 @@ const useTripDataStore = defineStore("tripData", {
 
       const city = country?.cities.find((c) => c.id === payload.cityId);
 
-      const user = users.find((u) => u.id === payload.userId);
+      const expenseUsers = users.filter((u) => payload.userIds.includes(u.id));
 
-      if (!currency || !category || !city || !country || !user) {
+      if (!currency || !category || !city || !country || !expenseUsers.length) {
         throw new Error("Incomplete data to add unsaved expense");
       }
 
@@ -226,9 +226,7 @@ const useTripDataStore = defineStore("tripData", {
           timezone: "",
         },
         country,
-        user: {
-          ...user,
-        },
+        users: expenseUsers,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       });
@@ -251,7 +249,7 @@ const useTripDataStore = defineStore("tripData", {
         existingExpense.category = expense.category;
         existingExpense.city = expense.city;
         existingExpense.country = expense.country;
-        existingExpense.user = expense.user;
+        existingExpense.users = expense.users;
         existingExpense.createdAt = expense.createdAt;
         existingExpense.updatedAt = expense.updatedAt;
       } else {
@@ -271,9 +269,9 @@ const useTripDataStore = defineStore("tripData", {
 
       const city = country?.cities.find((c) => c.id === payload.cityId);
 
-      const user = users.find((u) => u.id === payload.userId);
+      const expenseUsers = users.filter((u) => payload.userIds.includes(u.id));
 
-      if (!currency || !category || !city || !country || !user) {
+      if (!currency || !category || !city || !country || !expenseUsers.length) {
         throw new Error("Incomplete data to add unsaved expense");
       }
 
@@ -291,9 +289,7 @@ const useTripDataStore = defineStore("tripData", {
         timezone: "",
       };
       expense.country = country;
-      expense.user = {
-        ...user,
-      };
+      expense.users = expenseUsers;
       expense.updatedAt = new Date().toISOString();
     },
 

@@ -20,9 +20,9 @@ export default function useViewExpenseData(expense: Ref<TripExpense, TripExpense
         icon: ["fas", "location-dot"],
       },
       {
-        label: "User",
-        value: `${expense.value.user.firstName} ${expense.value.user.lastName}`,
-        icon: ["fas", "user"],
+        label: "Users",
+        value: `${expense.value.users.map((u) => `${u.firstName} ${u.lastName}`).join(",")}`,
+        icon: ["fas", "users"],
       },
       {
         label: "Description",

@@ -24,7 +24,7 @@ export interface ExpensePayload {
   currencyId: number;
   categoryId: number;
   description: string;
-  userId: number;
+  userIds: number[];
 }
 
 export interface TripExpense {
@@ -37,7 +37,7 @@ export interface TripExpense {
   category: ExpenseCategory;
   city: ExpenseCity;
   country: ExpenseCountry;
-  user: ExpenseUser;
+  users: ExpenseUser[];
   createdAt: string;
   updatedAt: string;
 }

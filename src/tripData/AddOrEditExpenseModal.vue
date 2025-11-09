@@ -37,7 +37,7 @@ const expenseData = reactive<ExpenseData>({
   selectedCity: null,
   selectedCurrency: null,
   selectedCategory: null,
-  selectedUser: null,
+  selectedUsers: [],
   description: "",
   amount: 0,
 });
@@ -68,7 +68,7 @@ const canAddExpense = computed(() => {
     expenseData.selectedCurrency !== null &&
     isAmountValid &&
     expenseData.selectedCategory !== null &&
-    expenseData.selectedUser !== null
+    expenseData.selectedUsers.length > 0
   );
 });
 
@@ -124,7 +124,7 @@ const onClickAddExpense = async () => {
       currencyId: expenseData.selectedCurrency!.value,
       categoryId: expenseData.selectedCategory!.value,
       description: expenseData.description,
-      userId: expenseData.selectedUser!.value,
+      userIds: expenseData.selectedUsers.map((v) => v.value),
     };
 
     if (isEditingExpense.value) {
@@ -144,7 +144,10 @@ const onClickAddExpense = async () => {
 
 onBeforeMount(() => {
   if (!isEditingExpense.value && !isCopyingExpense.value) {
-    expenseData.selectedUser = userOptions.value.find((u) => u.value === user?.id) ?? null;
+    const currentUser = userOptions.value.find((u) => u.value === user?.id) ?? null;
+    if (currentUser) {
+      expenseData.selectedUsers = [currentUser];
+    }
     return;
   }
 
@@ -168,7 +171,10 @@ onBeforeMount(() => {
     (c) => c.value === expenseToUseForHydration.category.id,
   )!;
 
-  expenseData.selectedUser = userOptions.value.find((u) => u.value === expenseToUseForHydration.user.id)!;
+  expenseData.selectedUsers = expenseToUseForHydration.users.map((user) => ({
+    label: `${user.firstName} ${user.lastName}`,
+    value: user.id,
+  }));
 
   if (isCopyingExpense.value) {
     const initalText =
@@ -251,8 +257,9 @@ onBeforeMount(() => {
         <Picker
           class="col-span-4"
           :options="userOptions"
-          v-model="expenseData.selectedUser"
-          placeholder="Select user"
+          v-model="expenseData.selectedUsers"
+          placeholder="Select users"
+          :is-multi="true"
         />
       </div>
 
@@ -296,7 +303,7 @@ interface ExpenseData {
   selectedCity: Nullable<PickerOption>;
   selectedCurrency: Nullable<PickerOption>;
   selectedCategory: Nullable<PickerOption>;
-  selectedUser: Nullable<PickerOption>;
+  selectedUsers: PickerOption[];
   description: string;
   amount: number;
 }
