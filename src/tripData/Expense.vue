@@ -17,18 +17,24 @@ const expenseTime = computed(() => format(date.value, "HH:mm"));
 const expenseDay = computed(() => format(date.value, "do"));
 const expenseMonth = computed(() => format(date.value, "MMM"));
 const userInitals = computed(() => {
-  if (expense.users.length === 1) {
-    const [user] = expense.users;
-    return `${user?.firstName.slice(0, 1)}${user?.lastName.slice(0, 1)}`.toUpperCase();
+  try {
+    if (expense.users.length === 1) {
+      const [user] = expense.users;
+      return `${user?.firstName.slice(0, 1)}${user?.lastName.slice(0, 1)}`.toUpperCase();
+    }
+
+    if (expense.users.length === 2) {
+      const [firstUser, secondUser] = expense.users;
+
+      return `${firstUser?.firstName.slice(0, 1)} & ${secondUser?.firstName.slice(0, 1)}`.toUpperCase();
+    }
+
+    return `(${expense.users.length})`;
+  } catch (err) {
+    console.log(expense.users);
+    console.error(err);
+    return "";
   }
-
-  if (expense.users.length === 2) {
-    const [firstUser, secondUser] = expense.users;
-
-    return `${firstUser?.firstName.slice(0, 1)} & ${secondUser?.firstName.slice(0, 1)}`.toUpperCase();
-  }
-
-  return `(${expense.users.length})`;
 });
 const isUnsavedExpense = computed(() => expense.id < 0);
 </script>
