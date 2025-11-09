@@ -2,9 +2,17 @@
 @import "tailwindcss";
 @import "./tailwind-customisation.css";
 @import "tw-animate-css";
+
 @plugin "daisyui" {
   themes: cupcake --default;
 }
+
+@plugin "daisyui/theme" {
+  name: "cupcake";
+  default: true;
+  --color-primary: oklch(0.7541 0.0917 231.14);
+}
+
 @import "@vuepic/vue-datepicker/dist/main.css";
 @import "vue-toast-notification/dist/theme-default.css";
 @import "vue-multiselect/dist/vue-multiselect.min.css";
