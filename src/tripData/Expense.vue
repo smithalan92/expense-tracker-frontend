@@ -16,16 +16,9 @@ const date = computed(() => new Date(expense.localDateTime));
 const expenseTime = computed(() => format(date.value, "HH:mm"));
 const expenseDay = computed(() => format(date.value, "do"));
 const expenseMonth = computed(() => format(date.value, "MMM"));
-const userInitals = computed(() => {
-  if (expense.users.length === 1) {
-    const [user] = expense.users;
-    return `${user?.firstName.slice(0, 1)}${user?.lastName.slice(0, 1)}`.toUpperCase();
-  }
-
-  if (expense.users.length === 2) {
-    const [firstUser, secondUser] = expense.users;
-
-    return `${firstUser?.firstName.slice(0, 1)} & ${secondUser?.firstName.slice(0, 1)}`.toUpperCase();
+const userNames = computed(() => {
+  if (expense.users.length <= 2) {
+    return expense.users.map((u) => `${u.firstName} ${u.lastName.slice(0, 1).toUpperCase()}`).join(" & ");
   }
 
   return `(${expense.users.length})`;
@@ -36,46 +29,37 @@ const isUnsavedExpense = computed(() => expense.id < 0);
 <template>
   <div
     :data-expense-id="expense.id"
-    class="flex border-t border-b border-l even:border-t-0 even:border-b-0 border-solid border-gray-300 cursor-pointer hover:bg-gray-200"
+    class="grid grid-cols-12 border-t border-b border-l even:border-t-0 even:border-b-0 border-gray-300 cursor-pointer hover:bg-gray-200"
     @click="emit('click')"
   >
     <div
-      class="flex px-1 py-1 text-white border-b border-solid border-white"
+      class="col-span-3 flex flex-col items-center justify-center text-white py-1"
       :class="{
         'bg-primary': !isUnsavedExpense,
         'bg-amber-500': isUnsavedExpense,
       }"
     >
-      <div class="flex h-full flex-col items-center justify-center w-16">
-        <span class="font-bold text-sm"> {{ expenseDay }} {{ expenseMonth }} </span>
-        <span class="text-xs">{{ expenseTime }}</span>
-      </div>
+      <span class="font-bold text-sm">{{ expenseDay }} {{ expenseMonth }}</span>
+      <span class="text-xs">{{ expenseTime }}</span>
     </div>
-    <div class="flex flex-1 flex-col p-2 flex-nowrap overflow-hidden">
-      <div class="flex items-center w-full flex-nowrap">
-        <fa-icon :icon="['fas', 'location-dot']" class="text-gray-800" />
-        <span class="ml-2 whitespace-nowrap text-ellipsis overflow-hidden font-semibold">
-          {{ expense.city.name }}
-        </span>
+
+    <div class="col-span-6 flex flex-col p-2 overflow-hidden">
+      <div class="flex items-center w-full">
+        <fa-icon :icon="['fas', 'location-dot']" class="text-gray-800 shrink-0" />
+        <span class="ml-2 truncate font-semibold">{{ expense.city.name }}</span>
       </div>
-      <div class="mt-1 flex items-center w-full flex-nowrap">
+      <div class="mt-1 flex items-center w-full text-sm">
         <ExpenseCategoryIcon :category-id="expense.category.id" />
-        <span class="ml-2 whitespace-nowrap text-ellipsis overflow-hidden">
-          {{ expense.category.name }}
-        </span>
+        <span class="ml-2 truncate">{{ expense.category.name }}</span>
+      </div>
+      <div class="mt-1 flex items-center w-full text-sm">
+        <fa-icon :icon="['fas', expense.users.length === 1 ? 'user' : 'users']" class="text-gray-800" />
+        <span class="ml-2 truncate">{{ userNames }}</span>
       </div>
     </div>
-    <div class="flex items-center justify-center px-4">
-      <span class="font-bold"><span v-if="!isUnsavedExpense">€</span>{{ expense.euroAmount }}</span>
-    </div>
-    <div
-      class="flex items-center justify-center w-14"
-      :class="{
-        'bg-primary': !isUnsavedExpense,
-        'bg-amber-500': isUnsavedExpense,
-      }"
-    >
-      <span class="text-white font-bold">{{ userInitals }}</span>
+
+    <div class="col-span-3 flex items-center justify-center">
+      <span class="font-bold text-sm"> <span v-if="!isUnsavedExpense">€</span>{{ expense.euroAmount }} </span>
     </div>
   </div>
 </template>

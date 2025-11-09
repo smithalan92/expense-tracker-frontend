@@ -27,6 +27,7 @@ import {
   faTrashCan,
   faTriangleExclamation,
   faUser,
+  faUsers,
   faUtensils,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
@@ -63,6 +64,7 @@ export default function registerIconLibrary() {
     faTag,
     faLayerGroup,
     faUser,
+    faUsers,
     faClipboard,
     faCopy,
     faRotate,
