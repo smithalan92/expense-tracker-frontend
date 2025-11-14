@@ -3,7 +3,9 @@ import {
   faArrowLeft,
   faBed,
   faCheck,
+  faChevronRight,
   faCircleNotch,
+  faClock,
   faCookieBite,
   faGem,
   faGifts,
@@ -68,5 +70,7 @@ export default function registerIconLibrary() {
     faClipboard,
     faCopy,
     faRotate,
+    faChevronRight,
+    faClock,
   );
 }

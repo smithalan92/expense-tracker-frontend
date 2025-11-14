@@ -49,7 +49,7 @@ const emit = defineEmits<{
               <slot name="title" />
             </div>
             <div v-if="includeCloseButton" class="p-1 hover:cursor-pointer" @click="emit('close')">
-              <fa-icon :icon="['fas', 'xmark']" class="fill-white" size="2x" />
+              <fa-icon :icon="['fas', 'xmark']" class="fill-white" size="sm" />
             </div>
           </div>
 

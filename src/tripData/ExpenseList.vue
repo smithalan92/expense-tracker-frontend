@@ -1,19 +1,38 @@
 <script setup lang="ts">
 import type { TripExpense } from "@/api/expense";
 import useTripData from "@/stores/tripDataStore";
+import useUserPreferencesStore from "@/stores/userPreferencesStore";
+import { format, isSameYear } from "date-fns";
 import { computed, ref, toRefs } from "vue";
 import AddOrEditExpenseModal from "./AddOrEditExpenseModal.vue";
 import Expense from "./Expense.vue";
+import ExpenseAlt from "./ExpenseAlt.vue";
 import ViewExpenseModal from "./ViewExpenseModal.vue";
 
 const store = useTripData();
 const { expenses, unsavedExpenses, totalExpenseAmount } = toRefs(store);
+const { useAltExpenseDisplayUI } = toRefs(useUserPreferencesStore());
 
 const showViewExpenseModal = ref(false);
 const isEditingExpense = ref(false);
 const isCopyingExpense = ref(false);
 
 const selectedExpense = ref<Nullable<TripExpense>>(null);
+
+const expensesGroupedByDate = computed(() => {
+  return [...expenses.value, ...unsavedExpenses.value].reduce<Record<string, TripExpense[]>>(
+    (acc, current) => {
+      const date = format(new Date(current.localDateTime), "yyyy-MM-dd");
+
+      if (!acc[date]) acc[date] = [];
+
+      acc[date].push(current);
+
+      return acc;
+    },
+    {},
+  );
+});
 
 const expensesToDisplay = computed(() => {
   const exp: TripExpense[] = [...unsavedExpenses.value, ...expenses.value];
@@ -23,6 +42,37 @@ const expensesToDisplay = computed(() => {
   });
 
   return exp;
+});
+
+const expensesToDisplayByDate = computed(() => {
+  // first we'll create arrays of all the dates and sort them in DESC order
+  const dates = Object.keys(expensesGroupedByDate.value).sort((a, b) => {
+    return new Date(b).getTime() - new Date(a).getTime();
+  });
+
+  const allExpensesByDate: ExpensesByDate[] = [];
+
+  for (const date of dates) {
+    const expenses = expensesGroupedByDate.value[date]!.sort((a, b) => {
+      return new Date(b.localDateTime).getTime() - new Date(a.localDateTime).getTime();
+    });
+
+    let formattedDate;
+    const dateRef = new Date(date);
+
+    if (isSameYear(new Date(), dateRef)) {
+      formattedDate = format(dateRef, "dd MMMM");
+    } else {
+      formattedDate = format(dateRef, "dd MMMM yyyy");
+    }
+
+    allExpensesByDate.push({
+      date: formattedDate,
+      expenses,
+    });
+  }
+
+  return allExpensesByDate;
 });
 
 const expenseToEdit = computed(() => {
@@ -53,6 +103,12 @@ const onCopyExpense = () => {
   isCopyingExpense.value = true;
 };
 
+console.log({
+  expensesByDate: expensesGroupedByDate.value,
+  unsavedExpensesByDate: unsavedExpenses.value,
+  expensesToDisplayByDate: expensesToDisplayByDate.value,
+});
+
 const onCloseAddOrEditExpenseModal = () => {
   isEditingExpense.value = false;
   isCopyingExpense.value = false;
@@ -66,8 +122,23 @@ const onCloseAddOrEditExpenseModal = () => {
         <span>No expenses available.</span>
       </div>
 
+      <template v-if="useAltExpenseDisplayUI">
+        <template v-for="value in expensesToDisplayByDate">
+          <div class="flex-1 bg-base-200 py-2 px-2 font-semibold rounded text-sm">
+            {{ value.date }}
+          </div>
+          <ExpenseAlt
+            v-for="expense in value.expenses"
+            :key="expense.id"
+            :expense="expense"
+            @click="onClickExpense(expense)"
+          />
+        </template>
+      </template>
+
       <Expense
         v-for="expense in expensesToDisplay"
+        v-if="!useAltExpenseDisplayUI"
         :key="expense.id"
         :expense="expense"
         @click="onClickExpense(expense)"
@@ -91,3 +162,10 @@ const onCloseAddOrEditExpenseModal = () => {
     @close="onCloseAddOrEditExpenseModal"
   />
 </template>
+
+<script lang="ts">
+interface ExpensesByDate {
+  date: string;
+  expenses: TripExpense[];
+}
+</script>

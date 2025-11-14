@@ -2,6 +2,7 @@
 import useAppStore from "@/stores/appStore";
 import { onBeforeUnmount, onMounted, ref, useTemplateRef } from "vue";
 import { useRouter } from "vue-router";
+import SettingsModal from "./SettingsModal.vue";
 
 const { user, logout } = useAppStore();
 
@@ -11,11 +12,22 @@ const dropdownRef = useTemplateRef("dropdown");
 
 const isDropdownVisible = ref(false);
 
+const isSettingsVisible = ref(false);
+
+const onCloseSettings = () => {
+  isSettingsVisible.value = false;
+};
+
 const onClickOutsideDropdown = (event: MouseEvent) => {
   const target = event.target as HTMLElement;
   if (dropdownRef.value && !dropdownRef.value.contains(target)) {
     isDropdownVisible.value = false;
   }
+};
+
+const onClickOpenSettings = () => {
+  isSettingsVisible.value = true;
+  isDropdownVisible.value = false;
 };
 
 const onClickLogout = () => {
@@ -36,7 +48,7 @@ onBeforeUnmount(() => {
 <template>
   <div class="relative">
     <button
-      class="focus:ring-4 text-md font-bold px-4 mx-2 rounded-full bg-expensit-blue text-white w-10 h-10 flex items-center justify-center"
+      class="focus:ring-4 text-md font-bold px-4 mx-2 rounded-full bg-expensit-blue text-white w-10 h-10 flex items-center justify-center cursor-pointer"
       @click="isDropdownVisible = !isDropdownVisible"
     >
       {{ user!.firstName.substring(0, 1).toUpperCase() }}
@@ -51,6 +63,11 @@ onBeforeUnmount(() => {
       </div>
       <ul class="py-1 text-sm base-content">
         <li>
+          <span @click="onClickOpenSettings" class="cursor-pointer block py-2 px-4 hover:bg-base-200">
+            Settings
+          </span>
+        </li>
+        <li>
           <span @click="onClickLogout" class="cursor-pointer block py-2 px-4 hover:bg-base-200">
             Logout
           </span>
@@ -58,4 +75,5 @@ onBeforeUnmount(() => {
       </ul>
     </div>
   </div>
+  <SettingsModal v-if="isSettingsVisible" @close="onCloseSettings" />
 </template>
