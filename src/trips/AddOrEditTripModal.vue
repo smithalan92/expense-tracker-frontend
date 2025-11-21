@@ -7,6 +7,7 @@ import Picker, { type PickerOption } from "@/pickers/Picker.vue";
 import useAppStore from "@/stores/appStore";
 import useTripDataStore from "@/stores/tripDataStore";
 import useTripsStore from "@/stores/tripsStore";
+import useUserPreferencesStore from "@/stores/userPreferencesStore";
 import Tooltip from "@/utils/Tooltip.vue";
 import { useToast } from "@/utils/useToast";
 import { useOnline } from "@vueuse/core";
@@ -29,6 +30,7 @@ const { trip, countries, userIds, updateTrip } = useTripDataStore();
 const $toast = useToast();
 const isOnline = useOnline();
 const originalTrip = ref<Trip | null>(null);
+const { useAlternativeUI } = useUserPreferencesStore();
 
 const tripData = reactive<TripData>({
   selectedImage: null,
@@ -189,7 +191,8 @@ onMounted(() => {
         <span class="col-span-1 content-center">Name</span>
         <input
           ref="name-input"
-          class="col-span-3 input input-md input-bordered rounded-md bg-white text-black"
+          class="col-span-3 input input-md rounded-md outline-none"
+          :class="{ 'bg-white': !useAlternativeUI }"
           placeholder="Trip to Fiji"
           v-model="tripData.tripName"
         />

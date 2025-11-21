@@ -64,14 +64,8 @@ const onClickSave = () => {
     </template>
 
     <template v-slot:footer>
-      <button class="btn btn-secondary font-bold text-md mr-4" @click="emit('close')">
-        Cancel
-      </button>
-      <button
-        class="btn btn-primary font-bold text-md"
-        :disabled="!selectedCountry"
-        @click="onClickSave"
-      >
+      <button class="btn btn-secondary font-bold text-md mr-4" @click="emit('close')">Cancel</button>
+      <button class="btn btn-primary font-bold text-md" :disabled="!selectedCountry" @click="onClickSave">
         Save
       </button>
     </template>

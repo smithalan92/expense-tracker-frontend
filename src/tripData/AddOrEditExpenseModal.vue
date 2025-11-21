@@ -7,6 +7,7 @@ import Picker, { type PickerOption } from "@/pickers/Picker.vue";
 import TimePicker from "@/pickers/TimePicker.vue";
 import useAppStore from "@/stores/appStore";
 import useTripDataStore from "@/stores/tripDataStore";
+import useUserPreferencesStore from "@/stores/userPreferencesStore";
 import isMobileDevice from "@/utils/isMobile";
 import Tooltip from "@/utils/Tooltip.vue";
 import { useToast } from "@/utils/useToast";
@@ -27,6 +28,7 @@ const emit = defineEmits<{
 
 const { user } = useAppStore();
 const { addExpense, updateExpense, countries } = useTripDataStore();
+const { useAlternativeUI } = useUserPreferencesStore();
 const $toast = useToast();
 const isOnline = useOnline();
 
@@ -224,7 +226,8 @@ onBeforeMount(() => {
         <!-- this input will force the numpad on Safari on IOS, unlike type=-->
         <input
           v-if="isMobileDevice"
-          class="col-span-2 input input-md h-auto input-bordered rounded-md bg-white text-black outline-none focus:outline-none"
+          class="col-span-2 input input-md h-auto input-bordered rounded-md outline-none focus:outline-none"
+          :class="{ 'bg-white': !useAlternativeUI }"
           placeholder="0"
           type="text"
           inputmode="numeric"
@@ -266,7 +269,8 @@ onBeforeMount(() => {
       <div class="grid grid-cols-5 gap-1 py-4">
         <span class="col-span-1 content-center">Notes</span>
         <input
-          class="col-span-4 textarea rounded-md bg-white textarea-bordered outline-none focus:outline-none"
+          class="col-span-4 textarea rounded-md textarea-bordered outline-none focus:outline-none"
+          :class="{ 'bg-white': !useAlternativeUI }"
           v-model="expenseData.description"
         />
       </div>

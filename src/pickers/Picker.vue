@@ -1,5 +1,7 @@
 <script setup lang="ts" generic="T">
+import useUserPreferencesStore from "@/stores/userPreferencesStore";
 import isMobileDevice from "@/utils/isMobile";
+import { toRefs } from "vue";
 import Multiselect from "vue-multiselect";
 
 const { options, placeholder, isMulti, disabled, ...props } = defineProps<{
@@ -10,52 +12,55 @@ const { options, placeholder, isMulti, disabled, ...props } = defineProps<{
   disabled?: boolean;
 }>();
 
+const { useAlternativeUI } = toRefs(useUserPreferencesStore());
+
 const value = defineModel<Nullable<PickerOption | PickerOption[]>>({ required: true });
 </script>
 
 <template>
-  <multiselect
-    class="h-[43px]"
-    :class="props.class"
-    v-if="!isMobileDevice || isMulti"
-    v-model="value"
-    :options="options"
-    track-by="value"
-    label="label"
-    :multiple="isMulti"
-    :placeholder="placeholder ?? 'Select...'"
-    :disabled="disabled"
-    :showLabels="false"
-  >
-    <template #singleLabel="props">
-      <div class="truncate text-ellipsis overflow-hidden">{{ props.option.label }}</div>
-    </template>
+  <div :class="{ [props.class ?? '']: props.class, 'alt-theme': useAlternativeUI }">
+    <multiselect
+      class="h-[43px] w-full"
+      :class="{ [props.class ?? '']: props.class }"
+      v-if="!isMobileDevice || isMulti"
+      v-model="value"
+      :options="options"
+      track-by="value"
+      label="label"
+      :multiple="isMulti"
+      :placeholder="placeholder ?? 'Select...'"
+      :disabled="disabled"
+      :showLabels="false"
+      :hide-selected="true"
+      :close-on-select="true"
+      :searchable="!isMulti"
+    >
+      <template #singleLabel="props">
+        <div class="truncate text-ellipsis overflow-hidden">{{ props.option.label }}</div>
+      </template>
 
-    <template #option="props">
-      <div class="truncate text-ellipsis overflow-hidden">{{ props.option.label }}</div>
-    </template>
-  </multiselect>
+      <template #option="props">
+        <div class="truncate text-ellipsis overflow-hidden">{{ props.option.label }}</div>
+      </template>
+    </multiselect>
 
-  <select
-    v-if="isMobileDevice && !isMulti"
-    required
-    class="select select-bordered rounded-lg bg-white w-full outline-none focus:outline-none"
-    :class="props.class"
-    :disabled="disabled"
-    v-model="value"
-  >
-    <option value="null" disabled hidden selected>{{ placeholder ?? "Select..." }}</option>
-    <option v-for="option in options" :value="option" :key="option.value">
-      {{ option.label }}
-    </option>
-  </select>
+    <select
+      v-if="isMobileDevice && !isMulti"
+      required
+      class="select select-bordered rounded-lg w-full outline-none focus:outline-none"
+      :class="{ [props.class ?? '']: props.class, 'bg-grey-900': useAlternativeUI }"
+      :disabled="disabled"
+      v-model="value"
+    >
+      <option value="null" disabled hidden selected>{{ placeholder ?? "Select..." }}</option>
+      <option v-for="option in options" :value="option" :key="option.value">
+        {{ option.label }}
+      </option>
+    </select>
+  </div>
 </template>
 
 <style lang="css">
-.vue-select .search-input {
-  padding: 8px !important;
-}
-
 .multiselect--disabled .multiselect__current,
 .multiselect--disabled .multiselect__select {
   background: #fdfcfb !important;
@@ -63,6 +68,52 @@ const value = defineModel<Nullable<PickerOption | PickerOption[]>>({ required: t
 
 .multiselect__placeholder {
   white-space: nowrap !important;
+}
+
+.multiselect__tags-wrap {
+  display: flex !important;
+}
+
+.alt-theme .multiselect__tag {
+  background: var(--color-white);
+  color: var(--color-base-100);
+}
+
+.alt-theme .multiselect__option--highlight {
+  background: var(--color-gray-500);
+}
+
+.alt-theme .multiselect__option--highlight:after {
+  background: var(--color-gray-500);
+}
+
+.alt-theme .multiselect__option--selected.multiselect__option--highlight {
+  background: var(--color-gray-500);
+}
+
+.alt-theme .multiselect__option--selected.multiselect__option--highlight:after {
+  background: var(--color-gray-500);
+}
+
+.alt-theme .multiselect__tag-icon:hover {
+  background: var(--color-black);
+}
+
+.alt-theme .multiselect__input,
+.alt-theme .multiselect__single {
+  padding: 0 0 0 0;
+}
+
+.alt-theme .multiselect__placeholder {
+  color: var(--color-white);
+}
+
+.alt-theme .multiselect__tags {
+  background: var(--color-base-100);
+}
+
+.alt-theme .multiselect__content-wrapper {
+  background: var(--color-base-100);
 }
 </style>
 

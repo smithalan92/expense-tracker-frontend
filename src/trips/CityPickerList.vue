@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Modal from "@/modal/Modal.vue";
+import useUserPreferencesStore from "@/stores/userPreferencesStore";
 import { computed, ref, toRefs, watch } from "vue";
 import City from "./City.vue";
 import useCityOptions from "./hooks/useCityOptions";
@@ -7,6 +8,8 @@ import useCityOptions from "./hooks/useCityOptions";
 const props = defineProps<{
   countryId: number;
 }>();
+
+const { useAlternativeUI } = useUserPreferencesStore();
 
 const { countryId } = toRefs(props);
 
@@ -55,7 +58,8 @@ const toggleViewSelectedCitiesModal = () => {
     <div class="my-2">
       <input
         type="search"
-        class="w-full p-2 rounded bg-white border border-solid border-gray-200"
+        class="w-full p-2 rounded border border-solid border-gray-200"
+        :class="{ 'bg-white': !useAlternativeUI }"
         placeholder="Search for a city"
         v-model="searchTerm"
       />
