@@ -11,7 +11,7 @@ import ViewExpenseModal from "./ViewExpenseModal.vue";
 
 const store = useTripData();
 const { expenses, unsavedExpenses, totalExpenseAmount } = toRefs(store);
-const { useAltExpenseDisplayUI } = toRefs(useUserPreferencesStore());
+const { useAlternativeUI } = toRefs(useUserPreferencesStore());
 
 const showViewExpenseModal = ref(false);
 const isEditingExpense = ref(false);
@@ -66,9 +66,18 @@ const expensesToDisplayByDate = computed(() => {
       formattedDate = format(dateRef, "dd MMMM yyyy");
     }
 
+    const totalExpensesForDate = expenses.reduce((acc, current) => {
+      const amount = parseFloat(current.euroAmount);
+      console.log({ euroAmount: current.euroAmount, amount });
+
+      return acc + amount;
+    }, 0);
+    console.log({ totalExpensesForDate });
+
     allExpensesByDate.push({
       date: formattedDate,
       expenses,
+      totalExpensesForDate,
     });
   }
 
@@ -103,12 +112,6 @@ const onCopyExpense = () => {
   isCopyingExpense.value = true;
 };
 
-console.log({
-  expensesByDate: expensesGroupedByDate.value,
-  unsavedExpensesByDate: unsavedExpenses.value,
-  expensesToDisplayByDate: expensesToDisplayByDate.value,
-});
-
 const onCloseAddOrEditExpenseModal = () => {
   isEditingExpense.value = false;
   isCopyingExpense.value = false;
@@ -122,10 +125,13 @@ const onCloseAddOrEditExpenseModal = () => {
         <span>No expenses available.</span>
       </div>
 
-      <template v-if="useAltExpenseDisplayUI">
-        <template v-for="value in expensesToDisplayByDate">
-          <div class="flex-1 bg-base-200 py-2 px-2 font-semibold rounded text-sm">
-            {{ value.date }}
+      <template v-if="useAlternativeUI">
+        <div v-for="value in expensesToDisplayByDate">
+          <div
+            class="flex-1 flex justify-between bg-primary text-primary-content py-2 my-2 px-2 font-semibold rounded text-sm"
+          >
+            <div>{{ value.date }}</div>
+            <div>€{{ value.totalExpensesForDate }}</div>
           </div>
           <ExpenseAlt
             v-for="expense in value.expenses"
@@ -133,12 +139,12 @@ const onCloseAddOrEditExpenseModal = () => {
             :expense="expense"
             @click="onClickExpense(expense)"
           />
-        </template>
+        </div>
       </template>
 
       <Expense
         v-for="expense in expensesToDisplay"
-        v-if="!useAltExpenseDisplayUI"
+        v-if="!useAlternativeUI"
         :key="expense.id"
         :expense="expense"
         @click="onClickExpense(expense)"
@@ -167,5 +173,6 @@ const onCloseAddOrEditExpenseModal = () => {
 interface ExpensesByDate {
   date: string;
   expenses: TripExpense[];
+  totalExpensesForDate: number;
 }
 </script>

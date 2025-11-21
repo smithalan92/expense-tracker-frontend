@@ -70,7 +70,7 @@ const useTripDataStore = defineStore("tripData", {
     restoreUnsavedExpensesFromLocalStorage(tripId: number) {
       const retrievedState = getTripFromLocalStorage(tripId);
 
-      if (retrievedState?.unsavedExpenses.length) {
+      if (retrievedState?.unsavedExpenses?.length) {
         this.$patch({ unsavedExpenses: retrievedState.unsavedExpenses });
       }
     },

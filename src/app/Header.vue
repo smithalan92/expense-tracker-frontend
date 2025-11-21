@@ -18,8 +18,11 @@ const isOnline = useOnline();
       <UserDropdown />
     </div>
   </div>
-  <div v-if="!isOnline" class="absolute top-0 bg-warning w-full text-center select-none max-w-[800px]">
-    <fa-icon class="text-red-500" :icon="['fas', 'triangle-exclamation']" />
-    <span class="ml-1 text-red-500 text-sm font-bold">No internet connection</span>
+  <div
+    v-if="!isOnline"
+    class="absolute top-0 bg-warning w-full text-center select-none max-w-[800px] py-2 my-2 rounded"
+  >
+    <fa-icon class="text-white" :icon="['fas', 'triangle-exclamation']" />
+    <span class="ml-1 text-white text-sm font-bold">No internet connection</span>
   </div>
 </template>

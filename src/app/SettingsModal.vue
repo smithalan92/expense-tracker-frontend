@@ -8,7 +8,7 @@ const emit = defineEmits<{
 }>();
 
 const userPreferencesStore = useUserPreferencesStore();
-const { useAltExpenseDisplayUI } = storeToRefs(userPreferencesStore);
+const { useAlternativeUI } = storeToRefs(userPreferencesStore);
 </script>
 <template>
   <Modal @close="emit('close')" title="Settings" :include-close-button="true">
@@ -16,8 +16,8 @@ const { useAltExpenseDisplayUI } = storeToRefs(userPreferencesStore);
       <fieldset className="fieldset bg-base-100 border-base-300 rounded-box w-full border p-4">
         <legend className="fieldset-legend text-lg">User preferences</legend>
         <label className="label">
-          <input type="checkbox" className="toggle" v-model="useAltExpenseDisplayUI" />
-          Use alternative expense display UI
+          <input type="checkbox" className="toggle" v-model="useAlternativeUI" />
+          Use alternative UI
         </label>
       </fieldset>
     </template>

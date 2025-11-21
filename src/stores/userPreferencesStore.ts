@@ -1,7 +1,7 @@
 import { acceptHMRUpdate, defineStore } from "pinia";
 
 const useUserPreferencesStore = defineStore("userPreferences", {
-  state: (): UserPreferencesState => ({ useAltExpenseDisplayUI: false }),
+  state: (): UserPreferencesState => ({ useAlternativeUI: false }),
   persist: true,
 });
 
@@ -12,5 +12,5 @@ if (import.meta.hot) {
 }
 
 interface UserPreferencesState {
-  useAltExpenseDisplayUI: boolean;
+  useAlternativeUI: boolean;
 }
