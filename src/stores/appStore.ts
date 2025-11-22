@@ -20,6 +20,7 @@ const useAppStore = defineStore("app", {
     logout() {
       this.user = null;
       this.authToken = null;
+      localStorage.clear();
     },
 
     async loadAppData() {
