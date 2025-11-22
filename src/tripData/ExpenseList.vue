@@ -131,7 +131,7 @@ const onCloseAddOrEditExpenseModal = () => {
             class="flex-1 flex justify-between bg-primary text-primary-content py-2 my-2 px-2 font-semibold rounded text-sm"
           >
             <div>{{ value.date }}</div>
-            <div>€{{ value.totalExpensesForDate }}</div>
+            <div>€{{ value.totalExpensesForDate.toFixed(2) }}</div>
           </div>
           <ExpenseAlt
             v-for="expense in value.expenses"
