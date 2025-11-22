@@ -235,8 +235,8 @@ onBeforeMount(() => {
           :class="{ 'bg-white': !useAlternativeUI }"
           placeholder="0"
           type="text"
-          inputmode="numeric"
-          pattern="\d*"
+          inputmode="decimal"
+          pattern="[0-9]+([.][0-9]+)?"
           v-model="expenseData.amount"
         />
         <input
