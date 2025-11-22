@@ -2,6 +2,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faArrowLeft,
   faBed,
+  faChartArea,
   faCheck,
   faChevronRight,
   faCircleNotch,
@@ -72,5 +73,6 @@ export default function registerIconLibrary() {
     faRotate,
     faChevronRight,
     faClock,
+    faChartArea,
   );
 }

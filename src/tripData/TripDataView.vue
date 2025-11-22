@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import Spinner from "@/app/Spinner.vue";
 import ConfirmModal from "@/modal/ConfirmModal.vue";
+import StatsModal from "@/modal/StatsModal.vue";
 import useTripData from "@/stores/tripDataStore";
 import AddOrEditTripModal from "@/trips/AddOrEditTripModal.vue";
 import { useToast } from "@/utils/useToast";
+import { useOnline } from "@vueuse/core";
 import { storeToRefs } from "pinia";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import AddOrEditExpenseModal from "./AddOrEditExpenseModal.vue";
 import ExpenseList from "./ExpenseList.vue";
 import useGetCurrentTripId from "./hooks/useGetCurrentTripId";
-import { useOnline } from "@vueuse/core";
 
 const toast = useToast();
 const router = useRouter();
@@ -23,6 +24,7 @@ const isEditTripModalOpen = ref(false);
 const showConfirmDelete = ref(false);
 const showAddExpenseModal = ref(false);
 const isSyncingExpenses = ref(false);
+const shouldShowStatsModal = ref(false);
 
 const onClickDelete = async () => {
   try {
@@ -100,6 +102,13 @@ onMounted(() => {
           <button
             name="edit-trip"
             class="ml-2 px-1 text-primary hover:opacity-70"
+            @click="shouldShowStatsModal = true"
+          >
+            <fa-icon :icon="['fas', 'chart-area']" size="lg" />
+          </button>
+          <button
+            name="edit-trip"
+            class="ml-2 px-1 text-primary hover:opacity-70"
             @click="isEditTripModalOpen = true"
           >
             <fa-icon :icon="['fas', 'pen-to-square']" size="lg" />
@@ -138,6 +147,15 @@ onMounted(() => {
     @close="isEditTripModalOpen = false"
   />
   <AddOrEditExpenseModal v-if="showAddExpenseModal" @close="showAddExpenseModal = false" />
+  <Suspense v-if="shouldShowStatsModal">
+    <template #default>
+      <StatsModal @close="shouldShowStatsModal = false" />
+    </template>
+
+    <template #fallback>
+      <div class="et-modal-backdrop">Loading....</div>
+    </template>
+  </Suspense>
   <ConfirmModal
     v-if="showConfirmDelete"
     type="danger"

@@ -37,6 +37,10 @@ export async function deleteTrip(tripId: number) {
   return getAxios().delete(`/v2/trip/${tripId}`);
 }
 
+export async function getTripStats(tripId: number) {
+  return getAxios().get<GetTripStatsResponse>(`/v2/trip/${tripId}/stats`);
+}
+
 export interface Trip {
   id: number;
   name: string;
@@ -109,4 +113,20 @@ interface CountryWithCities {
   name: string;
   countryId: number;
   cityIds?: number[];
+}
+
+interface GetTripStatsResponse {
+  totalExpensesByUser: TotalExpensesForTripByUserResult[];
+  categoryExpensesByUser: Record<string, CategoryExpensesForUser>;
+}
+
+interface CategoryExpensesForUser {
+  categories: Record<string, number>;
+}
+
+interface TotalExpensesForTripByUserResult {
+  userId: number;
+  firstName: string;
+  lastName: string;
+  totalEuroAmount: number;
 }
