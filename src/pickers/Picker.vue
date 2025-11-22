@@ -1,20 +1,36 @@
 <script setup lang="ts" generic="T">
 import useUserPreferencesStore from "@/stores/userPreferencesStore";
 import isMobileDevice from "@/utils/isMobile";
-import { toRefs } from "vue";
+import { computed, toRefs } from "vue";
 import Multiselect from "vue-multiselect";
 
-const { options, placeholder, isMulti, disabled, ...props } = defineProps<{
+const { options, placeholder, isMulti, disabled, name, ...props } = defineProps<{
   options: PickerOption[];
   placeholder?: string;
   class?: string;
   isMulti?: boolean;
   disabled?: boolean;
+  name?: string;
 }>();
 
 const { useAlternativeUI } = toRefs(useUserPreferencesStore());
 
 const value = defineModel<Nullable<PickerOption | PickerOption[]>>({ required: true });
+
+// Bridge for native <select> when NOT multi-select
+const nativeSingleValue = computed({
+  get() {
+    const current = value.value as PickerOption | null;
+    return current?.value ?? ""; // empty string means "placeholder"
+  },
+  set(val: number | string) {
+    // convert to number because PickerOption.value is number
+    const numericVal = typeof val === "string" && val !== "" ? Number(val) : (val as number);
+
+    const selected = options.find((o) => o.value === numericVal) ?? null;
+    value.value = selected;
+  },
+});
 </script>
 
 <template>
@@ -50,10 +66,13 @@ const value = defineModel<Nullable<PickerOption | PickerOption[]>>({ required: t
       class="select select-bordered rounded-lg w-full outline-none focus:outline-none"
       :class="{ [props.class ?? '']: props.class, 'bg-grey-900': useAlternativeUI }"
       :disabled="disabled"
-      v-model="value"
+      v-model="nativeSingleValue"
     >
-      <option value="null" disabled hidden selected>{{ placeholder ?? "Select..." }}</option>
-      <option v-for="option in options" :value="option" :key="option.value">
+      <option value="" disabled hidden>
+        {{ placeholder ?? "Select..." }}
+      </option>
+
+      <option v-for="option in options" :value="option.value" :key="option.value">
         {{ option.label }}
       </option>
     </select>

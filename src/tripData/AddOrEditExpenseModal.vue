@@ -49,7 +49,11 @@ const { selectedCountry, selectedCurrency } = toRefs(expenseData);
 const { countryOptions, cityOptions, currencyOptions, categoryOptions, userOptions } =
   useAddOrEditExpenseModalOptions({ selectedCountry });
 
-useSyncCurrencyWithSelectedCountry({ selectedCountry, selectedCurrency });
+useSyncCurrencyWithSelectedCountry({
+  selectedCountry,
+  selectedCurrency,
+  isEditingOrCopyingExpense: !!expenseToEdit || !!expenseToCopy,
+});
 
 const parsedAmount = computed(() => {
   if (!expenseData.amount) return 0;
@@ -218,6 +222,7 @@ onBeforeMount(() => {
       <div class="grid grid-cols-5 gap-1 py-4">
         <span class="col-span-1 content-center">Amount</span>
         <Picker
+          name="currency-picker"
           class="col-span-2"
           :options="currencyOptions"
           v-model="expenseData.selectedCurrency"
