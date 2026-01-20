@@ -3,14 +3,11 @@ import { getTripStats } from "@/api/trip";
 import Modal from "@/modal/Modal.vue";
 import useAppStore from "@/stores/appStore";
 import useTripDataStore from "@/stores/tripDataStore";
-import useUserPreferencesStore from "@/stores/userPreferencesStore";
 import useGetCurrentTripId from "@/tripData/hooks/useGetCurrentTripId";
 
 const emit = defineEmits<{
   (e: "close"): void;
 }>();
-
-const { useAlternativeUI } = useUserPreferencesStore();
 
 const { categories } = useTripDataStore();
 const { users } = useAppStore();

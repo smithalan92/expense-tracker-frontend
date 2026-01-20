@@ -1,7 +1,6 @@
 <script setup lang="ts" generic="T">
-import useUserPreferencesStore from "@/stores/userPreferencesStore";
 import isMobileDevice from "@/utils/isMobile";
-import { computed, toRefs } from "vue";
+import { computed } from "vue";
 import Multiselect from "vue-multiselect";
 
 const { options, placeholder, isMulti, disabled, name, ...props } = defineProps<{
@@ -12,8 +11,6 @@ const { options, placeholder, isMulti, disabled, name, ...props } = defineProps<
   disabled?: boolean;
   name?: string;
 }>();
-
-const { useAlternativeUI } = toRefs(useUserPreferencesStore());
 
 const value = defineModel<Nullable<PickerOption | PickerOption[]>>({ required: true });
 
@@ -34,7 +31,7 @@ const nativeSingleValue = computed({
 </script>
 
 <template>
-  <div :class="{ [props.class ?? '']: props.class, 'alt-theme': useAlternativeUI }">
+  <div :class="{ [props.class ?? '']: props.class, 'alt-theme': true }">
     <multiselect
       class="h-[43px] w-full"
       :class="{ [props.class ?? '']: props.class }"
@@ -63,8 +60,8 @@ const nativeSingleValue = computed({
     <select
       v-if="isMobileDevice && !isMulti"
       required
-      class="select select-bordered rounded-lg w-full outline-none focus:outline-none"
-      :class="{ [props.class ?? '']: props.class, 'bg-grey-900': useAlternativeUI }"
+      class="select select-bordered rounded-lg w-full outline-none focus:outline-none bg-grey-900"
+      :class="{ [props.class ?? '']: props.class }"
       :disabled="disabled"
       v-model="nativeSingleValue"
     >

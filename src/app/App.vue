@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import useAppStore from "@/stores/appStore";
-import useUserPreferencesStore from "@/stores/userPreferencesStore";
 import { onBeforeMount, watch } from "vue";
 import { RouterView, useRouter } from "vue-router";
 import Header from "./Header.vue";
 import PWAUpdateAlert from "./PWAUpdateAlert.vue";
 
 const appStore = useAppStore();
-const userPreferencesStore = useUserPreferencesStore();
 const router = useRouter();
 
 watch(
@@ -19,22 +17,8 @@ watch(
   },
 );
 
-watch(
-  () => userPreferencesStore.useAlternativeUI,
-  (currentValue) => {
-    let themeName = "cupcake";
-    if (currentValue) {
-      themeName = "business";
-    }
-
-    document.querySelector("html")!.setAttribute("data-theme", themeName);
-  },
-);
-
 onBeforeMount(() => {
-  if (userPreferencesStore.useAlternativeUI) {
-    document.querySelector("html")!.setAttribute("data-theme", "business");
-  }
+  document.querySelector("html")!.setAttribute("data-theme", "business");
 });
 </script>
 

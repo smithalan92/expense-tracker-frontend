@@ -1,17 +1,14 @@
 <script setup lang="ts">
 import type { TripExpense } from "@/api/expense";
 import useTripData from "@/stores/tripDataStore";
-import useUserPreferencesStore from "@/stores/userPreferencesStore";
 import { format, isSameYear } from "date-fns";
 import { computed, ref, toRefs } from "vue";
 import AddOrEditExpenseModal from "./AddOrEditExpenseModal.vue";
-import Expense from "./Expense.vue";
 import ExpenseAlt from "./ExpenseAlt.vue";
 import ViewExpenseModal from "./ViewExpenseModal.vue";
 
 const store = useTripData();
 const { expenses, unsavedExpenses, totalExpenseAmount } = toRefs(store);
-const { useAlternativeUI } = toRefs(useUserPreferencesStore());
 
 const showViewExpenseModal = ref(false);
 const isEditingExpense = ref(false);
@@ -32,16 +29,6 @@ const expensesGroupedByDate = computed(() => {
     },
     {},
   );
-});
-
-const expensesToDisplay = computed(() => {
-  const exp: TripExpense[] = [...unsavedExpenses.value, ...expenses.value];
-
-  exp.sort((a, b) => {
-    return new Date(b.localDateTime).getTime() - new Date(a.localDateTime).getTime();
-  });
-
-  return exp;
 });
 
 const expensesToDisplayByDate = computed(() => {
@@ -125,30 +112,20 @@ const onCloseAddOrEditExpenseModal = () => {
         <span>No expenses available.</span>
       </div>
 
-      <template v-if="useAlternativeUI">
-        <div v-for="value in expensesToDisplayByDate">
-          <div
-            class="flex-1 flex justify-between bg-primary text-primary-content py-2 my-2 px-2 font-semibold rounded text-sm"
-          >
-            <div>{{ value.date }}</div>
-            <div>€{{ value.totalExpensesForDate.toFixed(2) }}</div>
-          </div>
-          <ExpenseAlt
-            v-for="expense in value.expenses"
-            :key="expense.id"
-            :expense="expense"
-            @click="onClickExpense(expense)"
-          />
+      <div v-for="value in expensesToDisplayByDate" :key="value.date">
+        <div
+          class="flex-1 flex justify-between bg-primary text-primary-content py-2 my-2 px-2 font-semibold rounded text-sm"
+        >
+          <div>{{ value.date }}</div>
+          <div>€{{ value.totalExpensesForDate.toFixed(2) }}</div>
         </div>
-      </template>
-
-      <Expense
-        v-for="expense in expensesToDisplay"
-        v-if="!useAlternativeUI"
-        :key="expense.id"
-        :expense="expense"
-        @click="onClickExpense(expense)"
-      />
+        <ExpenseAlt
+          v-for="expense in value.expenses"
+          :key="expense.id"
+          :expense="expense"
+          @click="onClickExpense(expense)"
+        />
+      </div>
     </div>
     <div v-if="expenses.length" class="sticky -bottom-px select-none bg-base-200 mr-2">
       <div class="text-right w-full py-2 pr-4 font-semibold">Total: {{ totalExpenseAmount }}</div>

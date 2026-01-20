@@ -7,7 +7,6 @@ import Picker, { type PickerOption } from "@/pickers/Picker.vue";
 import TimePicker from "@/pickers/TimePicker.vue";
 import useAppStore from "@/stores/appStore";
 import useTripDataStore from "@/stores/tripDataStore";
-import useUserPreferencesStore from "@/stores/userPreferencesStore";
 import isMobileDevice from "@/utils/isMobile";
 import Tooltip from "@/utils/Tooltip.vue";
 import { useToast } from "@/utils/useToast";
@@ -28,7 +27,6 @@ const emit = defineEmits<{
 
 const { user } = useAppStore();
 const { addExpense, updateExpense, countries } = useTripDataStore();
-const { useAlternativeUI } = useUserPreferencesStore();
 const $toast = useToast();
 const isOnline = useOnline();
 
@@ -232,7 +230,6 @@ onBeforeMount(() => {
         <input
           v-if="isMobileDevice"
           class="col-span-2 input input-md h-auto input-bordered rounded-md outline-none focus:outline-none"
-          :class="{ 'bg-white': !useAlternativeUI }"
           placeholder="0"
           type="text"
           inputmode="decimal"
@@ -275,7 +272,6 @@ onBeforeMount(() => {
         <span class="col-span-1 content-center">Notes</span>
         <input
           class="col-span-4 textarea rounded-md textarea-bordered outline-none focus:outline-none"
-          :class="{ 'bg-white': !useAlternativeUI }"
           v-model="expenseData.description"
         />
       </div>
