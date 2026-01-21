@@ -62,14 +62,14 @@ onMounted(() => {
       <div class="flex space-between mb-4">
         <div class="flex flex-1">
           <button name="back" class="px-1 hover:opacity-70" @click="router.go(-1)">
-            <fa-icon :icon="['fas', 'arrow-left']" size="lg" class="text-primary" />
+            <fa-icon :icon="['fas', 'arrow-left']" size="lg" class="text-sky-500" />
           </button>
           <button
             name="refresh"
-            class="ml-2 px-1 text-primary hover:opacity-70"
+            class="ml-2 px-1 text-sky-500 hover:opacity-70"
             @click="loadTripData(currentTripID)"
           >
-            <fa-icon :icon="['fas', 'rotate-right']" size="lg" class="text-primary" />
+            <fa-icon :icon="['fas', 'rotate-right']" size="lg" class="text-sky-500" />
           </button>
         </div>
       </div>
@@ -88,27 +88,27 @@ onMounted(() => {
       <div class="flex space-between mb-4">
         <div class="flex flex-1">
           <button name="back" class="px-1 hover:opacity-70" @click="router.go(-1)">
-            <fa-icon :icon="['fas', 'arrow-left']" size="lg" class="text-primary" />
+            <fa-icon :icon="['fas', 'arrow-left']" size="lg" class="text-sky-500" />
           </button>
           <button
             name="refresh"
-            class="ml-2 px-1 text-primary hover:opacity-70"
+            class="ml-2 px-1 text-sky-500 hover:opacity-70"
             @click="loadTripData(currentTripID)"
           >
-            <fa-icon :icon="['fas', 'rotate-right']" size="lg" class="text-primary" />
+            <fa-icon :icon="['fas', 'rotate-right']" size="lg" class="text-sky-500" />
           </button>
         </div>
         <div class="flex">
           <button
             name="edit-trip"
-            class="ml-2 px-1 text-primary hover:opacity-70"
+            class="ml-2 px-1 text-sky-500 hover:opacity-70"
             @click="shouldShowStatsModal = true"
           >
             <fa-icon :icon="['fas', 'chart-area']" size="lg" />
           </button>
           <button
             name="edit-trip"
-            class="ml-2 px-1 text-primary hover:opacity-70"
+            class="ml-2 px-1 text-sky-500 hover:opacity-70"
             @click="isEditTripModalOpen = true"
           >
             <fa-icon :icon="['fas', 'pen-to-square']" size="lg" />
@@ -126,13 +126,13 @@ onMounted(() => {
         <ExpenseList />
       </div>
       <div class="flex justify-center py-6">
-        <button class="btn btn-primary font-bold text-md text-white" @click="showAddExpenseModal = true">
+        <button class="et-btn-primary flex items-center" @click="showAddExpenseModal = true">
           <fa-icon :icon="['fas', 'plus']" class="w-6 mr-1" size="xl" />
           Expense
         </button>
         <button
           v-if="hasUnsavedExpenses && isOnline"
-          class="btn font-bold text-md text-white ml-4 bg-amber-500 hover:bg-amber-400"
+          class="et-btn-warning flex items-center ml-4"
           @click="onClickSyncExpenses"
         >
           <fa-icon :icon="['fas', 'rotate']" class="w-6 mr-1" size="xl" />

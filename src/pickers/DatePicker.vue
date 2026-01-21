@@ -15,10 +15,11 @@ const date = defineModel<string>();
       model-type="yyyy-MM-dd"
       format="do MMM yyyy"
       auto-apply
+      dark
     />
     <input
       v-if="isMobileDevice"
-      class="input input-bordered py-1 px-4 rounded-md w-full outline-none focus:outline-none"
+      class="et-input"
       type="date"
       v-model="date"
     />

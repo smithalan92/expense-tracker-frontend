@@ -99,7 +99,7 @@ const dataToDisplay = useViewExpenseData(expense);
     </template>
 
     <template #alert v-if="!isOnline && expense.id > 0">
-      <div class="flex-1 text-center font-bold text-sm p-4 bg-warning text-white">
+      <div class="flex-1 text-center font-bold text-sm p-4 et-alert-warning">
         Some actions are unavailable if you're offline.
       </div>
     </template>
@@ -108,40 +108,40 @@ const dataToDisplay = useViewExpenseData(expense);
       <div class="flex flex-col py-2">
         <div
           v-for="item in dataToDisplay"
-          class="flex flex-1 py-2 items-center border-b border-dashed border-primary last:border-0"
+          class="flex flex-1 py-2 items-center border-b border-dashed border-sky-600/50 last:border-0"
           :key="item.label"
         >
-          <div class="flex items-center flex-col border-r border-dashed border-primary w-20 pr-3">
-            <fa-icon class="w-6" :icon="item.icon" />
-            <span class="text-[10px] mt-1 font-bold">{{ item.label }}</span>
+          <div class="flex items-center flex-col border-r border-dashed border-sky-600/50 w-20 pr-3">
+            <fa-icon class="w-6 text-slate-400" :icon="item.icon" />
+            <span class="text-[10px] mt-1 font-bold text-slate-400">{{ item.label }}</span>
           </div>
-          <div class="flex-1 ml-6 text-sm">{{ item.value }}</div>
+          <div class="flex-1 ml-6 text-sm text-slate-200">{{ item.value }}</div>
         </div>
       </div>
     </template>
 
     <template #footer>
       <button
-        class="flex items-center py-2 px-4 text-md hover:underline text-primary font-bold disabled:text-gray-300 disabled:hover:no-underline"
+        class="flex items-center py-2 px-4 text-md hover:underline text-sky-400 font-bold disabled:text-gray-500 disabled:hover:no-underline transition-colors"
         :disabled="!canEditAndDeleteExpense"
         @click="onClickEdit"
       >
-        <fa-icon :icon="['fas', 'pen-to-square']" class="fill-primary" />
+        <fa-icon :icon="['fas', 'pen-to-square']" />
         <span class="ml-2">Edit</span>
       </button>
       <button
-        class="flex items-center py-2 px-4 text-md hover:underline text-primary font-bold text-blue-400 disabled:text-gray-300 disabled:hover:no-underline"
+        class="flex items-center py-2 px-4 text-md hover:underline text-sky-400 font-bold disabled:text-gray-500 disabled:hover:no-underline transition-colors"
         @click="shouldShowCopyModal = true"
       >
-        <fa-icon :icon="['far', 'copy']" class="fill-primary" />
+        <fa-icon :icon="['far', 'copy']" />
         <span class="ml-2">Copy</span>
       </button>
       <button
-        class="flex items-center py-2 px-4 text-md text-red-400 hover:underline font-bold disabled:text-gray-300 disabled:hover:no-underline"
+        class="flex items-center py-2 px-4 text-md text-rose-400 hover:underline font-bold disabled:text-gray-500 disabled:hover:no-underline transition-colors"
         :disabled="!canEditAndDeleteExpense"
         @click="shouldShowDeleteModal = true"
       >
-        <fa-icon :icon="['fas', 'trash-can']" class="fill-primary" />
+        <fa-icon :icon="['fas', 'trash-can']" />
         <span class="ml-2">Delete</span>
       </button>
     </template>

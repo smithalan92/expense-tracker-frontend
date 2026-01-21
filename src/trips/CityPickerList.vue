@@ -55,7 +55,7 @@ const toggleViewSelectedCitiesModal = () => {
     <div class="my-2">
       <input
         type="search"
-        class="w-full p-2 rounded border border-solid border-gray-200"
+        class="et-input"
         placeholder="Search for a city"
         v-model="searchTerm"
       />
@@ -76,7 +76,7 @@ const toggleViewSelectedCitiesModal = () => {
     </div>
 
     <div class="mt-4 flex justify-center">
-      <button v-if="selectedCityIds.length" class="underline" @click="toggleViewSelectedCitiesModal">
+      <button v-if="selectedCityIds.length" class="underline text-sky-400 hover:text-sky-300 transition-colors" @click="toggleViewSelectedCitiesModal">
         View Selected Cities
       </button>
     </div>

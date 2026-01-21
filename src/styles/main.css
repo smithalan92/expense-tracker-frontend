@@ -3,39 +3,276 @@
 @import "./tailwind-customisation.css";
 @import "tw-animate-css";
 
-@plugin "daisyui" {
-  themes:
-    business --default,
-    cupcake;
-}
-
-@plugin "daisyui/theme" {
-  name: "cupcake";
-  --color-primary: oklch(0.7541 0.0917 231.14);
-}
-
 @import "@vuepic/vue-datepicker/dist/main.css";
 @import "vue-toast-notification/dist/theme-default.css";
 @import "vue-multiselect/dist/vue-multiselect.min.css";
 
 @layer components {
+  /* Modal backdrop with blur */
   .et-modal-backdrop {
-    z-index: 5;
-    @apply flex w-full h-full absolute top-0 left-0 justify-center items-center bg-black/50;
+    z-index: 50;
+    @apply flex w-full h-full fixed top-0 left-0 justify-center items-center;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
   }
 
+  /* Glassmorphism modal */
   .et-modal {
-    @apply bg-base-100;
+    background: rgba(30, 41, 59, 0.85);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(148, 163, 184, 0.1);
     max-height: calc(100vh - 4em);
-    padding: 1.5rem;
+    padding: 0;
     max-width: 32rem;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    border-radius: 16px;
+    box-shadow:
+      0 25px 50px -12px rgba(0, 0, 0, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
     overflow-y: auto;
     overscroll-behavior: contain;
+  }
+
+  /* Button base styles */
+  .et-btn {
+    @apply px-4 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 cursor-pointer;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900;
+  }
+
+  .et-btn-primary {
+    @apply px-4 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 cursor-pointer;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900;
+    @apply bg-sky-600 text-white hover:bg-sky-500 focus:ring-sky-500;
+    box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+  }
+
+  .et-btn-primary:hover:not(:disabled) {
+    box-shadow: 0 6px 20px rgba(2, 132, 199, 0.4);
+    transform: translateY(-1px);
+  }
+
+  .et-btn-secondary {
+    @apply px-4 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 cursor-pointer;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900;
+    @apply bg-slate-600 text-white hover:bg-slate-500 focus:ring-slate-500;
+  }
+
+  .et-btn-danger {
+    @apply px-4 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 cursor-pointer;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900;
+    @apply bg-rose-600 text-white hover:bg-rose-500 focus:ring-rose-500;
+    box-shadow: 0 4px 14px rgba(244, 63, 94, 0.3);
+  }
+
+  .et-btn-warning {
+    @apply px-4 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 cursor-pointer;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900;
+    @apply bg-amber-600 text-white hover:bg-amber-500 focus:ring-amber-500;
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.3);
+  }
+
+  .et-btn-sm {
+    @apply px-3 py-1.5 text-xs;
+  }
+
+  .et-btn-ghost {
+    @apply px-4 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 cursor-pointer;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900;
+    @apply bg-transparent text-slate-300 hover:bg-slate-700/50;
+  }
+
+  /* Input styles - glassmorphism */
+  .et-input {
+    @apply w-full px-3 py-2.5 rounded-lg text-white placeholder-slate-400;
+    @apply transition-all duration-200;
+    @apply focus:outline-none focus:ring-2 focus:ring-sky-500/50;
+    background: rgba(51, 65, 85, 0.5);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    backdrop-filter: blur(8px);
+  }
+
+  .et-input:hover:not(:focus):not(:disabled) {
+    border-color: rgba(148, 163, 184, 0.3);
+  }
+
+  .et-input:focus {
+    background: rgba(51, 65, 85, 0.7);
+    border-color: rgba(2, 132, 199, 0.5);
+  }
+
+  .et-input:disabled {
+    @apply opacity-50 cursor-not-allowed;
+  }
+
+  /* Select styles */
+  .et-select {
+    @apply w-full px-3 py-2.5 rounded-lg text-white placeholder-slate-400;
+    @apply transition-all duration-200;
+    @apply focus:outline-none focus:ring-2 focus:ring-sky-500/50;
+    @apply appearance-none cursor-pointer;
+    background: rgba(51, 65, 85, 0.5);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    backdrop-filter: blur(8px);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+  }
+
+  /* Textarea styles */
+  .et-textarea {
+    @apply w-full px-3 py-2.5 rounded-lg text-white placeholder-slate-400;
+    @apply transition-all duration-200;
+    @apply focus:outline-none focus:ring-2 focus:ring-sky-500/50;
+    @apply resize-none min-h-[80px];
+    background: rgba(51, 65, 85, 0.5);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    backdrop-filter: blur(8px);
+  }
+
+  /* Checkbox styles */
+  .et-checkbox {
+    @apply w-5 h-5 rounded cursor-pointer;
+    @apply transition-all duration-200;
+    appearance: none;
+    background: rgba(51, 65, 85, 0.5);
+    border: 2px solid rgba(148, 163, 184, 0.3);
+  }
+
+  .et-checkbox:checked {
+    @apply bg-sky-600 border-sky-600;
+    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+  }
+
+  .et-checkbox:focus {
+    @apply ring-2 ring-sky-500/50 ring-offset-2 ring-offset-slate-900 outline-none;
+  }
+
+  /* Card styles - glassmorphism */
+  .et-card {
+    @apply rounded-2xl overflow-hidden transition-all duration-300;
+    background: rgba(30, 41, 59, 0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+  }
+
+  .et-card:hover {
+    border-color: rgba(148, 163, 184, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+  }
+
+  /* Alert styles */
+  .et-alert {
+    @apply p-4 rounded-lg text-sm font-medium;
+    backdrop-filter: blur(8px);
+  }
+
+  .et-alert-error {
+    @apply p-4 rounded-lg text-sm font-medium text-rose-100;
+    backdrop-filter: blur(8px);
+    background: rgba(244, 63, 94, 0.2);
+    border: 1px solid rgba(244, 63, 94, 0.3);
+  }
+
+  .et-alert-warning {
+    @apply p-4 rounded-lg text-sm font-medium text-amber-100;
+    backdrop-filter: blur(8px);
+    background: rgba(245, 158, 11, 0.2);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+  }
+
+  .et-alert-success {
+    @apply p-4 rounded-lg text-sm font-medium text-emerald-100;
+    backdrop-filter: blur(8px);
+    background: rgba(16, 185, 129, 0.2);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+  }
+
+  /* Table styles */
+  .et-table {
+    @apply w-full text-sm;
+  }
+
+  .et-table thead {
+    @apply text-slate-400 text-left;
+    background: rgba(51, 65, 85, 0.3);
+  }
+
+  .et-table th {
+    @apply px-4 py-3 font-semibold;
+  }
+
+  .et-table td {
+    @apply px-4 py-3;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  }
+
+  .et-table tbody tr:hover {
+    background: rgba(51, 65, 85, 0.3);
+  }
+
+  /* Spinner */
+  .et-spinner {
+    @apply w-12 h-12 rounded-full animate-spin;
+    border: 3px solid rgba(148, 163, 184, 0.2);
+    border-top-color: #0284c7;
+  }
+
+  /* Pill/Badge styles */
+  .et-pill {
+    @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium;
+  }
+
+  .et-pill-primary {
+    @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium;
+    @apply bg-sky-600/30 text-sky-200;
+  }
+
+  .et-pill-secondary {
+    @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium;
+    @apply bg-slate-600/30 text-slate-200;
+  }
+
+  .et-pill-success {
+    @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium;
+    @apply bg-emerald-600/30 text-emerald-200;
+  }
+
+  /* Dropdown styles */
+  .et-dropdown {
+    @apply rounded-lg overflow-hidden;
+    background: rgba(30, 41, 59, 0.95);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Navbar styles */
+  .et-navbar {
+    @apply flex items-center py-6 min-h-[5rem] w-full;
+    background: transparent;
+  }
+
+  /* Background utilities */
+  .et-bg-base {
+    background: #0f172a;
+  }
+
+  .et-bg-elevated {
+    background: rgba(30, 41, 59, 0.6);
+    backdrop-filter: blur(12px);
+  }
+
+  .et-bg-surface {
+    background: rgba(51, 65, 85, 0.4);
   }
 }
 
@@ -43,7 +280,8 @@ body,
 html {
   @apply w-full h-full;
   font-family: "Open Sans", sans-serif;
-  /* background-color: #e9e4e4 !important; */
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  color: #e2e8f0;
 }
 
 #app {
@@ -57,4 +295,108 @@ input[type="number"] {
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
+}
+
+/* Vue Datepicker theme overrides for dark glassmorphism */
+.dp__theme_dark {
+  --dp-background-color: rgba(30, 41, 59, 0.95);
+  --dp-text-color: #e2e8f0;
+  --dp-hover-color: rgba(51, 65, 85, 0.8);
+  --dp-hover-text-color: #ffffff;
+  --dp-hover-icon-color: #94a3b8;
+  --dp-primary-color: #0284c7;
+  --dp-primary-text-color: #ffffff;
+  --dp-secondary-color: #64748b;
+  --dp-border-color: rgba(148, 163, 184, 0.2);
+  --dp-menu-border-color: rgba(148, 163, 184, 0.15);
+  --dp-border-color-hover: rgba(148, 163, 184, 0.3);
+  --dp-disabled-color: #475569;
+  --dp-scroll-bar-background: rgba(51, 65, 85, 0.5);
+  --dp-scroll-bar-color: #64748b;
+  --dp-success-color: #10b981;
+  --dp-success-color-disabled: #065f46;
+  --dp-icon-color: #94a3b8;
+  --dp-danger-color: #f43f5e;
+  --dp-highlight-color: rgba(2, 132, 199, 0.2);
+}
+
+/* Vue Multiselect theme overrides */
+.multiselect {
+  background: rgba(51, 65, 85, 0.5) !important;
+  border: 1px solid rgba(148, 163, 184, 0.2) !important;
+  border-radius: 0.5rem !important;
+  color: #e2e8f0 !important;
+  min-height: 43px !important;
+}
+
+.multiselect__tags {
+  background: transparent !important;
+  border: none !important;
+  padding: 8px 40px 0 8px !important;
+  min-height: 43px !important;
+}
+
+.multiselect__input,
+.multiselect__single {
+  background: transparent !important;
+  color: #e2e8f0 !important;
+  font-size: 14px !important;
+}
+
+.multiselect__placeholder {
+  color: #94a3b8 !important;
+  padding-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.multiselect__content-wrapper {
+  background: rgba(30, 41, 59, 0.98) !important;
+  border: 1px solid rgba(148, 163, 184, 0.2) !important;
+  border-radius: 0.5rem !important;
+  backdrop-filter: blur(16px) !important;
+}
+
+.multiselect__option {
+  color: #e2e8f0 !important;
+  background: transparent !important;
+}
+
+.multiselect__option--highlight {
+  background: rgba(2, 132, 199, 0.3) !important;
+  color: #ffffff !important;
+}
+
+.multiselect__option--selected {
+  background: rgba(2, 132, 199, 0.5) !important;
+  color: #ffffff !important;
+}
+
+.multiselect__tag {
+  background: rgba(2, 132, 199, 0.6) !important;
+  color: #ffffff !important;
+  border-radius: 4px !important;
+}
+
+.multiselect__tag-icon {
+  background: transparent !important;
+}
+
+.multiselect__tag-icon:hover {
+  background: rgba(244, 63, 94, 0.5) !important;
+}
+
+.multiselect__tag-icon::after {
+  color: #ffffff !important;
+}
+
+.multiselect__select {
+  background: transparent !important;
+}
+
+.multiselect__select::before {
+  border-color: #94a3b8 transparent transparent !important;
+}
+
+.multiselect--active .multiselect__select::before {
+  border-color: transparent transparent #94a3b8 !important;
 }

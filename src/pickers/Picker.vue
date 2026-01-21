@@ -60,7 +60,7 @@ const nativeSingleValue = computed({
     <select
       v-if="isMobileDevice && !isMulti"
       required
-      class="select select-bordered rounded-lg w-full outline-none focus:outline-none bg-grey-900"
+      class="et-select"
       :class="{ [props.class ?? '']: props.class }"
       :disabled="disabled"
       v-model="nativeSingleValue"

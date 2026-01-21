@@ -114,10 +114,10 @@ const onCloseAddOrEditExpenseModal = () => {
 
       <div v-for="value in expensesToDisplayByDate" :key="value.date">
         <div
-          class="flex-1 flex justify-between bg-primary text-primary-content py-2 my-2 px-2 font-semibold rounded text-sm"
+          class="flex-1 flex justify-between bg-sky-600/80 text-white py-2 my-2 px-2 font-semibold rounded-lg text-sm"
         >
           <div>{{ value.date }}</div>
-          <div>€{{ value.totalExpensesForDate.toFixed(2) }}</div>
+          <div>{{ value.totalExpensesForDate.toFixed(2) }}</div>
         </div>
         <ExpenseAlt
           v-for="expense in value.expenses"
@@ -127,8 +127,8 @@ const onCloseAddOrEditExpenseModal = () => {
         />
       </div>
     </div>
-    <div v-if="expenses.length" class="sticky -bottom-px select-none bg-base-200 mr-2">
-      <div class="text-right w-full py-2 pr-4 font-semibold">Total: {{ totalExpenseAmount }}</div>
+    <div v-if="expenses.length" class="sticky -bottom-px select-none et-bg-surface mr-2 rounded-lg">
+      <div class="text-right w-full py-2 pr-4 font-semibold text-slate-200">Total: {{ totalExpenseAmount }}</div>
     </div>
   </div>
   <ViewExpenseModal

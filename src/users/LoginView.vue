@@ -31,26 +31,26 @@ const onClickLogin = () => {
     <div class="mt-12 flex flex-col">
       <div
         v-if="hasFailedToLogin"
-        class="alert alert-error shadow-lg mb-6 animate__animated animate__bounceIn"
+        class="et-alert-error shadow-lg mb-6 animate__animated animate__bounceIn"
       >
         <span>Invalid username or password</span>
       </div>
       <input
         type="text"
         placeholder="Email"
-        class="input input-bordered rounded-md input-primary w-72 max-w-lg"
+        class="et-input w-72 max-w-lg"
         autoFocus="true"
         v-model="email"
       />
       <input
         type="password"
         placeholder="Password"
-        class="mt-4 input input-bordered rounded-md input-primary w-72 max-w-lg"
+        class="mt-4 et-input w-72 max-w-lg"
         v-model="password"
       />
       <div class="mt-8 flex w-full">
         <button
-          class="btn btn-primary rounded-lg w-full"
+          class="et-btn-primary w-full"
           :disabled="!canLogin"
           @click="onClickLogin"
         >

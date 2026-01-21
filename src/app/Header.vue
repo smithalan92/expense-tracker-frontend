@@ -8,21 +8,21 @@ const isOnline = useOnline();
 </script>
 
 <template>
-  <div class="navbar bg-base-100 py-6 min-h-[5rem]">
-    <div class="navbar-start">
+  <div class="et-navbar">
+    <div class="flex-1">
       <RouterLink to="/" class="p-2">
         <Logo class="w-32" />
       </RouterLink>
     </div>
-    <div class="navbar-end">
+    <div class="flex items-center">
       <UserDropdown />
     </div>
   </div>
   <div
     v-if="!isOnline"
-    class="absolute top-0 bg-warning w-full text-center select-none max-w-[800px] py-2 my-2 rounded"
+    class="absolute top-0 et-alert-warning w-full text-center select-none max-w-[800px] py-2 my-2 rounded-lg"
   >
-    <fa-icon class="text-white" :icon="['fas', 'triangle-exclamation']" />
-    <span class="ml-1 text-white text-sm font-bold">No internet connection</span>
+    <fa-icon class="text-amber-100" :icon="['fas', 'triangle-exclamation']" />
+    <span class="ml-1 text-amber-100 text-sm font-bold">No internet connection</span>
   </div>
 </template>

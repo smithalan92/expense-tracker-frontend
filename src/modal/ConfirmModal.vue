@@ -22,11 +22,11 @@ const emit = defineEmits<{
       >
         <div class="relative">
           <div
-            class="flex justify-between items-center py-4 px-6 text-white"
+            class="flex justify-between items-center py-4 px-6 text-white rounded-t-2xl"
             :class="{
-              'bg-primary': !type,
-              'bg-orange-500': type === 'warning',
-              'bg-red-500': type === 'danger',
+              'bg-sky-600': !type,
+              'bg-amber-600': type === 'warning',
+              'bg-rose-600': type === 'danger',
             }"
           >
             <h2 class="font-bold text-2xl">{{ title }}</h2>
@@ -38,13 +38,13 @@ const emit = defineEmits<{
 
           <div class="flex pt-6 px-6 pb-4 flex-end">
             <div class="flex flex-1 justify-center">
-              <button class="btn font-bold tn-outline text-md mr-4" @click="emit('cancel')">Cancel</button>
+              <button class="et-btn-secondary mr-4" @click="emit('cancel')">Cancel</button>
               <button
-                class="btn font-bold text-md text-white"
+                class="et-btn text-white"
                 :class="{
-                  'btn-primary': !type,
-                  'btn-error': type === 'danger',
-                  'btn-warning': type === 'warning',
+                  'et-btn-primary': !type,
+                  'et-btn-danger': type === 'danger',
+                  'et-btn-warning': type === 'warning',
                 }"
                 @click="emit('confirm')"
               >

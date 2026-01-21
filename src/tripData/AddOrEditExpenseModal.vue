@@ -229,7 +229,7 @@ onBeforeMount(() => {
         <!-- this input will force the numpad on Safari on IOS, unlike type=-->
         <input
           v-if="isMobileDevice"
-          class="col-span-2 input input-md h-auto input-bordered rounded-md outline-none focus:outline-none"
+          class="col-span-2 et-input"
           placeholder="0"
           type="text"
           inputmode="decimal"
@@ -238,7 +238,7 @@ onBeforeMount(() => {
         />
         <input
           v-if="!isMobileDevice"
-          class="col-span-2 input input-md h-auto input-bordered rounded-md bg-white text-black outline-none focus:outline-none"
+          class="col-span-2 et-input"
           placeholder="0"
           type="number"
           step=".01"
@@ -271,14 +271,14 @@ onBeforeMount(() => {
       <div class="grid grid-cols-5 gap-1 py-4">
         <span class="col-span-1 content-center">Notes</span>
         <input
-          class="col-span-4 textarea rounded-md textarea-bordered outline-none focus:outline-none"
+          class="col-span-4 et-input"
           v-model="expenseData.description"
         />
       </div>
     </template>
 
     <template v-slot:footer>
-      <button class="btn btn-secondary font-bold text-md mr-4" @click="emit('close')">Cancel</button>
+      <button class="et-btn-secondary mr-4" @click="emit('close')">Cancel</button>
 
       <Tooltip
         :message="tooltipOfflineMessage"
@@ -287,7 +287,7 @@ onBeforeMount(() => {
         placement="top"
       >
         <button
-          class="btn btn-primary font-bold text-md"
+          class="et-btn-primary"
           :disabled="shouldDisableSaveButton"
           @click="onClickAddExpense"
         >

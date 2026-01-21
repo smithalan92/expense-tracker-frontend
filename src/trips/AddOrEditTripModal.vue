@@ -189,7 +189,7 @@ onMounted(() => {
         <span class="col-span-1 content-center">Name</span>
         <input
           ref="name-input"
-          class="col-span-3 input input-md rounded-md outline-none"
+          class="col-span-3 et-input"
           placeholder="Trip to Fiji"
           v-model="tripData.tripName"
         />
@@ -211,7 +211,7 @@ onMounted(() => {
           <div
             v-for="country in tripData.selectedCountries"
             :key="country.countryId"
-            class="flex select-none items-center bg-blue-400 rounded text-white mr-2 mt-1"
+            class="flex select-none items-center bg-sky-600/70 rounded-lg text-white mr-2 mt-1 transition-colors"
           >
             <button class="p-2 flex-1" @click="onClickSelectedCountry(country)">
               {{ country.name }}
@@ -226,7 +226,7 @@ onMounted(() => {
           <div>
             <button
               ref="add-country-button"
-              class="mt-2 p-1 bg-slate-500 text-white rounded flex items-center hover:bg-slate-400"
+              class="mt-2 px-3 py-2 bg-slate-600/70 text-white rounded-lg flex items-center hover:bg-slate-500/70 transition-colors"
               @click="isAddCountryModalOpen = true"
             >
               <fa-icon :icon="['fas', 'plus']" class="ml-1 mr-2" />
@@ -249,7 +249,7 @@ onMounted(() => {
 
     <template v-slot:footer>
       <button
-        class="btn btn-secondary font-bold text-md mr-4"
+        class="et-btn-secondary mr-4"
         :disabled="isCreatingTrip"
         @click="emit('close')"
       >
@@ -258,7 +258,7 @@ onMounted(() => {
 
       <Tooltip :message="tooltipOfflineMessage" :force-open-on-mobile="true" :disabled="isOnline">
         <button
-          class="btn btn-primary font-bold text-md"
+          class="et-btn-primary"
           :disabled="!canSaveTrip || isCreatingTrip || !isOnline"
           @click="onSaveTrip"
         >

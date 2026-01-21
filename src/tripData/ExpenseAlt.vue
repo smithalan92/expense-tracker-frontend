@@ -34,7 +34,7 @@ const isUnsavedExpense = computed(() => expense.id < 0);
 <template>
   <div
     :data-expense-id="expense.id"
-    class="grid grid-cols-[3.25rem,1fr,auto] gap-3 items-stretch border-b border-gray-200 px-3 py-2 cursor-pointer hover:bg-gray-600 last:border-b-0"
+    class="grid grid-cols-[3.25rem,1fr,auto] gap-3 items-stretch border-b border-slate-700/50 px-3 py-2 cursor-pointer hover:bg-slate-700/30 last:border-b-0 transition-colors"
     :class="{
       'bg-amber-700': isUnsavedExpense,
     }"
@@ -60,16 +60,16 @@ const isUnsavedExpense = computed(() => expense.id < 0);
       <!-- Bottom row: category + users -->
       <div class="mt-1 flex items-center gap-2 min-w-0">
         <span
-          class="inline-flex items-center rounded-full bg-primary text-primary-content pl-1 pr-2 py-0.5 text-[0.75rem] text-gray-700 shrink-0"
+          class="et-pill-primary pl-1 pr-2"
         >
-          <fa-icon :icon="['fas', 'clock']" class="text-gray-800" />
+          <fa-icon :icon="['fas', 'clock']" class="text-sky-300" />
           <span class="truncate max-w-[10rem]">
             {{ expenseTime }}
           </span>
         </span>
         <!-- Category pill -->
         <span
-          class="inline-flex items-center gap-1 rounded-full bg-secondary text-secondary-content px-2 py-0.5 text-[0.75rem] text-gray-700 shrink-0"
+          class="et-pill-secondary"
         >
           <ExpenseCategoryIcon :category-id="expense.category.id" class="h-3 w-3" />
           <span class="truncate max-w-[10rem]">
@@ -82,7 +82,7 @@ const isUnsavedExpense = computed(() => expense.id < 0);
           <!-- One or two users as small bubbles, more as a count -->
           <template v-if="expense.users.length === 1">
             <div
-              class="h-6 w-6 rounded-full bg-success text-success-content flex items-center justify-center text-[0.7rem] font-bold ring-1"
+              class="h-6 w-6 rounded-full bg-emerald-600/50 text-emerald-100 flex items-center justify-center text-[0.7rem] font-bold ring-1 ring-emerald-500/30"
             >
               {{ userInitals }}
             </div>
@@ -93,7 +93,7 @@ const isUnsavedExpense = computed(() => expense.id < 0);
               <div
                 v-for="u in expense.users"
                 :key="u.id"
-                class="h-6 w-6 rounded-full bg-success text-success-content flex items-center justify-center text-[0.7rem] font-bold ring-1 ring-white"
+                class="h-6 w-6 rounded-full bg-emerald-600/50 text-emerald-100 flex items-center justify-center text-[0.7rem] font-bold ring-1 ring-slate-800"
               >
                 {{ `${u.firstName[0]}${u.lastName[0]}`.toUpperCase() }}
               </div>
@@ -105,12 +105,12 @@ const isUnsavedExpense = computed(() => expense.id < 0);
               <div
                 v-for="u in expense.users.slice(0, 2)"
                 :key="u.id"
-                class="h-6 w-6 rounded-full bg-success text-success-content flex items-center justify-center text-[0.7rem] font-bold ring-1 ring-white"
+                class="h-6 w-6 rounded-full bg-emerald-600/50 text-emerald-100 flex items-center justify-center text-[0.7rem] font-bold ring-1 ring-slate-800"
               >
                 {{ `${u.firstName[0]}${u.lastName[0]}`.toUpperCase() }}
               </div>
               <div
-                class="h-6 w-6 rounded-full bg-success text-success-content flex items-center justify-center text-[0.7rem] font-semibold ring-1 ring-white"
+                class="h-6 w-6 rounded-full bg-emerald-600/50 text-emerald-100 flex items-center justify-center text-[0.7rem] font-semibold ring-1 ring-slate-800"
               >
                 +{{ expense.users.length - 2 }}
               </div>

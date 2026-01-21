@@ -24,8 +24,8 @@ onMounted(() => {
 
 <template>
   <div class="pr-4 flex-1 overflow-scroll">
-    <div class="w-full flex justify-end px-4 pb-4 sticky top-0 z-1 bg-base-100">
-      <button class="btn btn-sm gap-2 btn-primary text-white" @click="openAddTripModal">
+    <div class="w-full flex justify-end px-4 pb-4 sticky top-0 z-1" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)">
+      <button class="et-btn-primary et-btn-sm gap-2 flex items-center" @click="openAddTripModal">
         <fa-icon :icon="['fas', 'plus']" class="w-4 h-4" /> Add Trip
       </button>
     </div>

@@ -14,10 +14,11 @@ const time = defineModel<string>();
       :teleport="true"
       time-picker
       auto-apply
+      dark
     />
     <input
       v-if="isMobileDevice"
-      class="input input-bordered py-1 px-4 rounded-md w-full outline-none focus:outline-none"
+      class="et-input"
       type="time"
       v-model="time"
     />

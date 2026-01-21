@@ -43,7 +43,7 @@ const emit = defineEmits<{
         }"
       >
         <div class="relative">
-          <div class="flex justify-between items-center bg-primary py-4 px-6 text-white">
+          <div class="flex justify-between items-center bg-sky-600 py-4 px-6 text-white rounded-t-2xl">
             <h2 v-if="!slots.title" class="font-bold text-2xl">{{ title }}</h2>
             <div v-if="slots.title" class="flex-1">
               <slot name="title" />
