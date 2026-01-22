@@ -594,13 +594,15 @@
   }
 
   .et-expense-form__currency-btn {
-    @apply flex items-center gap-1.5 px-3 py-2 rounded-lg;
+    @apply px-3 py-2 rounded-lg;
     @apply text-sm font-semibold text-cyan-400;
     @apply transition-all duration-200 cursor-pointer flex-shrink-0;
-    @apply whitespace-nowrap overflow-hidden;
+    @apply whitespace-nowrap overflow-hidden text-ellipsis;
     background: rgba(6, 182, 212, 0.1);
     border: 1px solid rgba(6, 182, 212, 0.2);
-    max-width: 5.5rem;
+    max-width: 40%;
+    display: block;
+    text-align: center;
   }
 
   .et-expense-form__currency-btn:hover {
@@ -687,6 +689,45 @@
 
   .et-expense-form__category-chip-icon {
     @apply text-sm text-slate-400;
+  }
+
+  /* Location Carousel */
+  .et-expense-form__location-carousel {
+    @apply flex gap-2 overflow-x-auto pb-2;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    margin: 0 -1.25rem;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+
+  .et-expense-form__location-carousel::-webkit-scrollbar {
+    display: none;
+  }
+
+  .et-expense-form__location-chip {
+    @apply flex items-center gap-2 px-4 py-2 rounded-full;
+    @apply text-sm font-medium whitespace-nowrap;
+    @apply transition-all duration-200 cursor-pointer flex-shrink-0;
+    background: rgba(51, 65, 85, 0.5);
+    color: #94a3b8;
+    border: 1px solid transparent;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .et-expense-form__location-chip:hover {
+    background: rgba(51, 65, 85, 0.7);
+  }
+
+  .et-expense-form__location-chip:active {
+    transform: scale(0.95);
+  }
+
+  .et-expense-form__location-chip--selected {
+    background: rgba(249, 115, 22, 0.15);
+    border-color: rgba(249, 115, 22, 0.4);
+    color: #fdba74;
   }
 
   /* User Chips */
