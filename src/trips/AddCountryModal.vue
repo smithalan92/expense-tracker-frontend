@@ -51,7 +51,7 @@ const onClickSave = () => {
 </script>
 
 <template>
-  <Modal title="Add a Country">
+  <Modal title="Add a Country" @close="emit('close')">
     <template v-slot:body>
       <div class="flex flex-col py-4">
         {{ countrySelectionToEdit?.name }}
@@ -65,9 +65,7 @@ const onClickSave = () => {
 
     <template v-slot:footer>
       <button class="et-btn-secondary mr-4" @click="emit('close')">Cancel</button>
-      <button class="et-btn-primary" :disabled="!selectedCountry" @click="onClickSave">
-        Save
-      </button>
+      <button class="et-btn-primary" :disabled="!selectedCountry" @click="onClickSave">Save</button>
     </template>
   </Modal>
 </template>

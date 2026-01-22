@@ -42,34 +42,32 @@ const emit = defineEmits<{
           width: width ? `${width}px` : '',
         }"
       >
-        <div class="relative">
-          <div class="et-modal__header">
-            <h2 v-if="!slots.title" class="et-modal__title">{{ title }}</h2>
-            <div v-if="slots.title" class="flex-1">
-              <slot name="title" />
-            </div>
-            <button class="et-modal__close" @click="emit('close')">
-              <fa-icon :icon="['fas', 'xmark']" />
-            </button>
+        <div class="et-modal__header">
+          <h2 v-if="!slots.title" class="et-modal__title">{{ title }}</h2>
+          <div v-if="slots.title" class="flex-1">
+            <slot name="title" />
           </div>
+          <button class="et-modal__close" @click="emit('close')">
+            <fa-icon :icon="['fas', 'xmark']" />
+          </button>
+        </div>
 
-          <slot name="alert" />
+        <slot name="alert" />
 
-          <div class="et-modal__body" :style="{ height: bodyHeight }">
-            <slot name="body" />
-          </div>
+        <div class="et-modal__body" :style="{ height: bodyHeight }">
+          <slot name="body" />
+        </div>
 
-          <div class="et-modal__footer" :style="{ justifyContent: alignFooter ?? 'flex-end' }">
-            <slot name="footer" />
-          </div>
+        <div class="et-modal__footer" :style="{ justifyContent: alignFooter ?? 'flex-end' }">
+          <slot name="footer" />
+        </div>
 
-          <div
-            v-if="isLoading"
-            class="overflow-hidden absolute top-0 left-0 w-full h-full flex items-center justify-center flex-1"
-            style="background-color: rgb(0 0 0 / 0.2); backdrop-filter: blur(2px)"
-          >
-            <Spinner />
-          </div>
+        <div
+          v-if="isLoading"
+          class="overflow-hidden absolute top-0 left-0 w-full h-full flex items-center justify-center flex-1"
+          style="background-color: rgb(0 0 0 / 0.2); backdrop-filter: blur(2px)"
+        >
+          <Spinner />
         </div>
       </div>
     </div>

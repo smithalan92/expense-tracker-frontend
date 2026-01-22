@@ -28,8 +28,10 @@
     box-shadow:
       0 25px 50px -12px rgba(0, 0, 0, 0.6),
       inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    overflow: hidden;
+    overflow: visible;
     overscroll-behavior: contain;
+    display: flex;
+    flex-direction: column;
   }
 
   .et-modal__header {
@@ -50,11 +52,12 @@
 
   .et-modal__body {
     @apply flex flex-col overflow-y-auto overflow-x-hidden px-5 py-4;
-    max-height: calc(100vh - 12rem);
+    flex: 1 1 auto;
+    min-height: 0;
   }
 
   .et-modal__footer {
-    @apply flex gap-3 px-5 py-4;
+    @apply flex gap-3 px-5 py-4 pb-6;
     background: rgba(15, 23, 35, 0.5);
     border-top: 1px solid rgba(148, 163, 184, 0.08);
   }
@@ -570,7 +573,12 @@
   }
 
   .et-expense-form__section {
-    @apply flex flex-col gap-2;
+    @apply flex flex-col gap-2 pb-4;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  }
+
+  .et-expense-form__section-title {
+    @apply font-bold text-slate-400 uppercase tracking-wide mb-2;
   }
 
   .et-expense-form__label {
@@ -580,12 +588,6 @@
   .et-expense-form__row {
     @apply flex gap-2;
     @apply min-w-0;
-  }
-
-  /* Amount Section - Hero input */
-  .et-expense-form__amount-section {
-    @apply pb-5 mb-1 relative;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
   }
 
   .et-expense-form__amount-display {
@@ -700,6 +702,7 @@
     margin: 0 -1.25rem;
     padding-left: 1.25rem;
     padding-right: 1.25rem;
+    min-height: 2.5rem;
   }
 
   .et-expense-form__location-carousel::-webkit-scrollbar {

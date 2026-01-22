@@ -225,8 +225,56 @@ onBeforeMount(() => {
   <Modal :title="modalTitle" @close="emit('close')" :height="'auto'">
     <template v-slot:body>
       <div class="et-expense-form">
+        <!-- Date & Time -->
+        <div class="et-expense-form__section">
+          <label class="et-expense-form__section-title">When</label>
+          <div class="et-expense-form__row">
+            <DatePicker v-model="expenseData.expenseDate" class="flex-1" />
+            <TimePicker v-model="expenseData.expenseTime" class="flex-1" />
+          </div>
+        </div>
+
+        <!-- Country Carousel -->
+        <div class="et-expense-form__section">
+          <label class="et-expense-form__section-title">Where</label>
+
+          <label class="et-expense-form__label">Country</label>
+          <div class="et-expense-form__location-carousel">
+            <button
+              v-for="country in countryOptions"
+              :key="country.value"
+              class="et-expense-form__location-chip"
+              :class="{
+                'et-expense-form__location-chip--selected': selectedCountry?.value === country.value,
+              }"
+              @click="selectedCountry = country"
+            >
+              {{ country.label }}
+            </button>
+          </div>
+          <!-- City Carousel -->
+          <label class="et-expense-form__label">City</label>
+          <div class="et-expense-form__location-carousel">
+            <template v-if="cityOptions.length > 0">
+              <button
+                v-for="city in cityOptions"
+                :key="city.value"
+                class="et-expense-form__location-chip"
+                :class="{
+                  'et-expense-form__location-chip--selected': expenseData.selectedCity?.value === city.value,
+                }"
+                @click="expenseData.selectedCity = city"
+              >
+                {{ city.label }}
+              </button>
+            </template>
+            <span v-else class="text-slate-500 text-sm italic">Select a country first</span>
+          </div>
+        </div>
+
         <!-- Amount Input - Big and prominent -->
-        <div class="et-expense-form__amount-section">
+        <div class="et-expense-form__section relative">
+          <label class="et-expense-form__section-title">Amount</label>
           <div class="et-expense-form__amount-display">
             <button class="et-expense-form__currency-btn" @click="showCurrencyPicker = !showCurrencyPicker">
               {{ expenseData.selectedCurrency?.label?.split("-")[0]?.trim() || "EUR" }}
@@ -268,7 +316,7 @@ onBeforeMount(() => {
 
         <!-- Category Carousel -->
         <div class="et-expense-form__section">
-          <label class="et-expense-form__label">Category</label>
+          <label class="et-expense-form__section-title">Category</label>
           <div class="et-expense-form__category-carousel">
             <button
               v-for="category in categoryOptions"
@@ -289,57 +337,9 @@ onBeforeMount(() => {
           </div>
         </div>
 
-        <!-- Country Carousel -->
-        <div class="et-expense-form__section">
-          <label class="et-expense-form__label">Country</label>
-          <div class="et-expense-form__location-carousel">
-            <button
-              v-for="country in countryOptions"
-              :key="country.value"
-              class="et-expense-form__location-chip"
-              :class="{
-                'et-expense-form__location-chip--selected': selectedCountry?.value === country.value,
-              }"
-              @click="selectedCountry = country"
-            >
-              {{ country.label }}
-            </button>
-          </div>
-        </div>
-
-        <!-- City Carousel -->
-        <div class="et-expense-form__section">
-          <label class="et-expense-form__label">City</label>
-          <div class="et-expense-form__location-carousel">
-            <template v-if="cityOptions.length > 0">
-              <button
-                v-for="city in cityOptions"
-                :key="city.value"
-                class="et-expense-form__location-chip"
-                :class="{
-                  'et-expense-form__location-chip--selected': expenseData.selectedCity?.value === city.value,
-                }"
-                @click="expenseData.selectedCity = city"
-              >
-                {{ city.label }}
-              </button>
-            </template>
-            <span v-else class="text-slate-500 text-sm italic">Select a country first</span>
-          </div>
-        </div>
-
-        <!-- Date & Time -->
-        <div class="et-expense-form__section">
-          <label class="et-expense-form__label">When</label>
-          <div class="et-expense-form__row">
-            <DatePicker v-model="expenseData.expenseDate" class="flex-1" />
-            <TimePicker v-model="expenseData.expenseTime" class="flex-1" />
-          </div>
-        </div>
-
         <!-- Paid by -->
         <div class="et-expense-form__section">
-          <label class="et-expense-form__label">Paid by</label>
+          <label class="et-expense-form__section-title">Paid by</label>
           <div class="et-expense-form__user-chips">
             <button
               v-for="user in userOptions"
@@ -359,16 +359,8 @@ onBeforeMount(() => {
 
         <!-- Notes (collapsible) -->
         <div class="et-expense-form__section">
-          <button class="et-expense-form__toggle" @click="showNotes = !showNotes">
-            <span class="et-expense-form__label">Notes</span>
-            <span class="text-slate-500 text-xs">{{ showNotes ? "Hide" : "Add note" }}</span>
-          </button>
-          <input
-            v-if="showNotes"
-            class="et-input mt-2"
-            v-model="expenseData.description"
-            placeholder="Add a note..."
-          />
+          <label class="et-expense-form__section-title">Notes</label>
+          <input class="et-input mt-2" v-model="expenseData.description" placeholder="Add a note..." />
         </div>
       </div>
     </template>
