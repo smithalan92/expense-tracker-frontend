@@ -14,6 +14,7 @@ import {
   faGem,
   faGifts,
   faHandHoldingDollar,
+  faImage,
   faLayerGroup,
   faLocationDot,
   faMartiniGlass,
@@ -84,5 +85,6 @@ export default function registerIconLibrary() {
     faCalendar,
     faCalendarDay,
     faSuitcase,
+    faImage,
   );
 }

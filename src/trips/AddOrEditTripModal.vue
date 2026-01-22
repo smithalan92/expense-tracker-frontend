@@ -186,12 +186,6 @@ onMounted(() => {
   <Modal :title="modalTitle" :is-loading="isLoadingTripToEdit" @close="emit('close')" :height="'auto'">
     <template v-slot:body>
       <div class="et-expense-form">
-        <!-- Trip Image -->
-        <div class="et-expense-form__section">
-          <label class="et-expense-form__section-title">Image</label>
-          <ImagePicker @change-image="(val) => (tripData.selectedImage = val)" :initalImage="initalImage" />
-        </div>
-
         <!-- Trip Name -->
         <div class="et-expense-form__section">
           <label class="et-expense-form__section-title">Name</label>
@@ -201,6 +195,12 @@ onMounted(() => {
             placeholder="Trip to Fiji"
             v-model="tripData.tripName"
           />
+        </div>
+
+        <!-- Trip Image -->
+        <div class="et-expense-form__section">
+          <label class="et-expense-form__section-title">Image</label>
+          <ImagePicker @change-image="(val) => (tripData.selectedImage = val)" :initalImage="initalImage" />
         </div>
 
         <!-- Dates -->

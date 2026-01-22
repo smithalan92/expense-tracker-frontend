@@ -54,11 +54,10 @@ const onClickSave = () => {
   <Modal title="Add a Country" @close="emit('close')">
     <template v-slot:body>
       <div class="flex flex-col py-4">
-        {{ countrySelectionToEdit?.name }}
-        <span class="mb-4 font-bold">Pick a country</span>
+        <span class="mb-2 font-bold">Country</span>
         <Picker :options="countryOptions" v-model="selectedCountry" />
       </div>
-      <div v-if="selectedCountry" class="flex flex-col py-4">
+      <div v-if="selectedCountry" class="flex flex-col py-4 border-t border-grey-200 mt-2">
         <CityPickerList :countryId="selectedCountry.value" v-model="selectedCityIds" />
       </div>
     </template>
