@@ -3,7 +3,7 @@ import { type CreateTripCountry, type CreateTripPayload, type Trip } from "@/api
 import Modal from "@/modal/Modal.vue";
 import DatePicker from "@/pickers/DatePicker.vue";
 import ImagePicker from "@/pickers/ImagePicker.vue";
-import Picker, { type PickerOption } from "@/pickers/Picker.vue";
+import { type PickerOption } from "@/pickers/Picker.vue";
 import useAppStore from "@/stores/appStore";
 import useTripDataStore from "@/stores/tripDataStore";
 import useTripsStore from "@/stores/tripsStore";
@@ -24,7 +24,7 @@ const emit = defineEmits<{
 }>();
 
 const { user, users } = useAppStore();
-const { loadTrips, createTrip } = useTripsStore();
+const { createTrip } = useTripsStore();
 const { trip, countries, userIds, updateTrip } = useTripDataStore();
 const $toast = useToast();
 const isOnline = useOnline();
@@ -141,6 +141,15 @@ const onSaveCountry = async (country: TripModalCountry) => {
   }
 };
 
+const toggleUser = (user: PickerOption) => {
+  const index = tripData.selectedUsers.findIndex((u) => u.value === user.value);
+  if (index >= 0) {
+    tripData.selectedUsers.splice(index, 1);
+  } else {
+    tripData.selectedUsers.push(user);
+  }
+};
+
 const onSaveTrip = async () => {
   isCreatingTrip.value = true;
   const payload: CreateTripPayload = {
@@ -174,96 +183,110 @@ onMounted(() => {
 </script>
 
 <template>
-  <Modal :title="modalTitle" :is-loading="isLoadingTripToEdit" @close="emit('close')">
+  <Modal :title="modalTitle" :is-loading="isLoadingTripToEdit" @close="emit('close')" :height="'auto'">
     <template v-slot:body>
-      <div class="grid grid-cols-4 gap-1 py-4">
-        <span class="col-span-1 content-center">Image</span>
-        <ImagePicker
-          class="col-span-3"
-          @change-image="(val) => (tripData.selectedImage = val)"
-          :initalImage="initalImage"
-        />
-      </div>
+      <div class="et-expense-form">
+        <!-- Trip Image -->
+        <div class="et-expense-form__section">
+          <label class="et-expense-form__section-title">Image</label>
+          <ImagePicker @change-image="(val) => (tripData.selectedImage = val)" :initalImage="initalImage" />
+        </div>
 
-      <div class="grid grid-cols-4 gap-1 py-4">
-        <span class="col-span-1 content-center">Name</span>
-        <input
-          ref="name-input"
-          class="col-span-3 et-input"
-          placeholder="Trip to Fiji"
-          v-model="tripData.tripName"
-        />
-      </div>
+        <!-- Trip Name -->
+        <div class="et-expense-form__section">
+          <label class="et-expense-form__section-title">Name</label>
+          <input
+            ref="name-input"
+            class="et-input mt-2"
+            placeholder="Trip to Fiji"
+            v-model="tripData.tripName"
+          />
+        </div>
 
-      <div class="grid grid-cols-4 gap-1 py-4">
-        <span class="col-span-1 content-center">Start Date</span>
-        <DatePicker class="col-span-3" v-model="tripData.startDate" />
-      </div>
+        <!-- Dates -->
+        <div class="et-expense-form__section">
+          <label class="et-expense-form__section-title">When</label>
+          <div class="et-expense-form__row">
+            <div class="flex-1">
+              <label class="et-expense-form__label">Start Date</label>
+              <DatePicker v-model="tripData.startDate" />
+            </div>
+            <div class="flex-1">
+              <label class="et-expense-form__label">End Date</label>
+              <DatePicker v-model="tripData.endDate" />
+            </div>
+          </div>
+        </div>
 
-      <div class="grid grid-cols-4 gap-1 py-4">
-        <span class="col-span-1 content-center">End Date</span>
-        <DatePicker class="col-span-3" v-model="tripData.endDate" />
-      </div>
-
-      <div class="grid grid-cols-4 gap-1 py-4">
-        <span class="col-span-1 content-center">Countries</span>
-        <div class="col-span-3">
-          <div
-            v-for="country in tripData.selectedCountries"
-            :key="country.countryId"
-            class="flex select-none items-center bg-sky-600/70 rounded-lg text-white mr-2 mt-1 transition-colors"
-          >
-            <button class="p-2 flex-1" @click="onClickSelectedCountry(country)">
-              {{ country.name }}
-            </button>
+        <!-- Countries -->
+        <div class="et-expense-form__section">
+          <label class="et-expense-form__section-title">Countries</label>
+          <div class="flex flex-wrap gap-2">
             <button
-              class="p-2 hover:opacity-60 cursor-pointer"
-              @click="onClickDeleteCountry(country.countryId)"
+              v-for="country in tripData.selectedCountries"
+              :key="country.countryId"
+              class="flex select-none items-center bg-sky-600/70 rounded-lg text-white transition-colors hover:bg-sky-600"
+              @click="onClickSelectedCountry(country)"
             >
-              <fa-icon :icon="['fas', 'xmark']" class="ml-2" />
+              <span class="px-3 py-2">{{ country.name }}</span>
+              <button
+                class="px-2 py-2 hover:opacity-60 cursor-pointer border-l border-white/20"
+                @click.stop="onClickDeleteCountry(country.countryId)"
+              >
+                <fa-icon :icon="['fas', 'xmark']" />
+              </button>
             </button>
           </div>
-          <div>
+          <button
+            ref="add-country-button"
+            class="mt-3 px-4 py-2.5 bg-transparent border-2 border-slate-400/40 text-slate-300 rounded-lg flex items-center hover:border-slate-400/60 hover:bg-slate-700/20 transition-all"
+            @click="isAddCountryModalOpen = true"
+          >
+            <fa-icon :icon="['fas', 'plus']" class="mr-2 text-sm" />
+            <span>Add Country</span>
+          </button>
+        </div>
+
+        <!-- Users -->
+        <div class="et-expense-form__section">
+          <label class="et-expense-form__section-title">Travelers</label>
+          <div class="et-expense-form__user-chips">
             <button
-              ref="add-country-button"
-              class="mt-2 px-3 py-2 bg-slate-600/70 text-white rounded-lg flex items-center hover:bg-slate-500/70 transition-colors"
-              @click="isAddCountryModalOpen = true"
+              v-for="user in userOptions"
+              :key="user.value"
+              class="et-expense-form__user-chip"
+              :class="{
+                'et-expense-form__user-chip--selected': tripData.selectedUsers.some(
+                  (u) => u.value === user.value,
+                ),
+              }"
+              @click="toggleUser(user)"
             >
-              <fa-icon :icon="['fas', 'plus']" class="ml-1 mr-2" />
-              <span>Add Country</span>
+              {{ user.label.split(" ")[0] }}
             </button>
           </div>
         </div>
       </div>
-
-      <div class="grid grid-cols-4 gap-1 py-4">
-        <span class="col-span-1 content-center">Users</span>
-        <Picker
-          class="col-span-3 z-50"
-          v-model="tripData.selectedUsers"
-          :options="userOptions"
-          :is-multi="true"
-        />
-      </div>
     </template>
 
     <template v-slot:footer>
-      <button
-        class="et-btn-secondary mr-4"
-        :disabled="isCreatingTrip"
-        @click="emit('close')"
+      <Tooltip
+        :message="tooltipOfflineMessage"
+        :forceOpenOnMobile="true"
+        :disabled="isOnline"
+        placement="top"
+        class="flex-1"
       >
-        Cancel
-      </button>
-
-      <Tooltip :message="tooltipOfflineMessage" :force-open-on-mobile="true" :disabled="isOnline">
         <button
-          class="et-btn-primary"
+          class="et-btn-primary w-full"
           :disabled="!canSaveTrip || isCreatingTrip || !isOnline"
           @click="onSaveTrip"
         >
-          <span v-if="!isCreatingTrip">Save</span>
+          <fa-icon v-if="!tripIdToEdit" :icon="['fas', 'plus']" />
+          <fa-icon v-if="tripIdToEdit && !isCreatingTrip" :icon="['fas', 'check']" />
           <fa-icon v-if="isCreatingTrip" :icon="['fas', 'circle-notch']" class="animate-spin" />
+          <span v-if="!tripIdToEdit && !isCreatingTrip">Create Trip</span>
+          <span v-if="tripIdToEdit && !isCreatingTrip">Save Changes</span>
         </button>
       </Tooltip>
     </template>
