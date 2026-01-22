@@ -229,12 +229,12 @@ onMounted(() => {
               @click="onClickSelectedCountry(country)"
             >
               <span class="px-3 py-2">{{ country.name }}</span>
-              <button
+              <span
                 class="px-2 py-2 hover:opacity-60 cursor-pointer border-l border-white/20"
                 @click.stop="onClickDeleteCountry(country.countryId)"
               >
                 <fa-icon :icon="['fas', 'xmark']" />
-              </button>
+              </span>
             </button>
           </div>
           <button

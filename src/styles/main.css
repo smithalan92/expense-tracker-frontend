@@ -287,7 +287,7 @@
 
   /* Navbar styles */
   .et-navbar {
-    @apply flex items-center py-6 min-h-[5rem] w-full;
+    @apply flex items-center px-6 py-4 min-h-[5rem] w-full;
     background: transparent;
   }
 
@@ -410,13 +410,7 @@
   }
 
   .et-trips-header {
-    @apply sticky top-0 z-10 px-4 pt-6 pb-5 mb-2;
-    background: linear-gradient(
-      to bottom,
-      rgba(10, 15, 26, 1) 0%,
-      rgba(10, 15, 26, 0.95) 70%,
-      rgba(10, 15, 26, 0) 100%
-    );
+    @apply sticky top-0 z-10 px-4 pb-4;
     border-bottom: 1px solid rgba(148, 163, 184, 0.08);
   }
 
@@ -440,7 +434,7 @@
   }
 
   .et-trips-main {
-    @apply flex-1 overflow-y-auto overflow-x-hidden;
+    @apply flex-1 overflow-y-auto overflow-x-hidden pt-6;
     @apply px-1;
     scrollbar-width: none;
     -ms-overflow-style: none;
