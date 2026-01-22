@@ -1,5 +1,26 @@
 @theme {
+  /* Legacy color - keeping for compatibility */
   --color-expensit-blue: #0284c7;
+
+  /* OLED-optimized color system */
+  --color-et-black: #000000;
+  --color-et-base: #0a0f1a;
+  --color-et-surface: #111827;
+  --color-et-elevated: #1f2937;
+
+  /* Primary accent - vibrant cyan for better contrast */
+  --color-et-primary: #06b6d4;
+  --color-et-primary-hover: #22d3ee;
+
+  /* Text hierarchy */
+  --color-et-text-primary: #f8fafc;
+  --color-et-text-secondary: #94a3b8;
+  --color-et-text-tertiary: #64748b;
+
+  /* Semantic colors */
+  --color-et-success: #34d399;
+  --color-et-warning: #fbbf24;
+  --color-et-danger: #fb7185;
 
   --spacing-100: 400px;
 

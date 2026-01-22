@@ -18,18 +18,45 @@
 
   /* Glassmorphism modal */
   .et-modal {
-    background: rgba(30, 41, 59, 0.85);
-    backdrop-filter: blur(16px);
+    background: rgba(23, 30, 43, 0.95);
+    backdrop-filter: blur(20px);
     border: 1px solid rgba(148, 163, 184, 0.1);
     max-height: calc(100vh - 4em);
     padding: 0;
-    max-width: 32rem;
-    border-radius: 16px;
+    max-width: 28rem;
+    border-radius: 20px;
     box-shadow:
-      0 25px 50px -12px rgba(0, 0, 0, 0.5),
+      0 25px 50px -12px rgba(0, 0, 0, 0.6),
       inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    overflow-y: auto;
+    overflow: hidden;
     overscroll-behavior: contain;
+  }
+
+  .et-modal__header {
+    @apply flex items-center justify-between px-5 py-4;
+    background: rgba(15, 23, 35, 0.8);
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  }
+
+  .et-modal__title {
+    @apply text-lg font-semibold text-white;
+  }
+
+  .et-modal__close {
+    @apply w-8 h-8 rounded-lg flex items-center justify-center;
+    @apply text-slate-400 hover:text-white hover:bg-slate-700/50;
+    @apply transition-all duration-200 cursor-pointer;
+  }
+
+  .et-modal__body {
+    @apply flex flex-col overflow-y-auto overflow-x-hidden px-5 py-4;
+    max-height: calc(100vh - 12rem);
+  }
+
+  .et-modal__footer {
+    @apply flex gap-3 px-5 py-4;
+    background: rgba(15, 23, 35, 0.5);
+    border-top: 1px solid rgba(148, 163, 184, 0.08);
   }
 
   /* Button base styles */
@@ -263,7 +290,7 @@
 
   /* Background utilities */
   .et-bg-base {
-    background: #0f172a;
+    background: #0a0f1a;
   }
 
   .et-bg-elevated {
@@ -274,14 +301,441 @@
   .et-bg-surface {
     background: rgba(51, 65, 85, 0.4);
   }
+
+  /* ============================================
+     TRIP CARD - Mobile-first hero style
+     ============================================ */
+  .et-trip-card {
+    @apply relative overflow-hidden rounded-2xl cursor-pointer;
+    @apply transition-all duration-300 ease-out;
+    @apply active:scale-[0.98];
+    background: rgba(17, 24, 39, 0.75);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(148, 163, 184, 0.08);
+    min-height: 180px;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .et-trip-card:hover {
+    border-color: rgba(148, 163, 184, 0.15);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  }
+
+  .et-trip-card__image {
+    @apply absolute inset-0 overflow-hidden;
+  }
+
+  .et-trip-card__content {
+    @apply absolute bottom-0 left-0 right-0 p-4;
+    @apply flex flex-col gap-2;
+  }
+
+  .et-trip-card__title {
+    @apply text-lg font-bold text-white;
+    @apply line-clamp-1;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  }
+
+  .et-trip-card__meta {
+    @apply flex items-center justify-between gap-3;
+  }
+
+  .et-trip-card__dates {
+    @apply flex items-center gap-1.5 text-sm text-slate-300;
+  }
+
+  .et-trip-card__expense {
+    @apply flex items-center gap-1.5;
+  }
+
+  .et-trip-card__expense-label {
+    @apply text-xs text-slate-400;
+  }
+
+  .et-trip-card__expense-amount {
+    @apply text-base font-bold text-cyan-400;
+  }
+
+  /* Trip status badges */
+  .et-trip-badge {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full;
+    @apply text-xs font-semibold;
+    backdrop-filter: blur(8px);
+  }
+
+  .et-trip-badge--active {
+    @apply bg-emerald-500/30 text-emerald-300;
+    border: 1px solid rgba(52, 211, 153, 0.3);
+  }
+
+  .et-trip-badge--upcoming {
+    @apply bg-amber-500/30 text-amber-300;
+    border: 1px solid rgba(251, 191, 36, 0.3);
+  }
+
+  .et-trip-badge__dot {
+    @apply w-2 h-2 rounded-full bg-emerald-400;
+  }
+
+  /* Trip card variants */
+  .et-trip-card--past {
+    @apply opacity-80;
+  }
+
+  .et-trip-card--past .et-trip-card__image > div:first-child {
+    filter: grayscale(25%) brightness(0.9);
+  }
+
+  /* Hover indicator line */
+  .et-trip-card__indicator {
+    @apply absolute bottom-0 left-0 right-0 h-1;
+    @apply bg-gradient-to-r from-cyan-500 to-cyan-400;
+    @apply transform scale-x-0 origin-left;
+    @apply transition-transform duration-300;
+  }
+
+  .et-trip-card:hover .et-trip-card__indicator {
+    @apply scale-x-100;
+  }
+
+  /* ============================================
+     TRIPS VIEW LAYOUT
+     ============================================ */
+  .et-trips-view {
+    @apply flex flex-col h-full w-full overflow-hidden;
+    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .et-trips-header {
+    @apply sticky top-0 z-10 px-4 pt-6 pb-5 mb-2;
+    background: linear-gradient(
+      to bottom,
+      rgba(10, 15, 26, 1) 0%,
+      rgba(10, 15, 26, 0.95) 70%,
+      rgba(10, 15, 26, 0) 100%
+    );
+    border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+  }
+
+  .et-trips-header__content {
+    @apply flex items-center justify-between;
+  }
+
+  .et-trips-header__icon {
+    @apply w-10 h-10 rounded-full flex items-center justify-center text-base;
+    background: linear-gradient(135deg, #0891b2, #06b6d4);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.35);
+  }
+
+  .et-trips-header__title {
+    @apply text-xl font-bold text-white leading-tight;
+  }
+
+  .et-trips-header__subtitle {
+    @apply text-xs text-slate-400 mt-0.5;
+  }
+
+  .et-trips-main {
+    @apply flex-1 overflow-y-auto overflow-x-hidden;
+    @apply px-1;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .et-trips-main::-webkit-scrollbar {
+    display: none;
+  }
+
+  .et-trips-list {
+    @apply pb-4;
+  }
+
+  .et-trips-grid {
+    @apply flex flex-col gap-4;
+  }
+
+  /* Section styling */
+  .et-trips-section {
+    @apply mb-6;
+  }
+
+  .et-trips-section__title {
+    @apply flex items-center gap-2 text-xs font-semibold text-slate-400 uppercase tracking-wider;
+    @apply mb-3 px-1;
+  }
+
+  .et-trips-section__icon {
+    @apply w-4 h-4 text-slate-500;
+  }
+
+  .et-trips-section__icon--active {
+    @apply w-2 h-2 rounded-full bg-emerald-400;
+  }
+
+  /* Loading state */
+  .et-trips-loading {
+    @apply flex-1 flex items-center justify-center min-h-[300px];
+  }
+
+  .et-trips-loading__content {
+    @apply flex flex-col items-center gap-4;
+  }
+
+  .et-trips-loading__text {
+    @apply text-slate-400 text-sm;
+  }
+
+  /* Error state */
+  .et-trips-error {
+    @apply flex-1 flex items-center justify-center min-h-[300px];
+  }
+
+  .et-trips-error__content {
+    @apply flex flex-col items-center text-center px-8;
+  }
+
+  .et-trips-error__icon {
+    @apply w-16 h-16 rounded-full flex items-center justify-center mb-4;
+    @apply bg-rose-500/20 text-rose-400 text-2xl;
+  }
+
+  .et-trips-error__title {
+    @apply text-lg font-semibold text-white mb-2;
+  }
+
+  .et-trips-error__text {
+    @apply text-slate-400 text-sm;
+  }
+
+  /* Empty state */
+  .et-trips-empty {
+    @apply flex-1 flex items-center justify-center min-h-[400px];
+  }
+
+  .et-trips-empty__content {
+    @apply flex flex-col items-center text-center px-8;
+  }
+
+  .et-trips-empty__illustration {
+    @apply w-24 h-24 rounded-full flex items-center justify-center mb-6;
+    @apply text-4xl;
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(6, 182, 212, 0.05));
+    color: #06b6d4;
+  }
+
+  .et-trips-empty__title {
+    @apply text-xl font-semibold text-white mb-2;
+  }
+
+  .et-trips-empty__text {
+    @apply text-slate-400 text-sm max-w-[250px];
+  }
+
+  /* Floating Action Button */
+  .et-fab {
+    @apply fixed z-20;
+    @apply w-14 h-14 rounded-full;
+    @apply flex items-center justify-center;
+    @apply text-white text-xl;
+    @apply transition-all duration-200;
+    @apply active:scale-95;
+    @apply focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:ring-offset-2 focus:ring-offset-slate-900;
+    bottom: max(24px, env(safe-area-inset-bottom, 24px));
+    right: 24px;
+    background: linear-gradient(135deg, #06b6d4, #0891b2);
+    box-shadow:
+      0 4px 20px rgba(6, 182, 212, 0.4),
+      0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .et-fab:hover {
+    transform: scale(1.05);
+    box-shadow:
+      0 6px 28px rgba(6, 182, 212, 0.5),
+      0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+  }
+
+  .et-fab:active {
+    transform: scale(0.95);
+  }
+
+  /* ============================================
+     EXPENSE FORM - Mobile-first PWA optimized
+     ============================================ */
+  .et-expense-form {
+    @apply flex flex-col gap-5;
+    @apply w-full min-w-0;
+  }
+
+  .et-expense-form__section {
+    @apply flex flex-col gap-2;
+  }
+
+  .et-expense-form__label {
+    @apply text-xs font-medium text-slate-400 uppercase tracking-wide;
+  }
+
+  .et-expense-form__row {
+    @apply flex gap-2;
+    @apply min-w-0;
+  }
+
+  /* Amount Section - Hero input */
+  .et-expense-form__amount-section {
+    @apply pb-5 mb-1 relative;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  }
+
+  .et-expense-form__amount-display {
+    @apply flex items-center gap-3;
+    @apply w-full min-w-0;
+  }
+
+  .et-expense-form__currency-btn {
+    @apply flex items-center gap-1.5 px-3 py-2 rounded-lg;
+    @apply text-sm font-semibold text-cyan-400;
+    @apply transition-all duration-200 cursor-pointer flex-shrink-0;
+    @apply whitespace-nowrap overflow-hidden;
+    background: rgba(6, 182, 212, 0.1);
+    border: 1px solid rgba(6, 182, 212, 0.2);
+    max-width: 5.5rem;
+  }
+
+  .et-expense-form__currency-btn:hover {
+    background: rgba(6, 182, 212, 0.15);
+    border-color: rgba(6, 182, 212, 0.3);
+  }
+
+  .et-expense-form__amount-input {
+    @apply flex-1 bg-transparent border-none outline-none;
+    @apply text-3xl font-bold text-white text-right;
+    @apply placeholder-slate-600;
+    @apply min-w-0 w-full;
+  }
+
+  .et-expense-form__amount-input:focus {
+    outline: none;
+  }
+
+  .et-expense-form__currency-dropdown {
+    @apply absolute left-0 right-0 mt-1 p-2 rounded-xl z-10;
+    @apply flex flex-col gap-1;
+    @apply max-h-40 overflow-y-auto;
+    top: 100%;
+    background: rgba(30, 41, 59, 0.98);
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  }
+
+  .et-expense-form__currency-option {
+    @apply px-3 py-2 rounded-lg text-left text-sm text-slate-300;
+    @apply transition-all duration-150 cursor-pointer;
+  }
+
+  .et-expense-form__currency-option:hover {
+    @apply bg-slate-700/50 text-white;
+  }
+
+  .et-expense-form__currency-option--selected {
+    @apply bg-cyan-600/20 text-cyan-300;
+  }
+
+  /* Category Carousel */
+  .et-expense-form__category-carousel {
+    @apply flex gap-2 overflow-x-auto pb-2;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    margin: 0 -1.25rem;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+
+  .et-expense-form__category-carousel::-webkit-scrollbar {
+    display: none;
+  }
+
+  .et-expense-form__category-chip {
+    @apply flex items-center gap-2 px-3 py-2 rounded-full;
+    @apply text-sm font-medium whitespace-nowrap;
+    @apply transition-all duration-200 cursor-pointer flex-shrink-0;
+    background: rgba(51, 65, 85, 0.5);
+    color: #94a3b8;
+    border: 1px solid transparent;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .et-expense-form__category-chip:hover {
+    background: rgba(51, 65, 85, 0.7);
+  }
+
+  .et-expense-form__category-chip:active {
+    transform: scale(0.95);
+  }
+
+  .et-expense-form__category-chip--selected {
+    background: rgba(6, 182, 212, 0.15);
+    border-color: rgba(6, 182, 212, 0.4);
+    color: #67e8f9;
+  }
+
+  .et-expense-form__category-chip--selected .et-expense-form__category-chip-icon {
+    @apply text-cyan-400;
+  }
+
+  .et-expense-form__category-chip-icon {
+    @apply text-sm text-slate-400;
+  }
+
+  /* User Chips */
+  .et-expense-form__user-chips {
+    @apply flex flex-wrap gap-2;
+  }
+
+  .et-expense-form__user-chip {
+    @apply px-4 py-2 rounded-full text-sm font-medium;
+    @apply transition-all duration-200 cursor-pointer;
+    background: rgba(51, 65, 85, 0.5);
+    color: #94a3b8;
+    border: 1px solid transparent;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .et-expense-form__user-chip:hover {
+    background: rgba(51, 65, 85, 0.7);
+  }
+
+  .et-expense-form__user-chip:active {
+    transform: scale(0.95);
+  }
+
+  .et-expense-form__user-chip--selected {
+    background: rgba(16, 185, 129, 0.2);
+    color: #6ee7b7;
+    border-color: rgba(16, 185, 129, 0.3);
+  }
+
+  /* Toggle Section */
+  .et-expense-form__toggle {
+    @apply flex items-center justify-between w-full py-1;
+    @apply cursor-pointer;
+  }
+
+  /* Submit Button */
+  .et-expense-form__submit {
+    @apply flex items-center justify-center gap-2;
+    @apply py-3.5 text-base;
+  }
 }
 
 body,
 html {
   @apply w-full h-full;
   font-family: "Open Sans", sans-serif;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-  color: #e2e8f0;
+  background: linear-gradient(135deg, #0a0f1a 0%, #111827 50%, #0a0f1a 100%);
+  color: #f8fafc;
 }
 
 #app {

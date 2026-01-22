@@ -15,6 +15,7 @@ import { format } from "date-fns";
 import { computed, onBeforeMount, reactive, ref, toRefs, watch } from "vue";
 import useAddOrEditExpenseModalOptions from "./hooks/useAddOrEditExpenseModalOptions";
 import useSyncCurrencyWithSelectedCountry from "./hooks/useSyncCurrencyWithSelectedCountry";
+import ExpenseCategoryIcon from "./ExpenseCategoryIcon.vue";
 
 const { expenseToEdit, expenseToCopy } = defineProps<{
   expenseToEdit?: Nullable<TripExpense>;
@@ -60,6 +61,17 @@ const parsedAmount = computed(() => {
 });
 
 const isAddingExpense = ref(false);
+const showCurrencyPicker = ref(false);
+const showNotes = ref(false);
+
+const toggleUser = (user: PickerOption) => {
+  const index = expenseData.selectedUsers.findIndex(u => u.value === user.value);
+  if (index >= 0) {
+    expenseData.selectedUsers.splice(index, 1);
+  } else {
+    expenseData.selectedUsers.push(user);
+  }
+};
 
 const canAddExpense = computed(() => {
   const isAmountValid = parsedAmount.value > 0;
@@ -82,6 +94,12 @@ const isEditingExpense = computed(() => {
 
 const isCopyingExpense = computed(() => {
   return !!expenseToCopy;
+});
+
+const modalTitle = computed(() => {
+  if (isEditingExpense.value) return "Edit Expense";
+  if (isCopyingExpense.value) return "Copy Expense";
+  return "Add Expense";
 });
 
 const tooltipOfflineMessage = computed(() => {
@@ -185,115 +203,155 @@ onBeforeMount(() => {
       expenseToUseForHydration.description.length > 0 ? `${expenseToUseForHydration.description} | ` : "";
 
     expenseData.description = `${initalText}Copied at ${new Date()}`;
+    showNotes.value = true;
   } else {
     expenseData.description = expenseToUseForHydration.description;
+    showNotes.value = expenseToUseForHydration.description.length > 0;
   }
 });
 </script>
 
 <template>
-  <Modal title="Add Expense" @close="emit('close')">
+  <Modal :title="modalTitle" @close="emit('close')" :height="'auto'">
     <template v-slot:body>
-      <div class="grid grid-cols-5 gap-x-4 py-4">
-        <span class="col-span-1 content-center">When</span>
-        <span class="col-span-2"> <DatePicker v-model="expenseData.expenseDate" /> </span>
-        <span class="col-span-2"><TimePicker v-model="expenseData.expenseTime" /></span>
-      </div>
+      <div class="et-expense-form">
+        <!-- Amount Input - Big and prominent -->
+        <div class="et-expense-form__amount-section">
+          <div class="et-expense-form__amount-display">
+            <button
+              class="et-expense-form__currency-btn"
+              @click="showCurrencyPicker = !showCurrencyPicker"
+            >
+              {{ expenseData.selectedCurrency?.label?.split(' - ')[0] || 'EUR' }}
+              <fa-icon :icon="['fas', 'chevron-right']" class="text-xs opacity-50" />
+            </button>
+            <input
+              ref="amountInput"
+              class="et-expense-form__amount-input"
+              placeholder="0.00"
+              :type="isMobileDevice ? 'text' : 'number'"
+              :inputmode="isMobileDevice ? 'decimal' : undefined"
+              :pattern="isMobileDevice ? '[0-9]+([.][0-9]+)?' : undefined"
+              :step="isMobileDevice ? undefined : '.01'"
+              :min="isMobileDevice ? undefined : '0'"
+              v-model="expenseData.amount"
+            />
+          </div>
 
-      <div class="grid grid-cols-5 gap-1 py-4">
-        <span class="col-span-1 content-center">Where</span>
-        <Picker
-          class="col-span-2"
-          :options="countryOptions"
-          v-model="selectedCountry"
-          placeholder="Select country"
-        />
-        <Picker
-          class="col-span-2"
-          :options="cityOptions"
-          v-model="expenseData.selectedCity"
-          placeholder="Select city"
-          :disabled="!selectedCountry"
-        />
-      </div>
+          <!-- Currency picker dropdown -->
+          <div v-if="showCurrencyPicker" class="et-expense-form__currency-dropdown">
+            <button
+              v-for="currency in currencyOptions"
+              :key="currency.value"
+              class="et-expense-form__currency-option"
+              :class="{ 'et-expense-form__currency-option--selected': expenseData.selectedCurrency?.value === currency.value }"
+              @click="expenseData.selectedCurrency = currency; showCurrencyPicker = false"
+            >
+              {{ currency.label }}
+            </button>
+          </div>
+        </div>
 
-      <div class="grid grid-cols-5 gap-1 py-4">
-        <span class="col-span-1 content-center">Amount</span>
-        <Picker
-          name="currency-picker"
-          class="col-span-2"
-          :options="currencyOptions"
-          v-model="expenseData.selectedCurrency"
-          placeholder="Select currency"
-        />
-        <!-- this input will force the numpad on Safari on IOS, unlike type=-->
-        <input
-          v-if="isMobileDevice"
-          class="col-span-2 et-input"
-          placeholder="0"
-          type="text"
-          inputmode="decimal"
-          pattern="[0-9]+([.][0-9]+)?"
-          v-model="expenseData.amount"
-        />
-        <input
-          v-if="!isMobileDevice"
-          class="col-span-2 et-input"
-          placeholder="0"
-          type="number"
-          step=".01"
-          min="0"
-          v-model="expenseData.amount"
-        />
-      </div>
+        <!-- Category Carousel -->
+        <div class="et-expense-form__section">
+          <label class="et-expense-form__label">Category</label>
+          <div class="et-expense-form__category-carousel">
+            <button
+              v-for="category in categoryOptions"
+              :key="category.value"
+              class="et-expense-form__category-chip"
+              :class="{ 'et-expense-form__category-chip--selected': expenseData.selectedCategory?.value === category.value }"
+              @click="expenseData.selectedCategory = category"
+            >
+              <ExpenseCategoryIcon :category-id="category.value" class="et-expense-form__category-chip-icon" />
+              <span>{{ category.label }}</span>
+            </button>
+          </div>
+        </div>
 
-      <div class="grid grid-cols-5 gap-1 py-4">
-        <span class="col-span-1 content-center">Category</span>
-        <Picker
-          class="col-span-4"
-          :options="categoryOptions"
-          v-model="expenseData.selectedCategory"
-          placeholder="Select category"
-        />
-      </div>
+        <!-- Location -->
+        <div class="et-expense-form__section">
+          <label class="et-expense-form__label">Location</label>
+          <div class="et-expense-form__row">
+            <Picker
+              class="flex-1"
+              :options="countryOptions"
+              v-model="selectedCountry"
+              placeholder="Country"
+            />
+            <Picker
+              class="flex-1"
+              :options="cityOptions"
+              v-model="expenseData.selectedCity"
+              placeholder="City"
+              :disabled="!selectedCountry"
+            />
+          </div>
+        </div>
 
-      <div class="grid grid-cols-5 gap-1 py-4">
-        <span class="col-span-1 content-center">Person</span>
-        <Picker
-          class="col-span-4"
-          :options="userOptions"
-          v-model="expenseData.selectedUsers"
-          placeholder="Select users"
-          :is-multi="true"
-        />
-      </div>
+        <!-- Date & Time -->
+        <div class="et-expense-form__section">
+          <label class="et-expense-form__label">When</label>
+          <div class="et-expense-form__row">
+            <DatePicker v-model="expenseData.expenseDate" class="flex-1" />
+            <TimePicker v-model="expenseData.expenseTime" class="flex-1" />
+          </div>
+        </div>
 
-      <div class="grid grid-cols-5 gap-1 py-4">
-        <span class="col-span-1 content-center">Notes</span>
-        <input
-          class="col-span-4 et-input"
-          v-model="expenseData.description"
-        />
+        <!-- Paid by -->
+        <div class="et-expense-form__section">
+          <label class="et-expense-form__label">Paid by</label>
+          <div class="et-expense-form__user-chips">
+            <button
+              v-for="user in userOptions"
+              :key="user.value"
+              class="et-expense-form__user-chip"
+              :class="{ 'et-expense-form__user-chip--selected': expenseData.selectedUsers.some(u => u.value === user.value) }"
+              @click="toggleUser(user)"
+            >
+              {{ user.label.split(' ')[0] }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Notes (collapsible) -->
+        <div class="et-expense-form__section">
+          <button
+            class="et-expense-form__toggle"
+            @click="showNotes = !showNotes"
+          >
+            <span class="et-expense-form__label">Notes</span>
+            <span class="text-slate-500 text-xs">{{ showNotes ? 'Hide' : 'Add note' }}</span>
+          </button>
+          <input
+            v-if="showNotes"
+            class="et-input mt-2"
+            v-model="expenseData.description"
+            placeholder="Add a note..."
+          />
+        </div>
       </div>
     </template>
 
     <template v-slot:footer>
-      <button class="et-btn-secondary mr-4" @click="emit('close')">Cancel</button>
-
       <Tooltip
         :message="tooltipOfflineMessage"
         :forceOpenOnMobile="true"
         :disabled="shouldDisableTooltip"
         placement="top"
+        class="flex-1"
       >
         <button
-          class="et-btn-primary"
+          class="et-btn-primary w-full et-expense-form__submit"
           :disabled="shouldDisableSaveButton"
           @click="onClickAddExpense"
         >
-          <span v-if="!isEditingExpense && !isCopyingExpense">Add expense</span>
-          <span v-if="isEditingExpense">Edit expense</span>
-          <span v-if="isCopyingExpense">Copy expense</span>
+          <fa-icon v-if="!isEditingExpense && !isCopyingExpense" :icon="['fas', 'plus']" />
+          <fa-icon v-if="isEditingExpense" :icon="['fas', 'check']" />
+          <fa-icon v-if="isCopyingExpense" :icon="['fas', 'copy']" />
+          <span v-if="!isEditingExpense && !isCopyingExpense">Add Expense</span>
+          <span v-if="isEditingExpense">Save Changes</span>
+          <span v-if="isCopyingExpense">Create Copy</span>
         </button>
       </Tooltip>
     </template>

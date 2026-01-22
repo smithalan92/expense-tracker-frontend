@@ -35,7 +35,7 @@ const emit = defineEmits<{
     <div class="et-modal-backdrop overflow-hidden">
       <div
         :class="{
-          'animate-slide-in-bottom et-modal overflow-hidden box-content w-[400px] md:w-full p-0': true,
+          'animate-slide-in-bottom et-modal overflow-hidden box-content w-full max-w-[400px] p-0': true,
           'absolute bottom-0 md:relative': position !== 'center',
         }"
         :style="{
@@ -43,23 +43,23 @@ const emit = defineEmits<{
         }"
       >
         <div class="relative">
-          <div class="flex justify-between items-center bg-sky-600 py-4 px-6 text-white rounded-t-2xl">
-            <h2 v-if="!slots.title" class="font-bold text-2xl">{{ title }}</h2>
+          <div class="et-modal__header">
+            <h2 v-if="!slots.title" class="et-modal__title">{{ title }}</h2>
             <div v-if="slots.title" class="flex-1">
               <slot name="title" />
             </div>
-            <div v-if="includeCloseButton" class="p-1 hover:cursor-pointer" @click="emit('close')">
-              <fa-icon :icon="['fas', 'xmark']" class="fill-white" size="sm" />
-            </div>
+            <button class="et-modal__close" @click="emit('close')">
+              <fa-icon :icon="['fas', 'xmark']" />
+            </button>
           </div>
 
           <slot name="alert" />
 
-          <div class="flex flex-col overflow-scroll px-6" :style="{ height: bodyHeight }">
+          <div class="et-modal__body" :style="{ height: bodyHeight }">
             <slot name="body" />
           </div>
 
-          <div class="flex pt-6 px-6 pb-4" :style="{ justifyContent: alignFooter ?? 'flex-end' }">
+          <div class="et-modal__footer" :style="{ justifyContent: alignFooter ?? 'flex-end' }">
             <slot name="footer" />
           </div>
 
