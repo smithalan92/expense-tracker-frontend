@@ -35,11 +35,12 @@ const emit = defineEmits<{
     <div class="et-modal-backdrop overflow-hidden">
       <div
         :class="{
-          'animate-slide-in-bottom et-modal overflow-hidden box-content w-full max-w-[400px] p-0': true,
-          'absolute bottom-0 md:relative': position !== 'center',
+          'animate-slide-in-bottom et-modal overflow-hidden box-content w-full max-w-[420px] p-0': true,
+          'absolute bottom-0 md:relative et-modal--position-bottom': position !== 'center',
         }"
         :style="{
           width: width ? `${width}px` : '',
+          maxHeight: '90%',
         }"
       >
         <div class="et-modal__header">
