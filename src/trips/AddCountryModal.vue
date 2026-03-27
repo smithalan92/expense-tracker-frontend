@@ -51,13 +51,13 @@ const onClickSave = () => {
 </script>
 
 <template>
-  <Modal title="Add a Country" @close="emit('close')">
+  <Modal title="Add a Country" height="auto" @close="emit('close')">
     <template v-slot:body>
       <div class="flex flex-col py-4">
         <span class="mb-2 font-bold">Country</span>
         <Picker :options="countryOptions" v-model="selectedCountry" />
       </div>
-      <div v-if="selectedCountry" class="flex flex-col py-4 border-t border-grey-200 mt-2">
+      <div v-if="selectedCountry" class="flex flex-1 flex-col py-4 border-t border-grey-200 mt-2">
         <CityPickerList :countryId="selectedCountry.value" v-model="selectedCityIds" />
       </div>
     </template>

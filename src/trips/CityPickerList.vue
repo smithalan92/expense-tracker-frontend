@@ -51,9 +51,7 @@ const clearAll = () => {
     <div class="flex items-start justify-between mb-3">
       <div>
         <span class="font-bold">Cities (Optional)</span>
-        <p class="text-sm text-grey-500 mt-1">
-          Select specific cities or leave empty to allow all cities when adding expenses.
-        </p>
+        <p class="text-sm text-grey-500 mt-1">Select specific cities or leave empty to allow all.</p>
       </div>
     </div>
 
@@ -61,14 +59,11 @@ const clearAll = () => {
     <div v-if="selectedCities.length > 0" class="mb-4">
       <div class="flex items-center justify-between mb-2">
         <span class="text-sm font-medium">Selected ({{ selectedCities.length }})</span>
-        <button
-          class="text-xs text-sky-400 hover:text-sky-300 transition-colors underline"
-          @click="clearAll"
-        >
+        <button class="text-xs text-sky-400 hover:text-sky-300 transition-colors underline" @click="clearAll">
           Clear all
         </button>
       </div>
-      <div class="flex flex-wrap gap-2">
+      <div class="flex gap-2 overflow-x-auto pb-1">
         <div
           v-for="city in selectedCities"
           :key="city.value"
@@ -81,7 +76,12 @@ const clearAll = () => {
             :aria-label="`Remove ${city.label}`"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
@@ -89,38 +89,35 @@ const clearAll = () => {
     </div>
 
     <!-- Search and Actions -->
-    <div class="flex gap-2 mb-3">
-      <input
-        type="search"
-        class="et-input flex-1"
-        placeholder="Search cities..."
-        v-model="searchTerm"
-      />
+    <div class="mb-3 relative">
+      <input type="search" class="et-input flex-1 pr-8" placeholder="Search cities..." v-model="searchTerm" />
       <button
-        v-if="filteredCityOptions.length > 0"
-        class="et-btn-secondary text-sm px-3 whitespace-nowrap"
-        @click="selectAll"
+        v-if="searchTerm"
+        @click="searchTerm = ''"
+        class="absolute right-3 top-1/2 -translate-y-1/2 text-grey-400 hover:text-grey-600 transition-colors p-2"
+        aria-label="Clear search"
       >
-        Select all
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
       </button>
     </div>
 
     <!-- City Grid -->
     <div class="flex flex-col">
-      <span v-if="!filteredCityOptions.length && searchTerm" class="text-sm text-grey-500 text-center py-4">
+      <span
+        v-if="!filteredCityOptions.length && searchTerm"
+        class="text-sm text-grey-500 text-center py-4 h-[300px]"
+      >
         No cities match your search
       </span>
 
-      <div
-        v-if="filteredCityOptions.length"
-        class="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-[300px] overflow-y-auto pr-2"
-      >
+      <div v-if="filteredCityOptions.length" class="flex flex-col h-[300px] overflow-y-auto">
         <City
           v-for="city in filteredCityOptions"
           :key="city.value"
           :city="city"
           :is-selected="selectedCityIds.includes(city.value)"
-          :use-pill="true"
           @click="onClickCity"
         />
       </div>

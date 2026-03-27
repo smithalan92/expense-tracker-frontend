@@ -40,7 +40,7 @@ const emit = defineEmits<{
         }"
         :style="{
           width: width ? `${width}px` : '',
-          maxHeight: '90%',
+          maxHeight: '90vh',
         }"
       >
         <div class="et-modal__header">
