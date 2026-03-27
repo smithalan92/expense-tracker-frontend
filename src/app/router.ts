@@ -5,45 +5,49 @@ import TripsView from "@/trips/TripsView.vue";
 import LoginView from "@/users/LoginView.vue";
 import { createRouter, createWebHistory } from "vue-router";
 
-const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: "/",
-      name: "home",
-      redirect: {
-        name: "login",
+export function createAppRouter() {
+  const router = createRouter({
+    history: createWebHistory(import.meta.env.BASE_URL),
+    routes: [
+      {
+        path: "/",
+        name: "home",
+        redirect: {
+          name: "login",
+        },
       },
-    },
-    {
-      path: "/login",
-      name: "login",
-      component: LoginView,
-    },
-    {
-      path: "/trips",
-      name: "trips",
-      component: TripsView,
-    },
-    {
-      path: "/trips/:tripId",
-      name: "tripData",
-      component: TripDataView,
-    },
-    {
-      path: "/testing",
-      name: "testing",
-      component: TestingChecklist,
-    },
-  ],
-});
+      {
+        path: "/login",
+        name: "login",
+        component: LoginView,
+      },
+      {
+        path: "/trips",
+        name: "trips",
+        component: TripsView,
+      },
+      {
+        path: "/trips/:tripId",
+        name: "tripData",
+        component: TripDataView,
+      },
+      {
+        path: "/testing",
+        name: "testing",
+        component: TestingChecklist,
+      },
+    ],
+  });
 
-router.beforeEach((to, from, next) => {
-  const appStore = useAppStore();
+  router.beforeEach((to, _from, next) => {
+    const appStore = useAppStore();
 
-  if (to.name !== "login" && !appStore.isLoggedIn) next({ name: "login" });
-  if (to.name === "login" && appStore.isLoggedIn) next({ name: "trips" });
-  else next();
-});
+    if (to.name !== "login" && !appStore.isLoggedIn) next({ name: "login" });
+    if (to.name === "login" && appStore.isLoggedIn) next({ name: "trips" });
+    else next();
+  });
 
-export default router;
+  return router;
+}
+
+export default createAppRouter();

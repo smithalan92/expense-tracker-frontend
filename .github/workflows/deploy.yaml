@@ -18,6 +18,12 @@ jobs:
       - name: Install dependencies
         shell: bash
         run: npm ci
+      - name: Type check
+        shell: bash
+        run: npm run type-check
+      - name: Test
+        shell: bash
+        run: npm run test:run
       - name: Build
         shell: bash
         run: npm run build

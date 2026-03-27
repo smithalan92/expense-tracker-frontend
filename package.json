@@ -13,7 +13,10 @@
     "lint:oxlint": "oxlint . -D correctness --ignore-path .gitignore",
     "lint:eslint": "eslint .",
     "lint": "run-s lint:*",
-    "format": "prettier --write src/"
+    "format": "prettier --write src/",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:ui": "vitest --ui --watch"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.1.0",
@@ -39,18 +42,24 @@
     "vue3-popper": "^1.5.0"
   },
   "devDependencies": {
+    "@pinia/testing": "^1.0.3",
     "@prettier/plugin-oxc": "^0.0.4",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/vue": "^8.1.0",
     "@tsconfig/node22": "^22.0.2",
     "@types/node": "22.18.6",
     "@vitejs/plugin-vue": "^6.0.1",
+    "@vitest/ui": "^4.1.2",
     "@vue/eslint-config-prettier": "^10.2.0",
     "@vue/eslint-config-typescript": "^14.6.0",
+    "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "^0.8.1",
     "autoprefixer": "^10.4.21",
     "eslint": "^9.37.0",
     "eslint-plugin-oxlint": "~1.19.0",
     "eslint-plugin-vue": "~10.5.0",
     "jiti": "^2.6.1",
+    "jsdom": "^29.0.1",
     "npm-run-all2": "^8.0.4",
     "oxlint": "~1.19.0",
     "prettier": "3.6.2",
@@ -61,6 +70,7 @@
     "vite-plugin-checker": "^0.11.0",
     "vite-plugin-pwa": "^1.0.3",
     "vite-plugin-vue-devtools": "^8.0.2",
+    "vitest": "^4.1.2",
     "vue-tsc": "^3.1.0",
     "workbox-window": "^7.3.0"
   }

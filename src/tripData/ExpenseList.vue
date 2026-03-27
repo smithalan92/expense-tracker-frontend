@@ -55,11 +55,9 @@ const expensesToDisplayByDate = computed(() => {
 
     const totalExpensesForDate = expenses.reduce((acc, current) => {
       const amount = parseFloat(current.euroAmount);
-      console.log({ euroAmount: current.euroAmount, amount });
 
       return acc + amount;
     }, 0);
-    console.log({ totalExpensesForDate });
 
     allExpensesByDate.push({
       date: formattedDate,
@@ -128,7 +126,9 @@ const onCloseAddOrEditExpenseModal = () => {
       </div>
     </div>
     <div v-if="expenses.length" class="sticky -bottom-px select-none et-bg-surface mr-2 rounded-lg">
-      <div class="text-right w-full py-2 pr-4 font-semibold text-slate-200">Total: {{ totalExpenseAmount }}</div>
+      <div class="text-right w-full py-2 pr-4 font-semibold text-slate-200">
+        Total: {{ totalExpenseAmount }}
+      </div>
     </div>
   </div>
   <ViewExpenseModal

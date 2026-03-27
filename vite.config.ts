@@ -1,7 +1,7 @@
 import tailwindcss from "@tailwindcss/vite";
 import vue from "@vitejs/plugin-vue";
 import { fileURLToPath, URL } from "node:url";
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import checker from "vite-plugin-checker";
 import { VitePWA, VitePWAOptions } from "vite-plugin-pwa";
 import vueDevTools from "vite-plugin-vue-devtools";
@@ -65,6 +65,12 @@ export default defineConfig({
   },
   server: {
     open: true,
+  },
+  test: {
+    environment: "jsdom",
+    globals: true,
+    setupFiles: ["./tests/setup.ts"],
+    typecheck: { tsconfig: "./tsconfig.vitest.json" },
   },
   build: {
     chunkSizeWarningLimit: 1024,
