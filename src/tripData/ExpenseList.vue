@@ -8,7 +8,7 @@ import Expense from "./Expense.vue";
 import ViewExpenseModal from "./ViewExpenseModal.vue";
 
 const store = useTripData();
-const { expenses, unsavedExpenses, totalExpenseAmount } = toRefs(store);
+const { expenses, unsavedExpenses } = toRefs(store);
 
 const showViewExpenseModal = ref(false);
 const isEditingExpense = ref(false);
@@ -104,31 +104,24 @@ const onCloseAddOrEditExpenseModal = () => {
 </script>
 
 <template>
-  <div class="relative">
-    <div class="overflow-y-scroll overflow-x-auto w-full h-full pr-2 flex flex-col">
-      <div v-if="!expenses.length" class="flex flex-1 justify-center items-center py-8">
-        <span>No expenses available.</span>
-      </div>
-
-      <div v-for="value in expensesToDisplayByDate" :key="value.date">
-        <div
-          class="flex-1 flex justify-between bg-sky-600/80 text-white py-2 my-2 px-2 font-semibold rounded-lg text-sm"
-        >
-          <div>{{ value.date }}</div>
-          <div>{{ value.totalExpensesForDate.toFixed(2) }}</div>
-        </div>
-        <Expense
-          v-for="expense in value.expenses"
-          :key="expense.id"
-          :expense="expense"
-          @click="onClickExpense(expense)"
-        />
-      </div>
+  <div class="overflow-y-auto overscroll-contain w-full h-full pr-2 flex flex-col">
+    <div v-if="!expenses.length" class="flex flex-1 justify-center items-center py-8">
+      <span>No expenses available.</span>
     </div>
-    <div v-if="expenses.length" class="sticky -bottom-px select-none et-bg-surface mr-2 rounded-lg">
-      <div class="text-right w-full py-2 pr-4 font-semibold text-slate-200">
-        Total: {{ totalExpenseAmount }}
+
+    <div v-for="value in expensesToDisplayByDate" :key="value.date">
+      <div
+        class="flex-1 flex justify-between bg-sky-600/80 text-white py-2 my-2 px-2 font-semibold rounded-lg text-sm"
+      >
+        <div>{{ value.date }}</div>
+        <div>{{ value.totalExpensesForDate.toFixed(2) }}</div>
       </div>
+      <Expense
+        v-for="expense in value.expenses"
+        :key="expense.id"
+        :expense="expense"
+        @click="onClickExpense(expense)"
+      />
     </div>
   </div>
   <ViewExpenseModal

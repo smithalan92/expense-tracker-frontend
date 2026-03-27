@@ -17,7 +17,7 @@ const toast = useToast();
 const router = useRouter();
 const store = useTripData();
 const isOnline = useOnline();
-const { trip, hasUnsavedExpenses, isLoadingTripData, hasFailedToLoadTripData } = storeToRefs(store);
+const { trip, hasUnsavedExpenses, isLoadingTripData, hasFailedToLoadTripData, totalExpenseAmount } = storeToRefs(store);
 const { loadTripData, resetState, syncUnsavedExpenses, deleteTrip } = store;
 const currentTripID = useGetCurrentTripId();
 const isEditTripModalOpen = ref(false);
@@ -29,6 +29,7 @@ const shouldShowStatsModal = ref(false);
 const onClickDelete = async () => {
   try {
     await deleteTrip();
+    toast.success("Trip deleted.");
     router.push("/");
   } catch (err) {
     console.log(err);
@@ -81,7 +82,7 @@ onMounted(() => {
 
     <div
       v-if="!isLoadingTripData && !hasFailedToLoadTripData && trip"
-      class="h-full overflow-hidden pt-4 flex flex-col"
+      class="h-full pt-4 flex flex-col"
     >
       <div class="text-center font-bold text-2xl mb-2">{{ trip.name }}</div>
       <div class="text-center text-md mb-4">{{ trip.startDate }} to {{ trip.endDate }}</div>
@@ -122,8 +123,11 @@ onMounted(() => {
           </button>
         </div>
       </div>
-      <div class="overflow-x-auto flex-1">
+      <div class="flex-1 min-h-0 overflow-hidden">
         <ExpenseList />
+      </div>
+      <div v-if="totalExpenseAmount" class="text-right pr-4 py-2 font-semibold text-slate-200 et-bg-surface rounded-lg mr-2">
+        Total: {{ totalExpenseAmount }}
       </div>
       <div class="flex justify-center py-6">
         <button class="et-btn-primary flex items-center" @click="showAddExpenseModal = true">

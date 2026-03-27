@@ -149,7 +149,7 @@ const dataToDisplay = useViewExpenseData(expense);
   <ConfirmModal
     v-if="shouldShowCopyModal || shouldShowDeleteModal"
     :title="confirmModalTitle"
-    :type="shouldShowDeleteModal ? 'danger' : 'warning'"
+    :type="shouldShowDeleteModal ? 'danger' : undefined"
     @confirm="onClickConfirm"
     @cancel="onCloseConfirm"
   >

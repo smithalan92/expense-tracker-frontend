@@ -163,8 +163,10 @@ const onSaveTrip = async () => {
   try {
     if (tripIdToEdit) {
       await updateTrip({ tripId: tripIdToEdit, payload, file: tripData.selectedImage });
+      $toast.success("Trip updated.");
     } else {
       await createTrip(payload, tripData.selectedImage);
+      $toast.success("Trip created.");
     }
 
     emit("close");

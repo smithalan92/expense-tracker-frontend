@@ -166,8 +166,10 @@ const onClickAddExpense = async () => {
 
     if (isEditingExpense.value) {
       await updateExpense({ expenseId: expenseToEdit!.id, payload });
+      $toast.success("Expense updated.");
     } else {
       await addExpense({ payload });
+      $toast.success("Expense added.");
     }
 
     emit("close");

@@ -19,6 +19,7 @@ vi.mock("@/api/trip", () => ({
 
 vi.mock("@vueuse/core", () => ({
   useOnline: () => ({ value: true }),
+  onClickOutside: vi.fn(),
 }));
 
 // Stub components not under test
@@ -46,7 +47,10 @@ vi.mock("@/pickers/TimePicker.vue", () => ({
 }));
 vi.mock("@/tripData/ExpenseCategoryIcon.vue", () => ({ default: { template: "<span />" } }));
 vi.mock("@/utils/Tooltip.vue", () => ({
-  default: { props: ["message", "disabled", "forceOpenOnMobile", "placement"], template: "<span><slot /></span>" },
+  default: {
+    props: ["message", "disabled", "forceOpenOnMobile", "placement"],
+    template: "<span><slot /></span>",
+  },
 }));
 vi.mock("@fortawesome/vue-fontawesome", () => ({
   FontAwesomeIcon: { template: "<span />" },
