@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import isMobileDevice from "@/utils/isMobile";
-import VueDatePicker from "@vuepic/vue-datepicker";
+import { VueDatePicker } from "@vuepic/vue-datepicker";
 
 const time = defineModel<string>();
 </script>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import isMobileDevice from "@/utils/isMobile";
-import VueDatePicker from "@vuepic/vue-datepicker";
+import { VueDatePicker } from "@vuepic/vue-datepicker";
 
 const date = defineModel<string>();
 </script>
@@ -10,18 +10,13 @@ const date = defineModel<string>();
       v-if="!isMobileDevice"
       class="w-full"
       v-model="date"
-      :enable-time-picker="false"
+      :time-config="{ enableTimePicker: false }"
       :teleport="true"
       model-type="yyyy-MM-dd"
       format="do MMM yyyy"
       auto-apply
       dark
     />
-    <input
-      v-if="isMobileDevice"
-      class="et-input"
-      type="date"
-      v-model="date"
-    />
+    <input v-if="isMobileDevice" class="et-input" type="date" v-model="date" />
   </div>
 </template>
