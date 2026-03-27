@@ -10,7 +10,7 @@ import useTripDataStore from "@/stores/tripDataStore";
 import isMobileDevice from "@/utils/isMobile";
 import Tooltip from "@/utils/Tooltip.vue";
 import { useToast } from "@/utils/useToast";
-import { useOnline } from "@vueuse/core";
+import { onClickOutside, useOnline } from "@vueuse/core";
 import { format } from "date-fns";
 import { computed, onBeforeMount, reactive, ref, toRefs, watch } from "vue";
 import ExpenseCategoryIcon from "./ExpenseCategoryIcon.vue";
@@ -64,6 +64,11 @@ const isAddingExpense = ref(false);
 const showCurrencyPicker = ref(false);
 const showNotes = ref(false);
 const amountInput = ref<HTMLInputElement | null>(null);
+const currencyPickerRef = ref<HTMLElement | null>(null);
+
+onClickOutside(currencyPickerRef, () => {
+  showCurrencyPicker.value = false;
+});
 
 const onAmountFocus = () => {
   setTimeout(() => {
@@ -273,7 +278,7 @@ onBeforeMount(() => {
         </div>
 
         <!-- Amount Input - Big and prominent -->
-        <div class="et-expense-form__section relative">
+        <div ref="currencyPickerRef" class="et-expense-form__section relative">
           <label class="et-expense-form__section-title">Amount</label>
           <div class="et-expense-form__amount-display">
             <button class="et-expense-form__currency-btn" @click="showCurrencyPicker = !showCurrencyPicker">

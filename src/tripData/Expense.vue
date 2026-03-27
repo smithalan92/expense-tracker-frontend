@@ -45,9 +45,10 @@ const isUnsavedExpense = computed(() => expense.id < 0);
       <!-- Top row: location + amount -->
       <div class="flex items-center gap-2">
         <div class="flex items-center min-w-0 gap-1.5">
-          <fa-icon :icon="['fas', 'location-dot']" class="text-gray-300 shrink-0" />
-          <span class="truncate font-semibold text-sm text-white">
-            {{ expense.city.name }}
+          <!-- Category pill -->
+          <ExpenseCategoryIcon :category-id="expense.category.id" class="h-3 w-3" />
+          <span class="truncate max-w-[10rem]">
+            {{ expense.category.name }}
           </span>
         </div>
 
@@ -57,23 +58,18 @@ const isUnsavedExpense = computed(() => expense.id < 0);
         </span>
       </div>
 
-      <!-- Bottom row: category + users -->
+      <!-- Bottom row: location + users -->
       <div class="mt-1 flex items-center gap-2 min-w-0">
-        <span
-          class="et-pill-primary pl-1 pr-2"
-        >
+        <span class="et-pill-primary pl-1 pr-2">
           <fa-icon :icon="['fas', 'clock']" class="text-sky-300" />
           <span class="truncate max-w-[10rem]">
             {{ expenseTime }}
           </span>
         </span>
-        <!-- Category pill -->
-        <span
-          class="et-pill-secondary"
-        >
-          <ExpenseCategoryIcon :category-id="expense.category.id" class="h-3 w-3" />
-          <span class="truncate max-w-[10rem]">
-            {{ expense.category.name }}
+        <span class="et-pill-secondary">
+          <fa-icon :icon="['fas', 'location-dot']" class="text-gray-300 shrink-0" />
+          <span class="truncate font-semibold text-sm text-white">
+            {{ expense.city.name }}
           </span>
         </span>
 
@@ -82,7 +78,7 @@ const isUnsavedExpense = computed(() => expense.id < 0);
           <!-- One or two users as small bubbles, more as a count -->
           <template v-if="expense.users.length === 1">
             <div
-              class="h-6 w-6 rounded-full bg-emerald-600/50 text-emerald-100 flex items-center justify-center text-[0.7rem] font-bold ring-1 ring-emerald-500/30"
+              class="h-6 w-6 rounded-full bg-emerald-800 text-emerald-100 flex items-center justify-center text-[0.7rem] font-bold ring-1 ring-emerald-900"
             >
               {{ userInitals }}
             </div>
@@ -93,7 +89,7 @@ const isUnsavedExpense = computed(() => expense.id < 0);
               <div
                 v-for="u in expense.users"
                 :key="u.id"
-                class="h-6 w-6 rounded-full bg-emerald-600/50 text-emerald-100 flex items-center justify-center text-[0.7rem] font-bold ring-1 ring-slate-800"
+                class="h-6 w-6 rounded-full bg-emerald-800 text-emerald-100 flex items-center justify-center text-[0.7rem] font-bold ring-1 ring-slate-800"
               >
                 {{ `${u.firstName[0]}${u.lastName[0]}`.toUpperCase() }}
               </div>
@@ -105,12 +101,12 @@ const isUnsavedExpense = computed(() => expense.id < 0);
               <div
                 v-for="u in expense.users.slice(0, 2)"
                 :key="u.id"
-                class="h-6 w-6 rounded-full bg-emerald-600/50 text-emerald-100 flex items-center justify-center text-[0.7rem] font-bold ring-1 ring-slate-800"
+                class="h-6 w-6 rounded-full bg-emerald-800 text-emerald-100 flex items-center justify-center text-[0.7rem] font-bold ring-1 ring-slate-800"
               >
                 {{ `${u.firstName[0]}${u.lastName[0]}`.toUpperCase() }}
               </div>
               <div
-                class="h-6 w-6 rounded-full bg-emerald-600/50 text-emerald-100 flex items-center justify-center text-[0.7rem] font-semibold ring-1 ring-slate-800"
+                class="h-6 w-6 rounded-full bg-emerald-800 text-emerald-100 flex items-center justify-center text-[0.7rem] font-semibold ring-1 ring-slate-800"
               >
                 +{{ expense.users.length - 2 }}
               </div>

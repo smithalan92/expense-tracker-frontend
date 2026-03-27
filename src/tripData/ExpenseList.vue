@@ -4,7 +4,7 @@ import useTripData from "@/stores/tripDataStore";
 import { format, isSameYear } from "date-fns";
 import { computed, ref, toRefs } from "vue";
 import AddOrEditExpenseModal from "./AddOrEditExpenseModal.vue";
-import ExpenseAlt from "./ExpenseAlt.vue";
+import Expense from "./Expense.vue";
 import ViewExpenseModal from "./ViewExpenseModal.vue";
 
 const store = useTripData();
@@ -117,7 +117,7 @@ const onCloseAddOrEditExpenseModal = () => {
           <div>{{ value.date }}</div>
           <div>{{ value.totalExpensesForDate.toFixed(2) }}</div>
         </div>
-        <ExpenseAlt
+        <Expense
           v-for="expense in value.expenses"
           :key="expense.id"
           :expense="expense"
