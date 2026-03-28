@@ -44,11 +44,16 @@ const isUnsavedExpense = computed(() => expense.id < 0);
     <div class="flex flex-col overflow-hidden">
       <!-- Top row: location + amount -->
       <div class="flex items-center gap-2">
-        <div class="flex items-center min-w-0 gap-1.5">
-          <!-- Category pill -->
-          <ExpenseCategoryIcon :category-id="expense.category.id" class="h-3 w-3" />
-          <span class="truncate max-w-[10rem]">
-            {{ expense.category.name }}
+        <div class="flex flex-col">
+          <div class="flex items-center min-w-0 gap-1.5">
+            <!-- Category pill -->
+            <ExpenseCategoryIcon :category-id="expense.category.id" class="h-3 w-3" />
+            <span class="truncate max-w-[10rem]">
+              {{ expense.category.name }}
+            </span>
+          </div>
+          <span class="text-xs text-gray-400 italic capitalize">
+            {{ expense.description }}
           </span>
         </div>
 
@@ -69,7 +74,7 @@ const isUnsavedExpense = computed(() => expense.id < 0);
         <span class="et-pill-secondary">
           <fa-icon :icon="['fas', 'location-dot']" class="text-gray-300 shrink-0" />
           <span class="truncate font-semibold text-sm text-white">
-            {{ expense.city.name }}
+            {{ expense.country.name }}
           </span>
         </span>
 
