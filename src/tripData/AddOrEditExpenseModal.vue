@@ -60,9 +60,20 @@ const parsedAmount = computed(() => {
   return expenseData.amount as number;
 });
 
+const POPULAR_CATEGORY_IDS = [4, 11, 15, 16, 9];
+
+const popularCategories = computed(() =>
+  POPULAR_CATEGORY_IDS.map((id) => categoryOptions.value.find((c) => c.value === id)).filter(Boolean) as typeof categoryOptions.value,
+);
+
+const otherCategories = computed(() =>
+  categoryOptions.value.filter((c) => !POPULAR_CATEGORY_IDS.includes(c.value)),
+);
+
 const isAddingExpense = ref(false);
 const showCurrencyPicker = ref(false);
 const showNotes = ref(false);
+const showAllCategories = ref(false);
 const amountInput = ref<HTMLInputElement | null>(null);
 const currencyPickerRef = ref<HTMLElement | null>(null);
 
@@ -210,6 +221,10 @@ onBeforeMount(() => {
     (c) => c.value === expenseToUseForHydration.category.id,
   )!;
 
+  if (!POPULAR_CATEGORY_IDS.includes(expenseToUseForHydration.category.id)) {
+    showAllCategories.value = true;
+  }
+
   expenseData.selectedUsers = expenseToUseForHydration.users.map((user) => ({
     label: `${user.firstName} ${user.lastName}`,
     value: user.id,
@@ -321,12 +336,12 @@ onBeforeMount(() => {
           </div>
         </div>
 
-        <!-- Category Carousel -->
+        <!-- Category -->
         <div class="et-expense-form__section">
           <label class="et-expense-form__section-title">Category</label>
-          <div class="et-expense-form__category-carousel">
+          <div class="et-expense-form__category-grid">
             <button
-              v-for="category in categoryOptions"
+              v-for="category in popularCategories"
               :key="category.value"
               class="et-expense-form__category-chip"
               :class="{
@@ -342,6 +357,30 @@ onBeforeMount(() => {
               <span>{{ category.label }}</span>
             </button>
           </div>
+          <template v-if="showAllCategories">
+            <div class="et-expense-form__category-grid mt-2">
+              <button
+                v-for="category in otherCategories"
+                :key="category.value"
+                class="et-expense-form__category-chip"
+                :class="{
+                  'et-expense-form__category-chip--selected':
+                    expenseData.selectedCategory?.value === category.value,
+                }"
+                @click="expenseData.selectedCategory = category"
+              >
+                <ExpenseCategoryIcon
+                  :category-id="category.value"
+                  class="et-expense-form__category-chip-icon"
+                />
+                <span>{{ category.label }}</span>
+              </button>
+            </div>
+          </template>
+          <button class="et-expense-form__category-expand-btn" @click="showAllCategories = !showAllCategories">
+            <fa-icon :icon="['fas', showAllCategories ? 'chevron-up' : 'chevron-down']" class="text-xs" />
+            <span>{{ showAllCategories ? 'Show less' : 'More categories' }}</span>
+          </button>
         </div>
 
         <!-- Paid by -->
