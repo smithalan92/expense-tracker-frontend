@@ -833,29 +833,6 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
 }
 
-/* Vue Datepicker theme overrides for dark glassmorphism */
-.dp__theme_dark {
-  --dp-background-color: rgba(30, 41, 59, 0.95);
-  --dp-text-color: #e2e8f0;
-  --dp-hover-color: rgba(51, 65, 85, 0.8);
-  --dp-hover-text-color: #ffffff;
-  --dp-hover-icon-color: #94a3b8;
-  --dp-primary-color: #0284c7;
-  --dp-primary-text-color: #ffffff;
-  --dp-secondary-color: #64748b;
-  --dp-border-color: rgba(148, 163, 184, 0.2);
-  --dp-menu-border-color: rgba(148, 163, 184, 0.15);
-  --dp-border-color-hover: rgba(148, 163, 184, 0.3);
-  --dp-disabled-color: #475569;
-  --dp-scroll-bar-background: rgba(51, 65, 85, 0.5);
-  --dp-scroll-bar-color: #64748b;
-  --dp-success-color: #10b981;
-  --dp-success-color-disabled: #065f46;
-  --dp-icon-color: #94a3b8;
-  --dp-danger-color: #f43f5e;
-  --dp-highlight-color: rgba(2, 132, 199, 0.2);
-}
-
 /* Vue Multiselect theme overrides */
 .multiselect {
   background: rgba(51, 65, 85, 0.5) !important;
