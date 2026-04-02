@@ -1,11 +1,11 @@
 import tailwindcss from "@tailwindcss/vite";
 import vue from "@vitejs/plugin-vue";
 import { fileURLToPath, URL } from "node:url";
-import { defineConfig } from "vitest/config";
 import checker from "vite-plugin-checker";
 import { VitePWA, VitePWAOptions } from "vite-plugin-pwa";
 import vueDevTools from "vite-plugin-vue-devtools";
 import svgLoader from "vite-svg-loader";
+import { defineConfig } from "vitest/config";
 
 const pwaOptions: Partial<VitePWAOptions> = {
   mode: "development",

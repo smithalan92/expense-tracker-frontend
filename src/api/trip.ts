@@ -50,7 +50,7 @@ export interface Trip {
   totalExpenseAmount: number;
 }
 
-interface GetTripsResponse {
+export interface GetTripsResponse {
   trips: Trip[];
 }
 
@@ -88,11 +88,16 @@ export interface GetTripDataResponse {
   expenses: TripExpense[];
 }
 
+export interface TripCountryCity {
+  id: number;
+  name: string;
+}
+
 export interface TripCountry {
   id: number;
   name: string;
   currencyId: number;
-  cities: Array<{ id: number; name: string }>;
+  cities: TripCountryCity[];
 }
 
 interface Category {

@@ -156,7 +156,7 @@ const onSaveTrip = async () => {
     name: tripData.tripName,
     startDate: tripData.startDate,
     endDate: tripData.endDate,
-    countries: tripData.selectedCountries,
+    countries: tripData.selectedCountries.map((c) => ({ countryId: c.countryId, cityIds: c.cityIds })),
     userIds: tripData.selectedUsers.map((u) => u.value),
   };
 
@@ -211,11 +211,11 @@ onMounted(() => {
           <div class="et-expense-form__row">
             <div class="flex-1">
               <label class="et-expense-form__label">Start Date</label>
-              <DatePicker v-model="tripData.startDate" />
+              <DatePicker v-model="tripData.startDate" data-test-id="start-date-picker" />
             </div>
             <div class="flex-1">
               <label class="et-expense-form__label">End Date</label>
-              <DatePicker v-model="tripData.endDate" />
+              <DatePicker v-model="tripData.endDate" data-test-id="end-date-picker" />
             </div>
           </div>
         </div>

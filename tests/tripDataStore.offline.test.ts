@@ -83,7 +83,7 @@ describe("tripDataStore - Offline handling", () => {
         expenses: [mockExpense],
         countries: mockTripDataState.countries,
         currencyIds: [1],
-        categories: [{ id: 2, name: "Food" }],
+        categories: [{ id: 4, name: "Restaurants" }],
         userIds: [1],
       });
 
@@ -109,7 +109,7 @@ describe("tripDataStore - Offline handling", () => {
           cityId: 3,
           amount: 25,
           currencyId: 1,
-          categoryId: 2,
+          categoryId: 4,
           description: "Coffee",
           userIds: [1],
         },

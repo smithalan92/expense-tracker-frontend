@@ -41,12 +41,10 @@ export default function useAddOrEditExpenseModalOptions({
   });
 
   const categoryOptions = computed(() => {
-    return categories
-      .map<PickerOption>((c) => ({
-        label: c.name,
-        value: c.id,
-      }))
-      .sort((a, b) => a.label.localeCompare(b.label));
+    return categories.map<PickerOption>((c) => ({
+      label: c.name,
+      value: c.id,
+    }));
   });
 
   const userOptions = computed(() => {

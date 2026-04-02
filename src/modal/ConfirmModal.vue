@@ -16,7 +16,7 @@ const emit = defineEmits<{
 
 <template>
   <Teleport to="body">
-    <div class="et-modal-backdrop overflow-hidden">
+    <div class="et-modal-backdrop overflow-hidden" data-testid="confirm-modal">
       <div
         class="animate-slide-in-bottom et-modal et-modal--position-bottom overflow-hidden box-content w-[410px] p-0 absolute bottom-0 md:relative"
       >

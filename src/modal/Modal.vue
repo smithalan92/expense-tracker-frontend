@@ -2,14 +2,14 @@
 import Spinner from "@/app/Spinner.vue";
 import { computed } from "vue";
 
-const { position, includeCloseButton, title, height, alignFooter, width } = defineProps<{
+const { position, title, height, alignFooter, width, testId } = defineProps<{
   position?: "center" | "bottom";
-  includeCloseButton?: boolean;
   title?: string;
   height?: number | "auto";
   alignFooter?: "flex-end" | "center" | "space-between";
   isLoading?: boolean;
   width?: number;
+  testId?: string;
 }>();
 
 const slots = defineSlots<{
@@ -42,6 +42,7 @@ const emit = defineEmits<{
           width: width ? `${width}px` : '',
           maxHeight: '90vh',
         }"
+        :data-testid="testId"
       >
         <div class="et-modal__header">
           <h2 v-if="!slots.title" class="et-modal__title">{{ title }}</h2>

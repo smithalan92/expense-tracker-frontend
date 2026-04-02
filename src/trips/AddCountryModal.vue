@@ -51,7 +51,7 @@ const onClickSave = () => {
 </script>
 
 <template>
-  <Modal title="Add a Country" height="auto" @close="emit('close')">
+  <Modal title="Add a Country" height="auto" @close="emit('close')" testId="add-country-modal">
     <template v-slot:body>
       <div class="flex flex-col py-4">
         <span class="mb-2 font-bold">Country</span>

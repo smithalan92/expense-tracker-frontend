@@ -1,6 +1,6 @@
-import type { TripDataState } from "@/stores/tripDataStore";
-import type { Trip } from "@/api/trip";
 import type { TripExpense } from "@/api/expense";
+import type { Trip } from "@/api/trip";
+import type { TripDataState } from "@/stores/tripDataStore";
 
 export const mockTrip: Trip = {
   id: 1,
@@ -18,7 +18,7 @@ export const mockExpense: TripExpense = {
   euroAmount: "50.00",
   localDateTime: "2024-03-05T10:00:00",
   description: "Lunch",
-  category: { id: 2, name: "Food" },
+  category: { id: 4, name: "Restaurants" },
   city: { id: 3, name: "Tokyo", timezone: "Asia/Tokyo" },
   country: { id: 4, name: "Japan" },
   users: [{ id: 1, firstName: "Alan", lastName: "Smith" }],
@@ -39,7 +39,7 @@ export const mockTripDataState: Omit<TripDataState, "isLoadingTripData" | "hasFa
     },
   ],
   currencyIds: [1],
-  categories: [{ id: 2, name: "Food" }],
+  categories: [{ id: 4, name: "Restaurants" }],
   userIds: [1],
 };
 

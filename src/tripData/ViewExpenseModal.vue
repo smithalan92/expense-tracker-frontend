@@ -90,7 +90,12 @@ const onCloseConfirm = () => {
 const dataToDisplay = useViewExpenseData(expense);
 </script>
 <template>
-  <Modal :includeCloseButton="true" :height="330" alignFooter="space-between" @close="emit('close')">
+  <Modal
+    :height="330"
+    alignFooter="space-between"
+    @close="emit('close')"
+    :test-id="`view-expense-${expense.id}`"
+  >
     <template #title>
       <div class="flex flex-col items-center flex-1">
         <span class="font-bold text-2xl">{{ expenseDateAndTime.date }}</span>

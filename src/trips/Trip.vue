@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { Trip } from "@/api/trip";
-import { useRouter } from "vue-router";
+import { differenceInDays, format } from "date-fns";
 import { computed } from "vue";
-import { format, differenceInDays } from "date-fns";
+import { useRouter } from "vue-router";
 
 const { trip } = defineProps<{
   trip: Trip;
@@ -39,8 +39,8 @@ const isActive = computed(() => {
 const daysUntil = computed(() => Math.max(0, differenceInDays(startDate.value, today)));
 
 const formattedDateRange = computed(() => {
-  const start = format(startDate.value, "MMM d");
-  const end = format(endDate.value, "MMM d, yyyy");
+  const start = format(startDate.value, "MMM dd");
+  const end = format(endDate.value, "MMM dd, yyyy");
   return `${start} - ${end}`;
 });
 
@@ -63,7 +63,8 @@ const onClick = () => {
 </script>
 
 <template>
-  <article
+  <div
+    :data-testid="`trip-${trip.id}`"
     class="et-trip-card"
     :class="{
       'et-trip-card--upcoming': isUpcoming,
@@ -116,5 +117,5 @@ const onClick = () => {
 
     <!-- Hover Indicator -->
     <div class="et-trip-card__indicator" />
-  </article>
+  </div>
 </template>

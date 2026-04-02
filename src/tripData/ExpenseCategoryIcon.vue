@@ -44,5 +44,7 @@ const iconName = computed(() => {
 </script>
 
 <template>
-  <fa-icon :icon="['fas', iconName]" class="text-current" />
+  <span aria-hidden="true">
+    <fa-icon :icon="['fas', iconName]" class="text-current" />
+  </span>
 </template>

@@ -67,7 +67,7 @@ export interface ExpenseCategory {
 export interface ExpenseCity {
   id: number;
   name: string;
-  timezone: string;
+  timezone?: string;
 }
 
 export interface AddExpensesToTripResponse {

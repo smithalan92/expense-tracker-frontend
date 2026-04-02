@@ -1,14 +1,12 @@
 <script setup lang="ts">
-import { watch } from "vue";
+const { dataTestId } = defineProps<{
+  dataTestId?: string;
+}>();
 
 const date = defineModel<string>();
-
-watch(date, (val) => {
-  console.log(val);
-});
 </script>
 <template>
   <div>
-    <input class="et-input" type="date" v-model="date" />
+    <input name="date-picker" :data-testid="dataTestId" class="et-input" type="date" v-model="date" />
   </div>
 </template>

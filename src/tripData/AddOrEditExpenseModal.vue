@@ -60,15 +60,9 @@ const parsedAmount = computed(() => {
   return expenseData.amount as number;
 });
 
-const POPULAR_CATEGORY_IDS = [4, 11, 15, 16, 9];
+const firstCategories = computed(() => categoryOptions.value.slice(0, 6));
 
-const popularCategories = computed(() =>
-  POPULAR_CATEGORY_IDS.map((id) => categoryOptions.value.find((c) => c.value === id)).filter(Boolean) as typeof categoryOptions.value,
-);
-
-const otherCategories = computed(() =>
-  categoryOptions.value.filter((c) => !POPULAR_CATEGORY_IDS.includes(c.value)),
-);
+const otherCategories = computed(() => categoryOptions.value.slice(6));
 
 const isAddingExpense = ref(false);
 const showCurrencyPicker = ref(false);
@@ -221,7 +215,7 @@ onBeforeMount(() => {
     (c) => c.value === expenseToUseForHydration.category.id,
   )!;
 
-  if (!POPULAR_CATEGORY_IDS.includes(expenseToUseForHydration.category.id)) {
+  if (!firstCategories.value.map((v) => v.value).includes(expenseToUseForHydration.category.id)) {
     showAllCategories.value = true;
   }
 
@@ -251,8 +245,8 @@ onBeforeMount(() => {
         <div class="et-expense-form__section">
           <label class="et-expense-form__section-title">When</label>
           <div class="et-expense-form__row">
-            <DatePicker v-model="expenseData.expenseDate" class="flex-1" />
-            <TimePicker v-model="expenseData.expenseTime" class="flex-1" />
+            <DatePicker v-model="expenseData.expenseDate" class="flex-1" dataTestId="expense-date" />
+            <TimePicker v-model="expenseData.expenseTime" class="flex-1" dataTestId="expense-time" />
           </div>
         </div>
 
@@ -341,9 +335,10 @@ onBeforeMount(() => {
           <label class="et-expense-form__section-title">Category</label>
           <div class="et-expense-form__category-grid">
             <button
-              v-for="category in popularCategories"
+              v-for="category in firstCategories"
               :key="category.value"
               class="et-expense-form__category-chip"
+              type="button"
               :class="{
                 'et-expense-form__category-chip--selected':
                   expenseData.selectedCategory?.value === category.value,
@@ -357,11 +352,12 @@ onBeforeMount(() => {
               <span>{{ category.label }}</span>
             </button>
           </div>
-          <template v-if="showAllCategories">
+          <template v-if="showAllCategories && otherCategories.length">
             <div class="et-expense-form__category-grid mt-2">
               <button
                 v-for="category in otherCategories"
                 :key="category.value"
+                type="button"
                 class="et-expense-form__category-chip"
                 :class="{
                   'et-expense-form__category-chip--selected':
@@ -377,9 +373,13 @@ onBeforeMount(() => {
               </button>
             </div>
           </template>
-          <button class="et-expense-form__category-expand-btn" @click="showAllCategories = !showAllCategories">
+          <button
+            v-if="otherCategories.length"
+            class="et-expense-form__category-expand-btn"
+            @click="showAllCategories = !showAllCategories"
+          >
             <fa-icon :icon="['fas', showAllCategories ? 'chevron-up' : 'chevron-down']" class="text-xs" />
-            <span>{{ showAllCategories ? 'Show less' : 'More categories' }}</span>
+            <span>{{ showAllCategories ? "Show less" : "More categories" }}</span>
           </button>
         </div>
 

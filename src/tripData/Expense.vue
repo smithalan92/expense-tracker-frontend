@@ -33,7 +33,7 @@ const isUnsavedExpense = computed(() => expense.id < 0);
 
 <template>
   <div
-    :data-expense-id="expense.id"
+    :data-testid="`expense-${expense.id}`"
     class="grid grid-cols-[3.25rem,1fr,auto] gap-3 items-stretch border-b border-slate-700/50 px-3 py-2 cursor-pointer hover:bg-slate-700/30 last:border-b-0 transition-colors"
     :class="{
       'bg-amber-700': isUnsavedExpense,
@@ -45,14 +45,14 @@ const isUnsavedExpense = computed(() => expense.id < 0);
       <!-- Top row: location + amount -->
       <div class="flex items-center gap-2">
         <div class="flex flex-col">
-          <div class="flex items-center min-w-0 gap-1.5">
+          <div class="flex min-w-0 gap-1.5">
             <!-- Category pill -->
             <ExpenseCategoryIcon :category-id="expense.category.id" class="h-3 w-3" />
-            <span class="truncate max-w-[10rem]">
+            <span class="truncate max-w-[10rem] ml-2">
               {{ expense.category.name }}
             </span>
           </div>
-          <span class="text-xs text-gray-400 italic capitalize">
+          <span class="text-xs text-gray-400 italic capitalize my-1 truncate max-w-[12rem]">
             {{ expense.description }}
           </span>
         </div>
