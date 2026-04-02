@@ -185,7 +185,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <Modal :title="modalTitle" :is-loading="isLoadingTripToEdit" @close="emit('close')" :height="'auto'">
+  <Modal
+    :title="modalTitle"
+    :is-loading="isLoadingTripToEdit || isCreatingTrip"
+    @close="emit('close')"
+    :height="'auto'"
+  >
     <template v-slot:body>
       <div class="et-expense-form">
         <!-- Trip Name -->

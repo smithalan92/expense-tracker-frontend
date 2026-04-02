@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { type ExpensePayload, type TripExpense } from "@/api/expense";
-import Spinner from "@/app/Spinner.vue";
 import Modal from "@/modal/Modal.vue";
 import DatePicker from "@/pickers/DatePicker.vue";
 import { type PickerOption } from "@/pickers/Picker.vue";
@@ -238,7 +237,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <Modal :title="modalTitle" @close="emit('close')" :height="'auto'">
+  <Modal :title="modalTitle" @close="emit('close')" :height="'auto'" :is-loading="isAddingExpense">
     <template v-slot:body>
       <div class="et-expense-form">
         <!-- Date & Time -->
@@ -434,7 +433,6 @@ onBeforeMount(() => {
       </Tooltip>
     </template>
   </Modal>
-  <Spinner v-if="isAddingExpense" :use-overlay="true" />
 </template>
 <script lang="ts">
 interface ExpenseData {
