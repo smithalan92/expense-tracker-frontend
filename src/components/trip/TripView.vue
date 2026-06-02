@@ -31,7 +31,7 @@ onBeforeMount(() => {
 });
 </script>
 <template>
-  <div class="flex flex-col flex-1 relative" v-if="trip && !isLoadingTripData && !hasFailedToLoadTripData">
+  <div class="flex flex-col flex-1 min-h-0 relative" v-if="trip && !isLoadingTripData && !hasFailedToLoadTripData">
     <div class="flex flex-col px-4 py-6" :style="getTripCoverStyle(trip.image)">
       <! --- Back & Edit Icons --!>
       <div class="flex justify-between">
@@ -89,7 +89,7 @@ onBeforeMount(() => {
       </div>
     </div>
 
-    <div class="overflow-hidden px-4">
+    <div class="flex flex-col flex-1 overflow-hidden px-4">
       <ExpenseList class="pb-24" />
     </div>
 
