@@ -22,7 +22,7 @@ const isUnsavedExpense = computed(() => expense.id < 0);
 <template>
   <div
     :data-testid="`expense-${expense.id}`"
-    class="grid grid-cols-[1fr_3.5fr_0.5fr_1.25fr] gap-5 items-stretch border-b border-slate-700/50 py-2 cursor-pointer last:border-b-0"
+    class="grid grid-cols-[0.5fr_3.75fr_0.5fr_1.5fr] gap-5 items-stretch border-b border-slate-700/50 py-2 cursor-pointer last:border-b-0"
     :class="{
       'bg-amber-700': isUnsavedExpense,
     }"
@@ -50,9 +50,9 @@ const isUnsavedExpense = computed(() => expense.id < 0);
       <AvatarGroup :users="expense.users" />
     </div>
 
-    <div class="flex flex-col items-center justify-center">
+    <div class="flex flex-col items-end justify-center text-right">
       <div class="text-sm">€{{ expense.euroAmount }}</div>
-      <div v-if="expense.currency.code !== 'EUR'" class="text-[9px]">
+      <div v-if="expense.currency.code !== 'EUR'" class="text-[11px]">
         {{ `${expense.amount} ${expense.currency.code}` }}
       </div>
     </div>

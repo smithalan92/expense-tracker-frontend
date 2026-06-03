@@ -19,7 +19,7 @@ const props = defineProps<{
 
   <div
     v-if="useOverlay"
-    class="fixed w-screen h-screen z-20 flex items-center justify-center top-0 left-0 bg-primary/30"
+    class="fixed w-screen h-screen z-20 flex items-center justify-center top-0 left-0 bg-background/30"
     style="backdrop-filter: blur(4px)"
   >
     <Loader2Icon role="status" aria-label="Loading" :class="cn('size-12 animate-spin', props.class)" />
