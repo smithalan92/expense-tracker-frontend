@@ -113,7 +113,9 @@ const onCloseAddOrEditExpenseModal = () => {
     </div>
 
     <div v-for="value in expensesToDisplayByDate" :key="value.date">
-      <div class="flex-1 flex justify-between font-display pb-4 pt-6 font-semibold text-sm">
+      <div
+        class="flex-1 flex justify-between font-display pb-4 pt-6 font-semibold text-sm sticky top-0 bg-background z-10"
+      >
         <div>{{ value.date }}</div>
         <div>€{{ Intl.NumberFormat().format(value.totalExpensesForDate) }}</div>
       </div>

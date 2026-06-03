@@ -1,69 +1,39 @@
 <script setup lang="ts">
-import {
-  BanknoteArrowDown,
-  Bed,
-  Beer,
-  Binoculars,
-  CarTaxiFront,
-  Cigarette,
-  Coffee,
-  Cookie,
-  FileQuestionMark,
-  Gem,
-  Gift,
-  HandCoins,
-  PlaneTakeoff,
-  Shirt,
-  Utensils,
-  type LucideIcon,
-} from "@lucide/vue";
-import { computed } from "vue";
+import { computed, defineAsyncComponent, type Component } from "vue";
 
-interface IconProps {
-  component: LucideIcon;
+interface IconConfig {
+  component: Component;
   class: string;
 }
 
-const { categoryId } = defineProps<{
-  categoryId: number;
-}>();
+const icon = (name: string) =>
+  defineAsyncComponent(() =>
+    import("@lucide/vue").then((m) => (m as unknown as Record<string, Component>)[name]!),
+  );
 
-const iconProps = computed<IconProps>(() => {
-  switch (categoryId) {
-    case 3:
-      return { component: CarTaxiFront, class: "bg-amber-700" };
-    case 4:
-      return { component: Utensils, class: "bg-teal-700" };
-    case 5:
-      return { component: Cigarette, class: "bg-slate-500" };
-    case 6:
-      return { component: Binoculars, class: "bg-sky-700" };
-    case 7:
-      return { component: Shirt, class: "bg-rose-700" };
-    case 8:
-      return { component: Gem, class: "bg-violet-700" };
-    case 9:
-      return { component: Beer, class: "bg-yellow-700" };
-    case 10:
-      return { component: FileQuestionMark, class: "bg-zinc-500" };
-    case 11:
-      return { component: Cookie, class: "bg-orange-800" };
-    case 12:
-      return { component: Coffee, class: "bg-stone-600" };
-    case 13:
-      return { component: BanknoteArrowDown, class: "bg-green-700" };
-    case 15:
-      return { component: HandCoins, class: "bg-lime-700" };
-    case 16:
-      return { component: Gift, class: "bg-pink-700" };
-    case 17:
-      return { component: PlaneTakeoff, class: "bg-blue-700" };
-    case 18:
-      return { component: Bed, class: "bg-indigo-700" };
-    default:
-      return { component: FileQuestionMark, class: "bg-zinc-500" };
-  }
-});
+const iconMap: Record<number, IconConfig> = {
+  3: { component: icon("CarTaxiFront"), class: "bg-amber-700" },
+  4: { component: icon("Utensils"), class: "bg-teal-700" },
+  5: { component: icon("Cigarette"), class: "bg-slate-500" },
+  6: { component: icon("Binoculars"), class: "bg-sky-700" },
+  7: { component: icon("Shirt"), class: "bg-rose-700" },
+  8: { component: icon("Gem"), class: "bg-violet-700" },
+  9: { component: icon("Beer"), class: "bg-yellow-700" },
+  10: { component: icon("FileQuestionMark"), class: "bg-zinc-500" },
+  11: { component: icon("Cookie"), class: "bg-orange-800" },
+  12: { component: icon("Coffee"), class: "bg-stone-600" },
+  13: { component: icon("BanknoteArrowDown"), class: "bg-green-700" },
+  15: { component: icon("HandCoins"), class: "bg-lime-700" },
+  16: { component: icon("Gift"), class: "bg-pink-700" },
+  17: { component: icon("PlaneTakeoff"), class: "bg-blue-700" },
+  18: { component: icon("Bed"), class: "bg-indigo-700" },
+};
+
+const fallback: IconConfig = { component: icon("FileQuestionMark"), class: "bg-zinc-500" };
+
+const { categoryId } = defineProps<{ categoryId: number }>();
+
+const iconProps = computed<IconConfig>(() => iconMap[categoryId] ?? fallback);
 </script>
 
 <template>
