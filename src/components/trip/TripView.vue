@@ -16,6 +16,7 @@ import Button from "../ui/button/Button.vue";
 import Flag from "../ui/flag/Flag.vue";
 import { Spinner } from "../ui/spinner/index.ts";
 import ExpenseList from "./ExpenseList.vue";
+import Filters from "./Filters.vue";
 import useGetCurrentTripId from "./hooks/useGetCurrentTripId";
 
 const currentTripId = useGetCurrentTripId();
@@ -31,7 +32,10 @@ onBeforeMount(() => {
 });
 </script>
 <template>
-  <div class="flex flex-col flex-1 min-h-0 relative" v-if="trip && !isLoadingTripData && !hasFailedToLoadTripData">
+  <div
+    class="flex flex-col flex-1 min-h-0 relative"
+    v-if="trip && !isLoadingTripData && !hasFailedToLoadTripData"
+  >
     <div class="flex flex-col px-4 py-6" :style="getTripCoverStyle(trip.image)">
       <! --- Back & Edit Icons --!>
       <div class="flex justify-between">
@@ -81,11 +85,13 @@ onBeforeMount(() => {
       <div>
         <span class="font-mono text-sm text-text-3 uppercase">Total Spent</span>
       </div>
-      <div class="flex">
+      <div class="flex items-center">
         <div class="pr-4 font-mono text-xl">
           {{ totalExpenseAmount }}
         </div>
-        <div class="flex-1 flex justify-end">Filters...</div>
+        <div class="flex-1 flex justify-end">
+          <Filters />
+        </div>
       </div>
     </div>
 

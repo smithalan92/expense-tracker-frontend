@@ -4,11 +4,13 @@ import useTripData from "@/store/tripDataStore";
 import { format, isSameYear } from "date-fns";
 import { computed, ref, toRefs } from "vue";
 // import AddOrEditExpenseModal from "./AddOrEditExpenseModal.vue";
+import Button from "../ui/button/Button.vue";
 import Expense from "./Expense.vue";
 // import ViewExpenseModal from "./ViewExpenseModal.vue";
 
 const store = useTripData();
-const { expenses, unsavedExpenses } = toRefs(store);
+const { getExpenses, areAnyFiltersActive } = toRefs(store);
+const { clearFilters } = store;
 
 const showViewExpenseModal = ref(false);
 const isEditingExpense = ref(false);
@@ -17,18 +19,15 @@ const isCopyingExpense = ref(false);
 const selectedExpense = ref<Nullable<TripExpense>>(null);
 
 const expensesGroupedByDate = computed(() => {
-  return [...expenses.value, ...unsavedExpenses.value].reduce<Record<string, TripExpense[]>>(
-    (acc, current) => {
-      const date = format(new Date(current.localDateTime), "yyyy-MM-dd");
+  return getExpenses.value.reduce<Record<string, TripExpense[]>>((acc, current) => {
+    const date = format(new Date(current.localDateTime), "yyyy-MM-dd");
 
-      if (!acc[date]) acc[date] = [];
+    if (!acc[date]) acc[date] = [];
 
-      acc[date].push(current);
+    acc[date].push(current);
 
-      return acc;
-    },
-    {},
-  );
+    return acc;
+  }, {});
 });
 
 const expensesToDisplayByDate = computed(() => {
@@ -105,8 +104,12 @@ const onCloseAddOrEditExpenseModal = () => {
 
 <template>
   <div class="overflow-y-auto overscroll-contain w-full flex-1 pr-2 flex flex-col">
-    <div v-if="!expenses.length" class="flex flex-1 justify-center items-center py-8">
-      <span>No expenses available.</span>
+    <div v-if="!getExpenses.length" class="flex flex-col flex-1 justify-center items-center py-8">
+      <span v-if="!areAnyFiltersActive">No expenses available.</span>
+      <span v-if="areAnyFiltersActive">No expenses match your filters.</span>
+      <Button v-if="areAnyFiltersActive" variant="secondary" class="mt-4" @click="clearFilters"
+        >Clear filters</Button
+      >
     </div>
 
     <div v-for="value in expensesToDisplayByDate" :key="value.date">

@@ -43,13 +43,32 @@ const useTripDataStore = defineStore("tripData", {
     userIds: [],
     isLoadingTripData: false,
     hasFailedToLoadTripData: false,
+    filters: {
+      search: "",
+      filterByUserId: null,
+      filterByCategoryId: null,
+    },
   }),
   getters: {
-    hasUnsavedExpenses: (state) => {
+    getExpenses(state) {
+      return [...state.expenses, ...state.unsavedExpenses].filter((exp) => {
+        const { search, filterByUserId, filterByCategoryId } = state.filters;
+        const hasMatchingDescription = search.trim() ? exp.description.includes(search.trim()) : true;
+
+        const hasMatchingUser = !!filterByUserId
+          ? exp.users.find((user) => user.id === filterByUserId) !== undefined
+          : true;
+
+        const hasMatchingCategory = !!filterByCategoryId ? exp.category.id === filterByCategoryId : true;
+
+        return hasMatchingDescription && hasMatchingUser && hasMatchingCategory;
+      });
+    },
+    hasUnsavedExpenses(state) {
       return state.unsavedExpenses.length > 0;
     },
-    totalExpenseAmount: (state) => {
-      const total = state.expenses.reduce((acc, exp) => {
+    totalExpenseAmount(): string {
+      const total = this.getExpenses.reduce((acc, exp) => {
         return acc + parseFloat(exp.euroAmount);
       }, 0);
 
@@ -57,6 +76,14 @@ const useTripDataStore = defineStore("tripData", {
         style: "currency",
         currency: "EUR",
       }).format(total);
+    },
+
+    areAnyFiltersActive(state) {
+      return (
+        state.filters.search.trim().length > 0 ||
+        !!state.filters.filterByCategoryId ||
+        !!state.filters.filterByUserId
+      );
     },
   },
   actions: {
@@ -321,6 +348,14 @@ const useTripDataStore = defineStore("tripData", {
     resetState() {
       this.$reset();
     },
+
+    clearFilters() {
+      this.filters = {
+        search: "",
+        filterByCategoryId: null,
+        filterByUserId: null,
+      };
+    },
   },
   persist: false, // We need manual persistance due to saving different trips
 });
@@ -341,4 +376,9 @@ export interface TripDataState {
   userIds: number[];
   isLoadingTripData: boolean;
   hasFailedToLoadTripData: boolean;
+  filters: {
+    search: string;
+    filterByUserId: number | null;
+    filterByCategoryId: number | null;
+  };
 }
