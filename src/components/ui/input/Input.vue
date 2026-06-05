@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { CircleX } from "@lucide/vue";
 import { useVModel } from "@vueuse/core";
 import type { HTMLAttributes } from "vue";
+import Button from "../button/Button.vue";
 
 const props = defineProps<{
   defaultValue?: string | number;

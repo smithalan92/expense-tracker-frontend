@@ -7,7 +7,7 @@ import {
   ChevronLeft,
   MessageCircleWarning,
   PencilIcon,
-  Plus,
+  PlusCircle,
   RefreshCwIcon,
 } from "@lucide/vue";
 import { storeToRefs } from "pinia";
@@ -19,14 +19,14 @@ import { Spinner } from "../ui/spinner/index.ts";
 import ExpenseList from "./ExpenseList.vue";
 import Filters from "./Filters.vue";
 import useGetCurrentTripId from "./hooks/useGetCurrentTripId";
+import ViewExpense from "./modals/ViewExpense/ViewExpense.vue";
 
 const currentTripId = useGetCurrentTripId();
-const store = useTripData();
+const tripDataStore = useTripData();
 const router = useRouter();
 
-const { trip, hasUnsavedExpenses, isLoadingTripData, hasFailedToLoadTripData, totalExpenseAmount } =
-  storeToRefs(store);
-const { loadTripData, resetState, syncUnsavedExpenses, deleteTrip } = store;
+const { trip, isLoadingTripData, hasFailedToLoadTripData, totalExpenseAmount } = storeToRefs(tripDataStore);
+const { loadTripData } = tripDataStore;
 
 onBeforeMount(() => {
   loadTripData(currentTripId.value);
@@ -36,7 +36,7 @@ onBeforeMount(() => {
   <div class="flex flex-col flex-1 min-h-0 relative">
     <template v-if="trip && !isLoadingTripData && !hasFailedToLoadTripData">
       <div class="flex flex-col px-4 py-6" :style="getTripCoverStyle(trip.image)">
-        <! --- Back & Edit Icons --!>
+        <!--- Back & Edit Icons -->
         <div class="flex justify-between">
           <Button
             class="flex items-center justify-center rounded-full bg-black/70 w-[30px] h-[30px]"
@@ -52,7 +52,7 @@ onBeforeMount(() => {
           </div>
         </div>
 
-        <! -- Trip Name --!>
+        <!-- Trip Name -->
         <div
           class="py-8 text-xl font-display"
           style="color: oklch(0.99 0.01 85); text-shadow: 0 1px 12px oklch(0 0 0 / 0.35)"
@@ -60,7 +60,7 @@ onBeforeMount(() => {
           {{ trip.name }}
         </div>
 
-        <! -- Dates/Countries --!>
+        <!-- Dates/Countries -->
         <div class="flex justify-between text-xs">
           <div class="flex items-center">
             <Calendar class="size-[12px] mr-2" />
@@ -79,7 +79,7 @@ onBeforeMount(() => {
         </div>
       </div>
 
-      <! -- Spending Amount/Filters etc.. --!>
+      <!-- Spending Amount/Filters etc.. -->
       <div class="flex flex-col px-4 py-2">
         <div>
           <span class="font-mono text-sm text-text-3 uppercase">Total Spent</span>
@@ -95,15 +95,16 @@ onBeforeMount(() => {
       </div>
 
       <div class="flex flex-col flex-1 overflow-hidden px-4">
-        <ExpenseList class="pb-24" />
+        <ExpenseList class="pb-20" />
       </div>
 
       <Button
-        class="absolute bottom-[22px] right-[18px] z-20 h-14 rounded-full px-[22px] pl-[18px] gap-2.5 text-[16px] font-bold tracking-[-0.2px] bg-[var(--accent)] text-[var(--on-accent)] hover:bg-[var(--accent-press)] active:scale-95 shadow-[0_10px_26px_-8px_oklch(0.5_0.12_42_/_0.7),0_2px_6px_oklch(0_0_0_/_0.3)]"
+        variant="default"
+        class="absolute bottom-[22px] right-[18px] z-20 items-center justify-center rounded-full font-display text-white"
         @click="() => {}"
       >
-        <Plus class="text-[var(--on-accent)] size-6" />
-        Add expense
+        <PlusCircle class="size-4" />
+        Add Expense
       </Button>
     </template>
 
@@ -115,11 +116,16 @@ onBeforeMount(() => {
         <span class="mt-4">Something went wrong loading this trip.</span>
       </div>
       <div class="flex mt-4 justify-center gap-4">
-        <Button class="px-1 hover:opacity-70" @click="router.go(-1)"> <ArrowLeft /> Back </Button>
+        <Button class="px-1 hover:opacity-70" @click="router.go(-1)">
+          <ArrowLeft />
+          Back
+        </Button>
         <Button class="ml-2 px-1 hover:opacity-70" @click="loadTripData(currentTripId)">
-          <RefreshCwIcon /> Retry
+          <RefreshCwIcon />
+          Retry
         </Button>
       </div>
     </div>
+    <ViewExpense />
   </div>
 </template>

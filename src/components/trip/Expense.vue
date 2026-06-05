@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { TripExpense } from "@/api/expense";
+import useUIStateStore from "@/store/uiState.ts";
 import { MapPin } from "@lucide/vue";
 import { format } from "date-fns";
 import { computed } from "vue";
@@ -10,23 +11,27 @@ const { expense } = defineProps<{
   expense: TripExpense;
 }>();
 
-const emit = defineEmits<{
-  (e: "click"): void;
-}>();
+const { setIsViewingExpense, setActiveExpense } = useUIStateStore();
 
 const date = computed(() => new Date(expense.localDateTime));
 const expenseTime = computed(() => format(date.value, "HH:mm"));
 const isUnsavedExpense = computed(() => expense.id < 0);
+
+const onClick = () => {
+  setActiveExpense(expense);
+  setIsViewingExpense(true);
+};
 </script>
 
 <template>
   <div
+    variant="ghost"
     :data-testid="`expense-${expense.id}`"
     class="grid grid-cols-[0.5fr_3.75fr_0.5fr_1.5fr] gap-5 items-stretch border-b border-slate-700/50 py-2 cursor-pointer last:border-b-0"
     :class="{
       'bg-amber-700': isUnsavedExpense,
     }"
-    @click="emit('click')"
+    @click="onClick"
   >
     <div class="flex items-center justify-center">
       <ExpenseCategoryIcon :category-id="expense.category.id" />
@@ -41,7 +46,10 @@ const isUnsavedExpense = computed(() => expense.id < 0);
         <div>
           {{ expenseTime }}
         </div>
-        <div class="flex items-center"><MapPin class="mr-1 size-[10px]" /> {{ expense.city.name }}</div>
+        <div class="flex items-center">
+          <MapPin class="mr-1 size-[10px]" />
+          {{ expense.city.name }}
+        </div>
       </div>
     </div>
 

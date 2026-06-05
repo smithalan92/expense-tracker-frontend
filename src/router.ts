@@ -34,12 +34,11 @@ export function createAppRouter() {
     ],
   });
 
-  router.beforeEach((to, _from, next) => {
+  router.beforeEach((to) => {
     const appStore = useAppStore();
 
-    if (to.name !== "login" && !appStore.isLoggedIn) next({ name: "login" });
-    if (to.name === "login" && appStore.isLoggedIn) next({ name: "trips" });
-    else next();
+    if (to.name !== "login" && !appStore.isLoggedIn) return { name: "login" };
+    if (to.name === "login" && appStore.isLoggedIn) return { name: "trips" };
   });
 
   return router;

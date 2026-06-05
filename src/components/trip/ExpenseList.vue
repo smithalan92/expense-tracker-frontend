@@ -2,21 +2,20 @@
 import type { TripExpense } from "@/api/expense";
 import useTripData from "@/store/tripDataStore";
 import { format, isSameYear } from "date-fns";
-import { computed, ref, toRefs } from "vue";
+import { computed, toRefs } from "vue";
 // import AddOrEditExpenseModal from "./AddOrEditExpenseModal.vue";
 import Button from "../ui/button/Button.vue";
 import Expense from "./Expense.vue";
 // import ViewExpenseModal from "./ViewExpenseModal.vue";
 
+const props = defineProps<{ class?: string }>();
+
 const store = useTripData();
 const { getExpenses, areAnyFiltersActive } = toRefs(store);
 const { clearFilters } = store;
 
-const showViewExpenseModal = ref(false);
-const isEditingExpense = ref(false);
-const isCopyingExpense = ref(false);
-
-const selectedExpense = ref<Nullable<TripExpense>>(null);
+// const isEditingExpense = ref(false);
+// const isCopyingExpense = ref(false);
 
 const expensesGroupedByDate = computed(() => {
   return getExpenses.value.reduce<Record<string, TripExpense[]>>((acc, current) => {
@@ -68,48 +67,54 @@ const expensesToDisplayByDate = computed(() => {
   return allExpensesByDate;
 });
 
-const expenseToEdit = computed(() => {
-  if (isEditingExpense.value) return selectedExpense.value;
-  return null;
-});
+// const expenseToEdit = computed(() => {
+//   if (isEditingExpense.value) return selectedExpense.value;
+//   return null;
+// });
 
-const expenseToCopy = computed(() => {
-  if (isCopyingExpense.value) return selectedExpense.value;
-  return null;
-});
+// const expenseToCopy = computed(() => {
+//   if (isCopyingExpense.value) return selectedExpense.value;
+//   return null;
+// });
 
-const onClickExpense = (expense: TripExpense) => {
-  selectedExpense.value = expense;
-  showViewExpenseModal.value = true;
-};
+// const onCopyExpenseAction = (expense: TripExpense) => {
+//   openExpenseId.value = null;
+//   selectedExpense.value = expense;
+//   isCopyingExpense.value = true;
+// };
 
-const onCloseViewExpenseModal = () => {
-  if (!isEditingExpense.value && !isCopyingExpense.value) selectedExpense.value = null;
-  showViewExpenseModal.value = false;
-};
+// const onDeleteExpenseAction = (expense: TripExpense) => {
+//   openExpenseId.value = null;
+//   console.log("Delete expense", expense.id);
+// };
 
-const onEditExpense = () => {
-  isEditingExpense.value = true;
-};
+// const onCloseViewExpenseModal = () => {
+//   if (!isEditingExpense.value && !isCopyingExpense.value) selectedExpense.value = null;
+//   showViewExpenseModal.value = false;
+// };
 
-const onCopyExpense = () => {
-  isCopyingExpense.value = true;
-};
+// const onEditExpense = () => {
+//   isEditingExpense.value = true;
+// };
 
-const onCloseAddOrEditExpenseModal = () => {
-  isEditingExpense.value = false;
-  isCopyingExpense.value = false;
-};
+// const onCopyExpense = () => {
+//   isCopyingExpense.value = true;
+// };
+
+// const onCloseAddOrEditExpenseModal = () => {
+//   isEditingExpense.value = false;
+//   isCopyingExpense.value = false;
+// };
 </script>
 
 <template>
-  <div class="overflow-y-auto overscroll-contain w-full flex-1 pr-2 flex flex-col">
+  <div class="overflow-y-auto overscroll-contain w-full flex-1 pr-2 flex flex-col" :class="props.class">
     <div v-if="!getExpenses.length" class="flex flex-col flex-1 justify-center items-center py-8">
       <span v-if="!areAnyFiltersActive">No expenses available.</span>
       <span v-if="areAnyFiltersActive">No expenses match your filters.</span>
-      <Button v-if="areAnyFiltersActive" variant="secondary" class="mt-4" @click="clearFilters"
-        >Clear filters</Button
-      >
+      <Button v-if="areAnyFiltersActive" variant="secondary" class="mt-4" @click="clearFilters">
+        Clear filters
+      </Button>
     </div>
 
     <div v-for="value in expensesToDisplayByDate" :key="value.date">
@@ -119,12 +124,7 @@ const onCloseAddOrEditExpenseModal = () => {
         <div>{{ value.date }}</div>
         <div>€{{ Intl.NumberFormat().format(value.totalExpensesForDate) }}</div>
       </div>
-      <Expense
-        v-for="expense in value.expenses"
-        :key="expense.id"
-        :expense="expense"
-        @click="onClickExpense(expense)"
-      />
+      <Expense v-for="expense in value.expenses" :key="expense.id" :expense="expense" />
     </div>
   </div>
   <!-- <ViewExpenseModal

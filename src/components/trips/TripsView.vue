@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { Card } from "@/components/ui/card";
 import useTripsStore from "@/store/tripsStore";
+import { PlusCircle } from "@lucide/vue";
 import { isAfter } from "date-fns/isAfter";
 import { isBefore } from "date-fns/isBefore";
 import { parse } from "date-fns/parse";
 import { computed, onMounted } from "vue";
+import Button from "../ui/button/Button.vue";
 import Trip from "./Trip.vue";
 
 const tripsStore = useTripsStore();
@@ -116,11 +118,12 @@ onMounted(() => {
     </div>
 
     <Button
-      class="absolute bottom-[22px] right-[18px] z-20 h-14 rounded-full px-[22px] pl-[18px] gap-2.5 text-[16px] font-bold tracking-[-0.2px] bg-[var(--accent)] text-[var(--on-accent)] hover:bg-[var(--accent-press)] active:scale-95 shadow-[0_10px_26px_-8px_oklch(0.5_0.12_42_/_0.7),0_2px_6px_oklch(0_0_0_/_0.3)]"
+      variant="default"
+      class="absolute bottom-[22px] right-[18px] z-20 items-center justify-center rounded-full font-display text-white"
       @click="() => {}"
     >
-      <Plus :size="22" :stroke-width="2.4" />
-      New trip
+      <PlusCircle class="size-4" />
+      Add Trip
     </Button>
   </div>
 </template>

@@ -1,11 +1,19 @@
 import loadAppData, { type CountryWithCurrency, type Currency, type User } from "@/api/app";
 import { createInstance } from "@/api/axios";
+import type { TripExpense } from "@/api/expense";
 import { login, type LoginUser } from "@/api/user";
 import { isNetworkError } from "@/utils/network";
 import { acceptHMRUpdate, defineStore } from "pinia";
 
 const useAppStore = defineStore("app", {
-  state: (): AppState => ({ user: null, authToken: null, users: [], countries: [], currencies: [] }),
+  state: (): AppState => ({
+    user: null,
+    authToken: null,
+    users: [],
+    countries: [],
+    currencies: [],
+    editExpenseData: { isEditingExpense: false, expense: null },
+  }),
   getters: {
     isLoggedIn: (state) => state.authToken !== null,
   },
@@ -51,4 +59,9 @@ interface AppState {
   currencies: Currency[];
   user: Nullable<LoginUser>;
   users: User[];
+  editExpenseData: EditExpenseData;
 }
+
+type EditExpenseData =
+  | { isEditingExpense: true; expense: TripExpense }
+  | { isEditingExpense: false; expense: null };

@@ -72,12 +72,14 @@ const onClickClearFilters = () => {
           <div class="flex flex-wrap gap-2">
             <Button
               v-for="category in availableCategories"
+              :key="category.id"
               :variant="category.id === filters.filterByCategoryId ? 'default' : 'outline'"
               @click="
                 filters.filterByCategoryId = filters.filterByCategoryId === category.id ? null : category.id
               "
-              >{{ category.name }}</Button
             >
+              {{ category.name }}
+            </Button>
           </div>
         </Field>
         <Field class="py-6">
@@ -85,10 +87,12 @@ const onClickClearFilters = () => {
           <div class="flex flex-wrap gap-2">
             <Button
               v-for="user in availableUsers"
+              :key="user.id"
               :variant="user.id === filters.filterByUserId ? 'default' : 'outline'"
               @click="filters.filterByUserId = filters.filterByUserId === user.id ? null : user.id"
-              >{{ user.firstName }}</Button
             >
+              {{ user.firstName }}
+            </Button>
           </div>
         </Field>
       </div>

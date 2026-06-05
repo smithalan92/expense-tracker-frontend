@@ -1,8 +1,5 @@
 import skipFormatting from "@vue/eslint-config-prettier/skip-formatting";
-import {
-  defineConfigWithVueTs,
-  vueTsConfigs,
-} from "@vue/eslint-config-typescript";
+import { defineConfigWithVueTs, vueTsConfigs } from "@vue/eslint-config-typescript";
 import pluginOxlint from "eslint-plugin-oxlint";
 import pluginVue from "eslint-plugin-vue";
 import { globalIgnores } from "eslint/config";
@@ -23,6 +20,7 @@ export default defineConfigWithVueTs(
     rules: {
       "vue/multi-word-component-names": 0,
       "@typescript-eslint/no-explicit-any": 0,
+      "vue/no-undef-components": ["error", { ignorePatterns: [] }],
     },
   },
 );
