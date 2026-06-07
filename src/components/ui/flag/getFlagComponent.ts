@@ -478,7 +478,7 @@ const componentMap: Record<string, string> = {
 } as const;
 
 export default function getFlagComponent(code: string) {
-  const component = componentMap[code] ?? UnknownFlag;
+  const component = componentMap[code.toUpperCase()] ?? UnknownFlag;
 
   return component;
 }

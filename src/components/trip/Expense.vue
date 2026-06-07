@@ -27,9 +27,9 @@ const onClick = () => {
   <div
     variant="ghost"
     :data-testid="`expense-${expense.id}`"
-    class="grid grid-cols-[0.5fr_3.75fr_0.5fr_1.5fr] gap-5 items-stretch border-b border-slate-700/50 py-2 cursor-pointer last:border-b-0"
+    class="grid grid-cols-[0.5fr_3.75fr_0.5fr_1.5fr] gap-5 items-stretch border-b border-slate-700/50 py-2 cursor-pointer last:border-b-0 px-6"
     :class="{
-      'bg-amber-700': isUnsavedExpense,
+      'bg-amber-700/50': isUnsavedExpense,
     }"
     @click="onClick"
   >

@@ -108,7 +108,7 @@ const expensesToDisplayByDate = computed(() => {
 </script>
 
 <template>
-  <div class="overflow-y-auto overscroll-contain w-full flex-1 pr-2 flex flex-col" :class="props.class">
+  <div class="overflow-y-auto overscroll-contain w-full flex-1 lex flex-col" :class="props.class">
     <div v-if="!getExpenses.length" class="flex flex-col flex-1 justify-center items-center py-8">
       <span v-if="!areAnyFiltersActive">No expenses available.</span>
       <span v-if="areAnyFiltersActive">No expenses match your filters.</span>
@@ -118,11 +118,11 @@ const expensesToDisplayByDate = computed(() => {
     </div>
 
     <div v-for="value in expensesToDisplayByDate" :key="value.date">
-      <div
-        class="flex-1 flex justify-between font-display pb-4 pt-6 font-semibold text-sm sticky top-0 bg-background z-10"
-      >
-        <div>{{ value.date }}</div>
-        <div>€{{ Intl.NumberFormat().format(value.totalExpensesForDate) }}</div>
+      <div class="flex-1 pb-4 pt-6 top-0 bg-background z-10 sticky">
+        <div class="flex justify-between px-6 flex font-display font-semibold text-sm">
+          <div>{{ value.date }}</div>
+          <div>€{{ Intl.NumberFormat().format(value.totalExpensesForDate) }}</div>
+        </div>
       </div>
       <Expense v-for="expense in value.expenses" :key="expense.id" :expense="expense" />
     </div>

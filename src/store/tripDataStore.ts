@@ -205,6 +205,8 @@ const useTripDataStore = defineStore("tripData", {
     },
 
     async syncUnsavedExpenses() {
+      if (!this.hasUnsavedExpenses) return;
+
       const expenses = this.unsavedExpenses.reduce<ExpensePayload[]>((acc, exp) => {
         const expense: ExpensePayload = {
           localDateTime: exp.localDateTime,

@@ -101,6 +101,7 @@ export interface TripCountry {
   name: string;
   currencyId: number;
   cities: TripCountryCity[];
+  code: string;
 }
 
 interface Category {

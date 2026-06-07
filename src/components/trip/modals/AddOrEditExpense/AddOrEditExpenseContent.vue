@@ -12,6 +12,7 @@ import Input from "@/components/ui/input/Input.vue";
 import NativeSelect from "@/components/ui/native-select/NativeSelect.vue";
 import NativeSelectOptGroup from "@/components/ui/native-select/NativeSelectOptGroup.vue";
 import NativeSelectOption from "@/components/ui/native-select/NativeSelectOption.vue";
+import Spinner from "@/components/ui/spinner/Spinner.vue";
 import { cn } from "@/lib/utils.ts";
 import useAppStore from "@/store/appStore.ts";
 import useTripDataStore from "@/store/tripDataStore.ts";
@@ -20,10 +21,10 @@ import { getAvatarStyles } from "@/utils/ui.ts";
 import { User, XCircle } from "@lucide/vue";
 import { format } from "date-fns";
 import { storeToRefs } from "pinia";
-import { computed, reactive, toRefs } from "vue";
+import { computed, ref, toRefs } from "vue";
 import { toast } from "vue-sonner";
 import CategorySelection from "./CategorySelection.vue";
-import useExpenseDataValidation, { type ExpenseData } from "./hooks/useExpenseDataValidation.ts";
+import useExpenseData from "./hooks/useExpenseData.ts";
 import useSyncCurrencyWithSelectedCountry from "./hooks/useSyncCurrencyWithSelectedCountry.ts";
 
 const { expense } = defineProps<{ expense: TripExpense | null }>();
@@ -35,6 +36,8 @@ const { currencies, users } = storeToRefs(useAppStore());
 
 const isEditingExpense = computed(() => !!expense);
 
+const isSavingExpense = ref(false);
+
 const availableCurrencies = computed(() => {
   const availableCurrencyIds = [...countries.value.map((c) => c.currencyId), 149];
 
@@ -45,17 +48,11 @@ const availableUsers = computed(() => {
   return users.value.filter((u) => userIds.value.includes(u.id));
 });
 
-const expenseData = reactive<ExpenseData>({
-  expenseDate: format(new Date(), "yyyy-MM-dd HH:mm"),
-  selectedCity: null,
-  selectedCurrency: availableCurrencies.value[0].id,
-  selectedCategory: null,
-  selectedUsers: [],
-  description: "",
-  amount: null,
-});
+// Default to euro if available
+const defaultCurrency =
+  availableCurrencies.value.find((c) => c.code === "EUR") ?? availableCurrencies.value[0];
 
-const isDataValid = useExpenseDataValidation(expenseData);
+const { expenseData, isDataValid } = useExpenseData(expense, defaultCurrency.id);
 
 const { selectedCity, selectedCurrency } = toRefs(expenseData);
 
@@ -89,11 +86,12 @@ const onSelectUser = (userId: number) => {
 };
 
 const onClickAddOrEditExpense = async () => {
-  if (!isDataValid.value) return;
+  if (!isDataValid.value || isSavingExpense.value) return;
 
   // Loading
 
   try {
+    isSavingExpense.value = true;
     const country = countries.value.find(
       (c) => !!c.cities.find((city) => city.id === expenseData.selectedCity!),
     );
@@ -110,11 +108,11 @@ const onClickAddOrEditExpense = async () => {
     };
 
     if (isEditingExpense.value) {
-      await addExpense({ payload });
-      toast.success("Expense added.");
-    } else {
       await updateExpense({ expenseId: expense!.id, payload });
       toast.success("Expense updated.");
+    } else {
+      await addExpense({ payload });
+      toast.success("Expense added.");
     }
 
     setIsAddingOrEditingExpense(false);
@@ -122,7 +120,7 @@ const onClickAddOrEditExpense = async () => {
     console.error(err);
     toast.error("Failed to add or update expense.");
   } finally {
-    // Loading...
+    isSavingExpense.value = false;
   }
 };
 </script>
@@ -233,7 +231,12 @@ const onClickAddOrEditExpense = async () => {
         </Field>
       </div>
       <DrawerFooter class="flex-1 pt-2 py-4">
-        <Button variant="default" @click="onClickAddOrEditExpense" :disabled="!isDataValid">
+        <Button
+          variant="default"
+          @click="onClickAddOrEditExpense"
+          :disabled="!isDataValid || isSavingExpense"
+        >
+          <Spinner class="text-white" v-if="isSavingExpense" />
           <span v-if="isEditingExpense">Save</span>
           <span v-else>Add</span>
         </Button>
