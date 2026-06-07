@@ -2,15 +2,15 @@
 import { Drawer } from "@/components/ui/drawer";
 import useUIStateStore from "@/store/uiState.ts";
 import { storeToRefs } from "pinia";
-import useActiveExpenseCleanup from "../../hooks/useActiveExpenseCleanup.ts";
+import useDrawerClose from "../../hooks/useDrawerClose.ts";
 import ViewExpenseContent from "./ViewExpenseContent.vue";
 
 const store = useUIStateStore();
 const { isViewingExpense, activeExpense } = storeToRefs(store);
-const { maybeCleanupActiveExpense } = useActiveExpenseCleanup();
+const { onAnimationEnd, isContentOpen } = useDrawerClose(isViewingExpense);
 </script>
 <template>
-  <Drawer :open="isViewingExpense" @animation-end="maybeCleanupActiveExpense">
-    <ViewExpenseContent v-if="activeExpense" :expense="activeExpense" />
+  <Drawer :open="isViewingExpense" @animation-end="onAnimationEnd">
+    <ViewExpenseContent v-if="isContentOpen && activeExpense" :expense="activeExpense" />
   </Drawer>
 </template>

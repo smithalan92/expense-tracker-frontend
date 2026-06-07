@@ -4,15 +4,15 @@ import { acceptHMRUpdate, defineStore } from "pinia";
 const useUIStateStore = defineStore("ui", {
   state: (): UIState => ({
     isViewingExpense: false,
-    isEditingExpense: false,
+    isAddingOrEditingExpense: false,
     activeExpense: null,
   }),
   actions: {
     setIsViewingExpense(value: boolean) {
       this.isViewingExpense = value;
     },
-    setIsEditingExpense(value: boolean) {
-      this.isEditingExpense = value;
+    setIsAddingOrEditingExpense(value: boolean) {
+      this.isAddingOrEditingExpense = value;
       if (value) this.isViewingExpense = false; // Close the view panel
     },
     setActiveExpense(expense: TripExpense | null) {
@@ -30,6 +30,6 @@ if (import.meta.hot) {
 
 interface UIState {
   isViewingExpense: boolean;
-  isEditingExpense: boolean;
+  isAddingOrEditingExpense: boolean;
   activeExpense: TripExpense | null;
 }

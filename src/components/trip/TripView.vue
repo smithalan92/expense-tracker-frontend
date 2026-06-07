@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import useTripData from "@/store/tripDataStore";
+import useUIStateStore from "@/store/uiState.ts";
 import { formatDateRange, getTripCoverStyle } from "@/utils/ui";
 import {
   ArrowLeft,
@@ -19,10 +20,12 @@ import { Spinner } from "../ui/spinner/index.ts";
 import ExpenseList from "./ExpenseList.vue";
 import Filters from "./Filters.vue";
 import useGetCurrentTripId from "./hooks/useGetCurrentTripId";
+import AddOrEditExpense from "./modals/AddOrEditExpense/AddOrEditExpense.vue";
 import ViewExpense from "./modals/ViewExpense/ViewExpense.vue";
 
 const currentTripId = useGetCurrentTripId();
 const tripDataStore = useTripData();
+const { setIsAddingOrEditingExpense } = useUIStateStore();
 const router = useRouter();
 
 const { trip, isLoadingTripData, hasFailedToLoadTripData, totalExpenseAmount } = storeToRefs(tripDataStore);
@@ -101,7 +104,7 @@ onBeforeMount(() => {
       <Button
         variant="default"
         class="absolute bottom-[22px] right-[18px] z-20 items-center justify-center rounded-full font-display text-white"
-        @click="() => {}"
+        @click="setIsAddingOrEditingExpense(true)"
       >
         <PlusCircle class="size-4" />
         Add Expense
@@ -127,5 +130,6 @@ onBeforeMount(() => {
       </div>
     </div>
     <ViewExpense />
+    <AddOrEditExpense />
   </div>
 </template>

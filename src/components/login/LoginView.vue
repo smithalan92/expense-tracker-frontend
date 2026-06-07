@@ -42,7 +42,7 @@ const onClickLogin = () => {
       </Field>
       <div class="mt-8 w-full">
         <Button class="w-full" @click="onClickLogin" :disabled="!canLogin">Sign In</Button>
-        <!-- <button class="et-btn-primary w-full" :disabled="!canLogin" @click="onClickLogin">Log In</button> -->
+        <span v-if="hasFailedToLogin" class="mt-4 text-red">Try again....</span>
       </div>
     </div>
   </div>

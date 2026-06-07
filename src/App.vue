@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { Toaster } from "@/components/ui/sonner";
 import useAppStore from "@/store/appStore";
 import { watch } from "vue";
 import { RouterView, useRouter } from "vue-router";
+import "vue-sonner/style.css";
 import "/node_modules/flag-icons/css/flag-icons.min.css";
 
 // import PWAUpdateAlert from "./PWAUpdateAlert.vue";
@@ -24,6 +26,14 @@ watch(
     <div class="w-full max-w-3xl min-w-[390px] flex flex-col h-full overflow-hidden">
       <RouterView class="flex flex-col flex-1 min-h-0" />
     </div>
+    <Toaster
+      position="top-center"
+      richColors
+      :close-button="true"
+      close-button-position="top-right"
+      :toast-options="{ class: 'pointer-events-auto' }"
+    />
+
     <!-- <PWAUpdateAlert /> -->
   </div>
 </template>

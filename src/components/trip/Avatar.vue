@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ExpenseUser } from "@/api/expense";
-import { getAvatarBgStyles } from "@/utils/ui";
+import { getAvatarStyles } from "@/utils/ui";
 import { computed } from "vue";
 
 const { user } = defineProps<{
@@ -14,7 +14,7 @@ const userInitals = computed(() => {
 <template>
   <div
     class="h-6 w-6 rounded-full flex items-center justify-center text-[0.7rem] font-bold ring-1"
-    :class="getAvatarBgStyles(user)"
+    :class="getAvatarStyles(user).bg"
   >
     {{ userInitals }}
   </div>

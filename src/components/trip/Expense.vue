@@ -5,7 +5,7 @@ import { MapPin } from "@lucide/vue";
 import { format } from "date-fns";
 import { computed } from "vue";
 import AvatarGroup from "./AvatarGroup.vue";
-import ExpenseCategoryIcon from "./ExpenseCategoryIcon.vue";
+import ExpenseCategoryChip from "./ExpenseCategoryChip.vue";
 
 const { expense } = defineProps<{
   expense: TripExpense;
@@ -34,7 +34,7 @@ const onClick = () => {
     @click="onClick"
   >
     <div class="flex items-center justify-center">
-      <ExpenseCategoryIcon :category-id="expense.category.id" />
+      <ExpenseCategoryChip :category-id="expense.category.id" variant="box" />
     </div>
 
     <div class="flex flex-col overflow-hidden">
