@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ExpenseUser } from "@/api/expense.ts";
 import useTripDataStore from "@/store/tripDataStore.ts";
-import { ListFilter } from "@lucide/vue";
+import { ListFilter, XCircle } from "@lucide/vue";
 import { storeToRefs } from "pinia";
 import { computed, ref } from "vue";
 import Button from "../ui/button/Button.vue";
@@ -54,9 +54,12 @@ const onClickClearFilters = () => {
   </Button>
 
   <Drawer :open="isDrawerOpen" @update:open="isDrawerOpen = $event">
-    <DrawerContent>
-      <DrawerHeader>
-        <DrawerTitle>Filters</DrawerTitle>
+    <DrawerContent class="mx-auto w-full max-w-sm">
+      <DrawerHeader class="w-full flex-row items-center space-between flex-1">
+        <DrawerTitle class="flex-1">Filters</DrawerTitle>
+        <Button variant="ghost" @click="isDrawerOpen = false">
+          <XCircle class="size-6" />
+        </Button>
       </DrawerHeader>
       <div class="px-4 pb-4">
         <Field class="pt-4">

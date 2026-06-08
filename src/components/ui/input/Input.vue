@@ -7,18 +7,23 @@ import Button from "../button/Button.vue";
 
 defineOptions({ inheritAttrs: false });
 
-const props = defineProps<{
+interface CustomInput {
   defaultValue?: string | number;
   modelValue?: string | number | null;
   hasClearButton?: boolean;
   class?: HTMLAttributes["class"];
-  type?: "text" | "email" | "password" | "number" | "date" | "time" | "datetime-local";
+  type?: HTMLInputElement["type"];
   placeholder?: string;
-}>();
+  id?: string;
+  hidden?: boolean;
+}
+
+const props = defineProps<CustomInput>();
 
 const emits = defineEmits<{
   (e: "update:modelValue", payload: string | number): void;
   (e: "blur"): void;
+  (e: "change", event: Event): void;
 }>();
 
 const modelValue = useVModel(props, "modelValue", emits, {
@@ -50,6 +55,9 @@ const dateTimeIosClass =
       v-model="modelValue"
       data-slot="input"
       @blur="emits('blur')"
+      @change="($event) => emits('change', $event)"
+      :id="props.id"
+      :hidden="props.hidden"
       :type="type"
       :class="
         cn(
@@ -63,8 +71,15 @@ const dateTimeIosClass =
       "
       :placeholder="placeholder"
     />
-    <Button v-if="hasClearButton" class="absolute top-2 right-2" @click="modelValue = ''">
-      <CircleX class="size-6" />
-    </Button>
+    <div class="absolute top-[15%] right-2">
+      <Button
+        v-if="hasClearButton && modelValue"
+        variant="ghost"
+        class="p-0 m-0 h-auto h-6"
+        @click="modelValue = ''"
+      >
+        <CircleX class="size-4" />
+      </Button>
+    </div>
   </div>
 </template>

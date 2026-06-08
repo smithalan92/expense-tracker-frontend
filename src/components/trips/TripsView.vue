@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Card } from "@/components/ui/card";
 import useTripsStore from "@/store/tripsStore";
+import useUIStateStore from "@/store/uiState.ts";
 import { PlusCircle } from "@lucide/vue";
 import { isAfter } from "date-fns/isAfter";
 import { isBefore } from "date-fns/isBefore";
@@ -8,8 +9,10 @@ import { parse } from "date-fns/parse";
 import { computed, onMounted } from "vue";
 import Button from "../ui/button/Button.vue";
 import Trip from "./Trip.vue";
+import AddOrEditTrip from "./modals/AddOrEditTrip/AddOrEditTrip.vue";
 
 const tripsStore = useTripsStore();
+const { setIsAddingOrEditingTrip } = useUIStateStore();
 
 const DATE_FMT = "dd MMM yyyy";
 const parseDate = (s: string) => parse(s, DATE_FMT, new Date());
@@ -55,14 +58,14 @@ onMounted(() => {
 });
 </script>
 <template>
-  <div class="relative flex flex-col flex-1">
+  <div class="relative flex flex-col flex-1 min-h-0">
     <!-- Header -->
     <div class="flex justify-between items-start px-5 pt-3.5 pb-1">
       <div class="font-mono text-3xl tracking-[1.4px] text-text-3">Your trips</div>
     </div>
 
     <!-- Summary strip -->
-    <div class="px-5 pt-3.5 pb-4x">
+    <div class="px-5 pt-3.5 pb-4">
       <Card class="flex flex-row p-4 gap-3.5 rounded-md border border-hairline bg-surface text-foreground">
         <div class="flex-1">
           <div class="font-mono text-xs tracking-[1.4px] uppercase text-text-3 mb-[5px]">
@@ -82,7 +85,7 @@ onMounted(() => {
       </Card>
     </div>
 
-    <div class="overflow-y-scroll flex-1 min-h-0 px-5 pt-3.5 pb-24">
+    <div class="overflow-y-scroll flex-1 min-h-0 px-5 pt-2 pb-20">
       <!-- Active Trips -->
       <section v-if="activeTrips.length > 0" class="pb-6">
         <div class="flex justify-between items-baseline mb-3">
@@ -120,10 +123,11 @@ onMounted(() => {
     <Button
       variant="default"
       class="absolute bottom-[22px] right-[18px] z-20 items-center justify-center rounded-full font-display text-white"
-      @click="() => {}"
+      @click="setIsAddingOrEditingTrip(true)"
     >
       <PlusCircle class="size-4" />
       Add Trip
     </Button>
+    <AddOrEditTrip />
   </div>
 </template>

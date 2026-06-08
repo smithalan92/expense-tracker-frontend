@@ -8,6 +8,7 @@ import { storeToRefs } from "pinia";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
+import AddOrEditTrip from "../trips/modals/AddOrEditTrip/AddOrEditTrip.vue";
 import Button from "../ui/button/Button.vue";
 import Flag from "../ui/flag/Flag.vue";
 import Spinner from "../ui/spinner/Spinner.vue";
@@ -19,7 +20,7 @@ import ViewExpense from "./modals/ViewExpense/ViewExpense.vue";
 const isOnline = useOnline();
 
 const tripDataStore = useTripData();
-const { setIsAddingOrEditingExpense } = useUIStateStore();
+const { setIsAddingOrEditingExpense, setIsAddingOrEditingTrip, setActiveTrip } = useUIStateStore();
 const router = useRouter();
 
 const { trip, countries, totalExpenseAmount, hasUnsavedExpenses } = storeToRefs(tripDataStore);
@@ -27,6 +28,11 @@ const { trip, countries, totalExpenseAmount, hasUnsavedExpenses } = storeToRefs(
 const { syncUnsavedExpenses } = tripDataStore;
 
 const isSyncingExpenses = ref(false);
+
+const onClickEditTrip = () => {
+  setActiveTrip(trip.value);
+  setIsAddingOrEditingTrip(true);
+};
 
 const onClickSync = async () => {
   try {
@@ -53,7 +59,7 @@ const onClickSync = async () => {
           <ChevronLeft class="size-[16px] text-white" />
         </Button>
         <div>
-          <Button variant="secondary">
+          <Button variant="secondary" @click="onClickEditTrip">
             <PencilIcon class="size-[12px]" />
             Edit trip
           </Button>
@@ -88,17 +94,15 @@ const onClickSync = async () => {
     </div>
 
     <!-- Spending Amount/Filters etc.. -->
-    <div class="flex flex-col px-4 py-2">
-      <div>
+    <div class="flex pt-2 px-4 items-center">
+      <div class="flex flex-col">
         <span class="font-mono text-sm text-text-3 uppercase">Total Spent</span>
-      </div>
-      <div class="flex items-center">
-        <div class="pr-4 font-mono text-xl">
+        <div class="mt-2 font-mono text-xl">
           {{ totalExpenseAmount }}
         </div>
-        <div class="flex-1 flex justify-end">
-          <Filters />
-        </div>
+      </div>
+      <div class="flex-1 flex justify-end">
+        <Filters />
       </div>
     </div>
 
@@ -118,7 +122,7 @@ const onClickSync = async () => {
         <Spinner v-if="isSyncingExpenses" class="size-4" />
         Sync
       </Button>
-      <Button @click="setIsAddingOrEditingExpense(true)" class="text-white">
+      <Button @click="setIsAddingOrEditingExpense(true)" class="text-white font-bold">
         <PlusCircle class="size-4" />
         Add
       </Button>
@@ -126,5 +130,6 @@ const onClickSync = async () => {
 
     <ViewExpense />
     <AddOrEditExpense />
+    <AddOrEditTrip />
   </div>
 </template>

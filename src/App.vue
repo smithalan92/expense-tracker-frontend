@@ -24,7 +24,7 @@ watch(
 <template>
   <div class="w-full flex flex-col h-full overflow-hidden items-center max-w-[800px] pb-4">
     <div class="w-full max-w-3xl min-w-[390px] flex flex-col h-full overflow-hidden">
-      <RouterView class="flex flex-col flex-1 min-h-0" />
+      <RouterView />
     </div>
     <Toaster
       position="top-center"
