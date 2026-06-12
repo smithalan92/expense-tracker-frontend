@@ -1,4 +1,3 @@
-S
 <script setup lang="ts">
 import type { TripExpense } from "@/api/expense.ts";
 import Button from "@/components/ui/button/Button.vue";

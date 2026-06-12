@@ -20,17 +20,21 @@ import ViewExpense from "./modals/ViewExpense/ViewExpense.vue";
 const isOnline = useOnline();
 
 const tripDataStore = useTripData();
-const { setIsAddingOrEditingExpense, setIsAddingOrEditingTrip, setActiveTrip } = useUIStateStore();
+const { setIsAddingOrEditingExpense, setIsAddingOrEditingTrip, setActiveTripData } = useUIStateStore();
 const router = useRouter();
 
-const { trip, countries, totalExpenseAmount, hasUnsavedExpenses } = storeToRefs(tripDataStore);
+const { trip, countries, userIds, totalExpenseAmount, hasUnsavedExpenses } = storeToRefs(tripDataStore);
 
 const { syncUnsavedExpenses } = tripDataStore;
 
 const isSyncingExpenses = ref(false);
 
 const onClickEditTrip = () => {
-  setActiveTrip(trip.value);
+  setActiveTripData({
+    trip: trip.value,
+    countries: countries.value,
+    userIds: userIds.value,
+  });
   setIsAddingOrEditingTrip(true);
 };
 

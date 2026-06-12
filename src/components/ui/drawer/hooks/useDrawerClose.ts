@@ -8,7 +8,7 @@ import { ref, watch, type Ref } from "vue";
 export default function useDrawerClose(isDrawerOpen: Ref<boolean>) {
   const uiState = useUIStateStore();
   const { isViewingExpense, isAddingOrEditingExpense, isAddingOrEditingTrip } = storeToRefs(uiState);
-  const { setActiveExpense, setActiveTrip } = uiState;
+  const { setActiveExpense, setActiveTripData } = uiState;
 
   const isContentOpen = ref(false);
 
@@ -24,7 +24,7 @@ export default function useDrawerClose(isDrawerOpen: Ref<boolean>) {
     }
 
     if (!isAddingOrEditingTrip.value) {
-      setActiveTrip(null);
+      setActiveTripData(null);
     }
 
     isContentOpen.value = false;

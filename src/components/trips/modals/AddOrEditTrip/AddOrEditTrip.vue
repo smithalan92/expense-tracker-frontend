@@ -6,11 +6,16 @@ import useDrawerClose from "../../../ui/drawer/hooks/useDrawerClose.ts";
 import AddOrEditTripContent from "./AddOrEditTripContent.vue";
 
 const store = useUIStateStore();
-const { isAddingOrEditingTrip, activeTrip } = storeToRefs(store);
+const { isAddingOrEditingTrip, activeTripData } = storeToRefs(store);
 const { onAnimationEnd, isContentOpen } = useDrawerClose(isAddingOrEditingTrip);
 </script>
 <template>
   <Drawer :open="isAddingOrEditingTrip" @animation-end="onAnimationEnd">
-    <AddOrEditTripContent v-if="isContentOpen" :trip="activeTrip" />
+    <AddOrEditTripContent
+      v-if="isContentOpen"
+      :trip="activeTripData?.trip ?? null"
+      :countries="activeTripData?.countries ?? null"
+      :user-ids="activeTripData?.userIds ?? null"
+    />
   </Drawer>
 </template>

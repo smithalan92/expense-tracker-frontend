@@ -5,22 +5,24 @@ import { Upload, XCircle } from "@lucide/vue";
 import { computed } from "vue";
 import type { TripData } from "./hooks/useTripData";
 
-const { selectedImage } = defineProps<{ selectedImage: TripData["selectedImage"] }>();
+const { selectedImage, originalImage } = defineProps<{
+  selectedImage: TripData["selectedImage"];
+  originalImage: TripData["originalImage"];
+}>();
 
 const emit = defineEmits<{
   (e: "update", file: Nullable<File>): void;
 }>();
 
 const imageUrl = computed(() => {
-  if (selectedImage instanceof File) {
+  if (selectedImage) {
     return URL.createObjectURL(selectedImage);
   }
 
-  return selectedImage;
+  return originalImage;
 });
 
 const onFileChanged = ($event: Event) => {
-  console.log($event);
   const target = $event.target as HTMLInputElement;
   const [file] = target.files!;
   if (file) {
