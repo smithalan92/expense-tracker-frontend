@@ -1,16 +1,46 @@
 <script setup lang="ts">
 import type { TripExpense } from "@/api/expense.ts";
 import Button from "@/components/ui/button/Button.vue";
+import Dialog from "@/components/ui/dialog/Dialog.vue";
+import DialogContent from "@/components/ui/dialog/DialogContent.vue";
+import DialogFooter from "@/components/ui/dialog/DialogFooter.vue";
+import DialogHeader from "@/components/ui/dialog/DialogHeader.vue";
+import DialogTitle from "@/components/ui/dialog/DialogTitle.vue";
 import { DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import Separator from "@/components/ui/separator/Separator.vue";
+import Spinner from "@/components/ui/spinner/Spinner.vue";
+import useTripDataStore from "@/store/tripDataStore.ts";
 import useUIStateStore from "@/store/uiState.ts";
 import { Calendar, Copy, Edit, MapPin, Notebook, Trash, User, XCircle } from "@lucide/vue";
 import { format } from "date-fns";
-import { computed } from "vue";
+import { computed, ref } from "vue";
+import { toast } from "vue-sonner";
 import ExpenseCategoryChip from "../../ExpenseCategoryChip.vue";
 
 const { expense } = defineProps<{ expense: TripExpense }>();
 const { setIsAddingOrEditingExpense, setIsViewingExpense, setIsCopyingExpense } = useUIStateStore();
+const { deleteExpense } = useTripDataStore();
+
+const isConfirmDeleteModalOpen = ref(false);
+const isDeletingExpense = ref(false);
+
+const onClickDelete = () => {
+  isConfirmDeleteModalOpen.value = true;
+};
+
+const onConfirmDelete = async () => {
+  isDeletingExpense.value = true;
+  try {
+    await deleteExpense(expense.id);
+    toast.success("Expense deleted.");
+    setIsViewingExpense(false);
+  } catch (err) {
+    console.log(err);
+    toast.error("Failed to delete expense.");
+  } finally {
+    isDeletingExpense.value = false;
+  }
+};
 
 const date = computed(() => format(new Date(expense.localDateTime), "HH:mm, do MMM yyyy"));
 const users = computed(() => expense.users.map((u) => u.firstName).join(", "));
@@ -67,7 +97,7 @@ const users = computed(() => expense.users.map((u) => u.firstName).join(", "));
             <Copy class="mr-1 size-[12px]" />
             Copy
           </Button>
-          <Button variant="destructive" @click="setIsAddingOrEditingExpense(true)">
+          <Button variant="destructive" @click="onClickDelete">
             <Trash class="mr-1 size-[12px]" />
             Delete
           </Button>
@@ -75,4 +105,21 @@ const users = computed(() => expense.users.map((u) => u.firstName).join(", "));
       </DrawerFooter>
     </div>
   </DrawerContent>
+  <Dialog v-model:open="isConfirmDeleteModalOpen">
+    <DialogContent class="sm:max-w-md">
+      <DialogHeader>
+        <DialogTitle>Confirm Delete</DialogTitle>
+      </DialogHeader>
+      <div class="flex items-center gap-2">
+        <div class="text-center py-4">Are you sure you want to delete this expense?</div>
+      </div>
+      <DialogFooter>
+        <Button variant="secondary" @click="isConfirmDeleteModalOpen = false">Cancel</Button>
+        <Button variant="destructive" @click="onConfirmDelete">
+          <Spinner class="text-white" v-if="isDeletingExpense" />
+          Delete
+        </Button>
+      </DialogFooter>
+    </DialogContent>
+  </Dialog>
 </template>

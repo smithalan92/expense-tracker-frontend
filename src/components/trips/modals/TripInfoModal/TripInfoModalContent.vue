@@ -36,12 +36,12 @@ const onClickView = () => {
   router.push({ name: "tripData", params: { tripId: trip.id } });
 };
 
-const isConfirmDeletModalOpen = ref(false);
+const isConfirmDeleteModalOpen = ref(false);
 const isDeletingTrip = ref(false);
 const { deleteTrip } = useTripsStore();
 
 const onClickDelete = () => {
-  isConfirmDeletModalOpen.value = true;
+  isConfirmDeleteModalOpen.value = true;
 };
 
 const onConfirmDelete = async () => {
@@ -94,7 +94,7 @@ const onConfirmDelete = async () => {
       </DrawerFooter>
     </div>
   </DrawerContent>
-  <Dialog v-model:open="isConfirmDeletModalOpen">
+  <Dialog v-model:open="isConfirmDeleteModalOpen">
     <DialogContent class="sm:max-w-md">
       <DialogHeader>
         <DialogTitle>Confirm Delete</DialogTitle>
@@ -103,7 +103,7 @@ const onConfirmDelete = async () => {
         <div class="text-center py-4">Are you sure you want to delete "{{ trip.name }}" ?</div>
       </div>
       <DialogFooter>
-        <Button variant="secondary" @click="isConfirmDeletModalOpen = false">Cancel</Button>
+        <Button variant="secondary" @click="isConfirmDeleteModalOpen = false">Cancel</Button>
         <Button variant="destructive" @click="onConfirmDelete">
           <Spinner class="text-white" v-if="isDeletingTrip" />
           Delete
