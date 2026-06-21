@@ -6,14 +6,7 @@ import {
   type ExpensePayload,
   type TripExpense,
 } from "@/api/expense";
-import {
-  deleteTrip,
-  getTripData,
-  updateTrip,
-  type CreateTripPayload,
-  type Trip,
-  type TripCountry,
-} from "@/api/trip";
+import { getTripData, updateTrip, type CreateTripPayload, type Trip, type TripCountry } from "@/api/trip";
 
 import { uploadFile } from "@/api/file";
 import { getTripFromLocalStorage } from "@/utils/localstorage";
@@ -176,15 +169,6 @@ const useTripDataStore = defineStore("tripData", {
       tripStore.$patch({
         trips: currentTrips,
       });
-    },
-
-    async deleteTrip() {
-      await deleteTrip(this.trip.id);
-      const tripStore = useTripsStore();
-      tripStore.$patch({
-        trips: tripStore.trips.filter((t) => t.id !== this.trip.id),
-      });
-      this.resetState();
     },
 
     async addExpense({ payload }: { payload: ExpensePayload }) {

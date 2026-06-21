@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import Flag from "@/components/ui/flag/Flag.vue";
 import { formatDateRange, getTripCoverStyle } from "@/utils/ui";
+import { differenceInCalendarDays, differenceInCalendarWeeks } from "date-fns";
 import { isAfter } from "date-fns/isAfter";
 import { isBefore } from "date-fns/isBefore";
 import { computed } from "vue";
@@ -26,18 +27,55 @@ const tripStatus = computed(() => {
   }
 
   if (isAfter(startDate, today)) {
-    return "Upcoming";
+    const daysAway = differenceInCalendarDays(startDate, today);
+
+    if (daysAway > 31) {
+      const weeksAway = differenceInCalendarWeeks(startDate, today);
+      return `${weeksAway} weeks`;
+    }
+
+    return `${daysAway} ${daysAway === 1 ? "day" : "days"}`;
   }
 
   return "In progress";
 });
 
+const emit = defineEmits<{
+  longPress: [trip: Trip];
+}>();
+
+let pressTimer: ReturnType<typeof setTimeout> | null = null;
+let didLongPress = false;
+
+const onPointerDown = () => {
+  didLongPress = false;
+  pressTimer = setTimeout(() => {
+    didLongPress = true;
+    emit("longPress", trip);
+  }, 500);
+};
+
+const onPointerUp = () => {
+  if (pressTimer) {
+    clearTimeout(pressTimer);
+    pressTimer = null;
+  }
+};
+
 const onClick = () => {
+  if (didLongPress) return;
   router.push({ name: "tripData", params: { tripId: trip.id } });
 };
 </script>
 <template>
-  <Button variant="ghost" class="h-auto w-full p-0 text-left cursor-pointer" @click="onClick">
+  <Button
+    variant="ghost"
+    class="h-auto w-full p-0 text-left cursor-pointer"
+    @click="onClick"
+    @pointerdown="onPointerDown"
+    @pointerup="onPointerUp"
+    @pointerleave="onPointerUp"
+  >
     <Card
       class="border-none flex flex-col justify-between p-4 w-full h-[220px]"
       :style="getTripCoverStyle(trip.image)"

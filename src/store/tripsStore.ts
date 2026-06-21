@@ -1,5 +1,5 @@
 import { uploadFile } from "@/api/file";
-import { createTrip, getTrips, type CreateTripPayload, type Trip } from "@/api/trip";
+import { createTrip, deleteTrip, getTrips, type CreateTripPayload, type Trip } from "@/api/trip";
 import { isNetworkError } from "@/utils/network";
 import { acceptHMRUpdate, defineStore } from "pinia";
 
@@ -44,6 +44,11 @@ const useTripsStore = defineStore("trips", {
 
       const trip = await createTrip(payload);
       this.trips.push(trip);
+    },
+
+    async deleteTrip(tripId: number) {
+      await deleteTrip(tripId);
+      this.trips = this.trips.filter((t) => t.id !== tripId);
     },
   },
   persist: true,

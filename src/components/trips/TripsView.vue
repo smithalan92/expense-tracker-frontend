@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { type Trip as TripType } from "@/api/trip.ts";
 import { Card } from "@/components/ui/card";
 import useTripsStore from "@/store/tripsStore";
 import useUIStateStore from "@/store/uiState.ts";
@@ -6,13 +7,17 @@ import { PlusCircle } from "@lucide/vue";
 import { isAfter } from "date-fns/isAfter";
 import { isBefore } from "date-fns/isBefore";
 import { parse } from "date-fns/parse";
-import { computed, onMounted } from "vue";
+import { computed, onMounted, ref } from "vue";
 import Button from "../ui/button/Button.vue";
 import Trip from "./Trip.vue";
 import AddOrEditTrip from "./modals/AddOrEditTrip/AddOrEditTrip.vue";
+import TripInfoModal from "./modals/TripInfoModal/TripInfoModal.vue";
 
 const tripsStore = useTripsStore();
 const { setIsAddingOrEditingTrip } = useUIStateStore();
+
+const activeTrip = ref<Nullable<TripType>>(null);
+const isViewingTrip = ref(false);
 
 const DATE_FMT = "dd MMM yyyy";
 const parseDate = (s: string) => parse(s, DATE_FMT, new Date());
@@ -30,7 +35,11 @@ const activeTrips = computed(() => {
 
 const upcomingTrips = computed(() => {
   const today = new Date();
-  return tripsStore.getTrips.filter((trip) => isAfter(parseDate(trip.startDate), today));
+  return tripsStore.getTrips
+    .filter((trip) => isAfter(parseDate(trip.startDate), today))
+    .sort((a, b) => {
+      return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
+    });
 });
 
 const totalSpending = computed(() => {
@@ -50,8 +59,22 @@ const totalSpending = computed(() => {
 
 const pastTrips = computed(() => {
   const today = new Date();
-  return tripsStore.getTrips.filter((trip) => isBefore(parseDate(trip.endDate), today));
+  return tripsStore.getTrips
+    .filter((trip) => isBefore(parseDate(trip.endDate), today))
+    .sort((a, b) => {
+      return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
+    });
 });
+
+const onLongPressTrip = (trip: TripType) => {
+  activeTrip.value = trip;
+  isViewingTrip.value = true;
+};
+
+const onCloseTripInfoModal = () => {
+  isViewingTrip.value = false;
+  setTimeout(() => (activeTrip.value = null), 1000);
+};
 
 onMounted(() => {
   tripsStore.loadTrips();
@@ -93,7 +116,7 @@ onMounted(() => {
           <span class="text-mono text-md">{{ activeTrips.length }}</span>
         </div>
         <div class="flex flex-col gap-3.5">
-          <Trip v-for="trip in activeTrips" :key="trip.id" :trip="trip" />
+          <Trip v-for="trip in activeTrips" :key="trip.id" :trip="trip" @long-press="onLongPressTrip(trip)" />
         </div>
       </section>
 
@@ -104,7 +127,12 @@ onMounted(() => {
           <span class="text-mono text-md">{{ upcomingTrips.length }}</span>
         </div>
         <div class="flex flex-col gap-3.5">
-          <Trip v-for="trip in upcomingTrips" :key="trip.id" :trip="trip" />
+          <Trip
+            v-for="trip in upcomingTrips"
+            :key="trip.id"
+            :trip="trip"
+            @long-press="onLongPressTrip(trip)"
+          />
         </div>
       </section>
 
@@ -115,7 +143,7 @@ onMounted(() => {
           <span class="text-mono text-md">{{ pastTrips.length }}</span>
         </div>
         <div class="flex flex-col gap-3.5">
-          <Trip v-for="trip in pastTrips" :key="trip.id" :trip="trip" />
+          <Trip v-for="trip in pastTrips" :key="trip.id" :trip="trip" @long-press="onLongPressTrip(trip)" />
         </div>
       </section>
     </div>
@@ -128,6 +156,7 @@ onMounted(() => {
       <PlusCircle class="size-4" />
       Add Trip
     </Button>
+    <TripInfoModal :is-open="isViewingTrip" :trip="activeTrip" @close="onCloseTripInfoModal" />
     <AddOrEditTrip />
   </div>
 </template>
