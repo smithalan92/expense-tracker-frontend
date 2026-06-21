@@ -8,6 +8,7 @@ const useUIStateStore = defineStore("ui", {
     activeTripData: null,
     isViewingExpense: false,
     isAddingOrEditingExpense: false,
+    isCopyingExpense: false,
     activeExpense: null,
   }),
   actions: {
@@ -23,6 +24,10 @@ const useUIStateStore = defineStore("ui", {
     setIsAddingOrEditingExpense(value: boolean) {
       this.isAddingOrEditingExpense = value;
       if (value) this.isViewingExpense = false; // Close the view panel
+    },
+    setIsCopyingExpense(value: boolean) {
+      this.isCopyingExpense = value;
+      if (value) this.isViewingExpense = false;
     },
     setActiveExpense(expense: TripExpense | null) {
       this.activeExpense = expense;
@@ -48,5 +53,6 @@ interface UIState {
   activeTripData: Nullable<ActiveTripData>;
   isViewingExpense: boolean;
   isAddingOrEditingExpense: boolean;
+  isCopyingExpense: boolean;
   activeExpense: TripExpense | null;
 }

@@ -27,14 +27,15 @@ import CategorySelection from "./CategorySelection.vue";
 import useExpenseData from "./hooks/useExpenseData.ts";
 import useSyncCurrencyWithSelectedCountry from "./hooks/useSyncCurrencyWithSelectedCountry.ts";
 
-const { expense } = defineProps<{ expense: TripExpense | null }>();
-const { setIsAddingOrEditingExpense } = useUIStateStore();
+const { expense, isCopying } = defineProps<{ expense: TripExpense | null; isCopying: boolean }>();
+const { setIsAddingOrEditingExpense, setIsCopyingExpense } = useUIStateStore();
 const tripDataStore = useTripDataStore();
 const { addExpense, updateExpense } = tripDataStore;
 const { countries, userIds } = storeToRefs(tripDataStore);
 const { currencies, users } = storeToRefs(useAppStore());
 
-const isEditingExpense = computed(() => !!expense);
+const isEditingExpense = computed(() => !!expense && !isCopying);
+const isCopyingExpense = computed(() => !!expense && isCopying);
 
 const isSavingExpense = ref(false);
 
@@ -52,14 +53,14 @@ const availableUsers = computed(() => {
 const defaultCurrency =
   availableCurrencies.value.find((c) => c.code === "EUR") ?? availableCurrencies.value[0];
 
-const { expenseData, isDataValid } = useExpenseData(expense, defaultCurrency.id);
+const { expenseData, isDataValid } = useExpenseData(expense, defaultCurrency.id, isCopyingExpense.value);
 
 const { selectedCity, selectedCurrency } = toRefs(expenseData);
 
 useSyncCurrencyWithSelectedCountry({
   selectedCity,
   selectedCurrency,
-  isEditingOrCopyingExpense: isEditingExpense.value,
+  isEditingOrCopyingExpense: isEditingExpense.value || isCopyingExpense.value,
 });
 
 const formatAmount = () => {
@@ -83,6 +84,11 @@ const onSelectUser = (userId: number) => {
   } else {
     expenseData.selectedUsers.push(userId);
   }
+};
+
+const onClickClose = () => {
+  setIsAddingOrEditingExpense(false);
+  setIsCopyingExpense(false);
 };
 
 const onClickAddOrEditExpense = async () => {
@@ -112,10 +118,14 @@ const onClickAddOrEditExpense = async () => {
       toast.success("Expense updated.");
     } else {
       await addExpense({ payload });
-      toast.success("Expense added.");
+      if (isCopyingExpense.value) {
+        toast.success("Expense copied.");
+      } else {
+        toast.success("Expense added.");
+      }
     }
 
-    setIsAddingOrEditingExpense(false);
+    onClickClose();
   } catch (err) {
     console.error(err);
     toast.error("Failed to add or update expense.");
@@ -130,9 +140,10 @@ const onClickAddOrEditExpense = async () => {
       <DrawerHeader class="flex-row items-center space-between flex-1">
         <DrawerTitle class="text-2xl flex-1">
           <span v-if="isEditingExpense">Edit Expense</span>
+          <span v-else-if="isCopyingExpense">Copy Expense</span>
           <span v-else>Add Expense</span>
         </DrawerTitle>
-        <Button variant="ghost" @click="setIsAddingOrEditingExpense(false)">
+        <Button variant="ghost" @click="onClickClose">
           <XCircle class="size-6" />
         </Button>
       </DrawerHeader>
@@ -238,6 +249,7 @@ const onClickAddOrEditExpense = async () => {
         >
           <Spinner class="text-white" v-if="isSavingExpense" />
           <span v-if="isEditingExpense">Save</span>
+          <span v-else-if="isCopyingExpense">Copy</span>
           <span v-else>Add</span>
         </Button>
       </DrawerFooter>

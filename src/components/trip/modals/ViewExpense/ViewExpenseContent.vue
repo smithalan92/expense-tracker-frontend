@@ -10,7 +10,7 @@ import { computed } from "vue";
 import ExpenseCategoryChip from "../../ExpenseCategoryChip.vue";
 
 const { expense } = defineProps<{ expense: TripExpense }>();
-const { setIsAddingOrEditingExpense, setIsViewingExpense } = useUIStateStore();
+const { setIsAddingOrEditingExpense, setIsViewingExpense, setIsCopyingExpense } = useUIStateStore();
 
 const date = computed(() => format(new Date(expense.localDateTime), "HH:mm, do MMM yyyy"));
 const users = computed(() => expense.users.map((u) => u.firstName).join(", "));
@@ -63,7 +63,7 @@ const users = computed(() => expense.users.map((u) => u.firstName).join(", "));
             <Edit class="mr-1 size-[12px]" />
             Edit
           </Button>
-          <Button variant="secondary" @click="setIsAddingOrEditingExpense(true)">
+          <Button variant="secondary" @click="setIsCopyingExpense(true)">
             <Copy class="mr-1 size-[12px]" />
             Copy
           </Button>

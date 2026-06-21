@@ -4,14 +4,34 @@ import { computed, reactive } from "vue";
 
 const DATE_FORMAT = "yyyy-MM-dd HH:mm";
 
-export default function useExpenseData(expense: TripExpense | null, defaultCurrencyId: number) {
+const getExpenseDescription = ({
+  description,
+  isCopyingExpense,
+}: {
+  description?: string;
+  isCopyingExpense: boolean;
+}) => {
+  let desc = description ?? "";
+
+  if (isCopyingExpense) {
+    desc = `[CP] ${desc}`;
+  }
+
+  return desc;
+};
+
+export default function useExpenseData(
+  expense: TripExpense | null,
+  defaultCurrencyId: number,
+  isCopyingExpense: boolean,
+) {
   const expenseData = reactive<ExpenseData>({
     expenseDate: format(expense?.localDateTime ?? new Date(), DATE_FORMAT),
     selectedCity: expense?.city.id ?? null,
     selectedCurrency: expense?.currency.id ?? defaultCurrencyId,
     selectedCategory: expense?.category.id ?? null,
     selectedUsers: expense?.users.map((u) => u.id) ?? [],
-    description: expense?.description ?? "",
+    description: getExpenseDescription({ description: expense?.description, isCopyingExpense }),
     amount: expense?.amount ?? null,
   });
 
