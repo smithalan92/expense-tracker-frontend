@@ -10,9 +10,9 @@ const ACTIONS_TO_SYNC: StorePropery[] = [
   "addExpense",
   "updateExpense",
   "deleteExpense",
-  "addUnsavedExpense",
+  "_addUnsavedExpense",
   "syncUnsavedExpenses",
-  "updateUnsavedExpense",
+  "_updateUnsavedExpense",
 ];
 
 function shouldSyncAction(action: StorePropery) {

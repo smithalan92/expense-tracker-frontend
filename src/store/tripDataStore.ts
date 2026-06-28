@@ -9,11 +9,11 @@ import {
 import { getTripData, updateTrip, type CreateTripPayload, type Trip, type TripCountry } from "@/api/trip";
 
 import { uploadFile } from "@/api/file";
+import useAppStore from "@/store/appStore";
+import useTripsStore from "@/store/tripsStore";
 import { getTripFromLocalStorage } from "@/utils/localstorage";
 import { isNetworkError } from "@/utils/network";
 import { acceptHMRUpdate, defineStore } from "pinia";
-import useAppStore from "./appStore";
-import useTripsStore from "./tripsStore";
 
 const useTripDataStore = defineStore("tripData", {
   state: (): TripDataState => ({
@@ -80,7 +80,7 @@ const useTripDataStore = defineStore("tripData", {
     },
   },
   actions: {
-    restoreStateFromLocalStorage(tripId: number) {
+    _restoreStateFromLocalStorage(tripId: number) {
       const retrievedState = getTripFromLocalStorage(tripId);
 
       if (retrievedState) {
@@ -90,7 +90,7 @@ const useTripDataStore = defineStore("tripData", {
       }
     },
 
-    restoreUnsavedExpensesFromLocalStorage(tripId: number) {
+    _restoreUnsavedExpensesFromLocalStorage(tripId: number) {
       const retrievedState = getTripFromLocalStorage(tripId);
 
       if (retrievedState?.unsavedExpenses?.length) {
@@ -112,11 +112,11 @@ const useTripDataStore = defineStore("tripData", {
         this.categories = data.categories;
         this.userIds = data.userIds;
 
-        this.restoreUnsavedExpensesFromLocalStorage(tripId);
+        this._restoreUnsavedExpensesFromLocalStorage(tripId);
       } catch (err: any) {
         if (isNetworkError(err)) {
           try {
-            this.restoreStateFromLocalStorage(tripId);
+            this._restoreStateFromLocalStorage(tripId);
           } catch {
             this.hasFailedToLoadTripData = true;
           }
@@ -181,11 +181,54 @@ const useTripDataStore = defineStore("tripData", {
         });
       } catch (err: any) {
         if (isNetworkError(err)) {
-          this.addUnsavedExpense({ payload });
+          this._addUnsavedExpense({ payload });
         } else {
           throw err;
         }
       }
+    },
+
+    _addUnsavedExpense({ payload }: { payload: ExpensePayload }) {
+      const { currencies, users } = useAppStore();
+      const currency = currencies.find((c) => c.id === payload.currencyId);
+      const category = this.categories.find((c) => c.id === payload.categoryId);
+      const country = this.countries.find((c) => c.id === payload.countryId)!;
+
+      const city = country?.cities.find((c) => c.id === payload.cityId);
+
+      const expenseUsers = users.filter((u) => payload.userIds.includes(u.id));
+
+      if (!currency || !category || !city || !country || !expenseUsers.length) {
+        const missingType = !currency
+          ? "currency"
+          : !category
+            ? "category"
+            : !city
+              ? "city"
+              : !country
+                ? "country"
+                : "users";
+
+        throw new Error(`Incomplete data to add unsaved expense - missing ${missingType}`);
+      }
+
+      this.unsavedExpenses.push({
+        id: Math.ceil(Math.random() * 10000) * -1,
+        amount: payload.amount.toFixed(2),
+        currency,
+        euroAmount: `${payload.amount} ${currency.code}`,
+        localDateTime: payload.localDateTime,
+        description: payload.description,
+        category,
+        city: {
+          ...city,
+          timezone: "",
+        },
+        country,
+        users: expenseUsers,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
     },
 
     async syncUnsavedExpenses() {
@@ -215,39 +258,6 @@ const useTripDataStore = defineStore("tripData", {
       });
     },
 
-    addUnsavedExpense({ payload }: { payload: ExpensePayload }) {
-      const { currencies, users } = useAppStore();
-      const currency = currencies.find((c) => c.id === payload.currencyId);
-      const category = this.categories.find((c) => c.id === payload.categoryId);
-      const country = this.countries.find((c) => c.id === payload.countryId)!;
-
-      const city = country?.cities.find((c) => c.id === payload.cityId);
-
-      const expenseUsers = users.filter((u) => payload.userIds.includes(u.id));
-
-      if (!currency || !category || !city || !country || !expenseUsers.length) {
-        throw new Error("Incomplete data to add unsaved expense");
-      }
-
-      this.unsavedExpenses.push({
-        id: Math.ceil(Math.random() * 10000) * -1,
-        amount: payload.amount.toFixed(2),
-        currency,
-        euroAmount: `${payload.amount} ${currency.code}`,
-        localDateTime: payload.localDateTime,
-        description: payload.description,
-        category,
-        city: {
-          ...city,
-          timezone: "",
-        },
-        country,
-        users: expenseUsers,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      });
-    },
-
     async updateExpense({ expenseId, payload }: { expenseId: number; payload: ExpensePayload }) {
       if (expenseId > 0) {
         const existingExpense = this.expenses.find((e) => e.id === expenseId);
@@ -269,11 +279,11 @@ const useTripDataStore = defineStore("tripData", {
         existingExpense.createdAt = expense.createdAt;
         existingExpense.updatedAt = expense.updatedAt;
       } else {
-        this.updateUnsavedExpense({ expenseId, payload });
+        this._updateUnsavedExpense({ expenseId, payload });
       }
     },
 
-    async updateUnsavedExpense({ expenseId, payload }: { expenseId: number; payload: ExpensePayload }) {
+    async _updateUnsavedExpense({ expenseId, payload }: { expenseId: number; payload: ExpensePayload }) {
       const expense = this.unsavedExpenses.find((e) => e.id === expenseId);
 
       if (!expense) throw new Error("Could not find matching unsaved expense");
