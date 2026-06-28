@@ -131,9 +131,11 @@ const onClickSync = async () => {
         <Spinner v-if="isSyncingExpenses" class="size-4" />
         Sync
       </Button>
-      <Button @click="setIsAddingOrEditingExpense(true)" class="text-white font-bold">
-        <PlusCircle class="size-4" />
-        Add
+      <Button
+        @click="setIsAddingOrEditingExpense(true)"
+        class="text-white h-[50px] w-[50px] font-bold rounded-full"
+      >
+        <PlusCircle class="size-8" />
       </Button>
     </div>
 

@@ -6,6 +6,7 @@ import useAppStore from "@/store/appStore";
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import Button from "../ui/button/Button.vue";
+import Card from "../ui/card/Card.vue";
 
 const appStore = useAppStore();
 const router = useRouter();
@@ -31,7 +32,7 @@ const onClickLogin = () => {
 <template>
   <div class="w-full h-full flex flex-col items-center justify-center p-12">
     <Logo class="w-[300px] text-primary" />
-    <div class="mt-12 grid grid-rows-2 gap-3">
+    <Card class="mt-12 px-6 grid grid-rows-2 gap-3">
       <Field :invalid="!email">
         <FieldLabel>Email</FieldLabel>
         <Input type="email" placeholder="you@example.com" v-model="email" class="px-4 py-6" />
@@ -44,6 +45,6 @@ const onClickLogin = () => {
         <Button class="w-full" @click="onClickLogin" :disabled="!canLogin">Sign In</Button>
         <span v-if="hasFailedToLogin" class="mt-4 text-red">Try again....</span>
       </div>
-    </div>
+    </Card>
   </div>
 </template>

@@ -17,6 +17,14 @@ const date = computed(() => new Date(expense.localDateTime));
 const expenseTime = computed(() => format(date.value, "HH:mm"));
 const isUnsavedExpense = computed(() => expense.id < 0);
 
+const expenseLocalAmount = computed(() => {
+  if (expense.currency.code === "EUR") return null;
+
+  return Intl.NumberFormat(undefined, { style: "currency", currency: expense.currency.code }).format(
+    parseFloat(expense.amount),
+  );
+});
+
 const onClick = () => {
   setActiveExpense(expense);
   setIsViewingExpense(true);
@@ -27,7 +35,7 @@ const onClick = () => {
   <div
     variant="ghost"
     :data-testid="`expense-${expense.id}`"
-    class="grid grid-cols-[0.5fr_3.75fr_0.5fr_1.5fr] gap-5 items-stretch border-b border-slate-700/50 py-2 cursor-pointer last:border-b-0 px-6"
+    class="grid grid-cols-[0.5fr_3.75fr_0.5fr_1.5fr] gap-5 items-stretch border-b border-text-3/10 py-2 cursor-pointer last:border-b-0 px-6"
     :class="{
       'bg-amber-700/50': isUnsavedExpense,
     }"
@@ -60,8 +68,8 @@ const onClick = () => {
 
     <div class="flex flex-col items-end justify-center text-right">
       <div class="text-sm">€{{ expense.euroAmount }}</div>
-      <div v-if="expense.currency.code !== 'EUR'" class="text-[11px]">
-        {{ `${expense.amount} ${expense.currency.code}` }}
+      <div v-if="expenseLocalAmount" class="text-[11px]">
+        {{ expenseLocalAmount }}
       </div>
     </div>
   </div>

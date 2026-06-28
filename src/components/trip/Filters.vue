@@ -61,7 +61,7 @@ const onClickClearFilters = () => {
           <XCircle class="size-6" />
         </Button>
       </DrawerHeader>
-      <div class="px-4 pb-4">
+      <div class="px-4">
         <Field class="pt-4">
           <FieldLabel>Description</FieldLabel>
           <Input
@@ -70,9 +70,9 @@ const onClickClearFilters = () => {
             :hasClearButton="true"
           />
         </Field>
-        <Field class="py-6">
+        <Field class="pt-4 overflow-hidden">
           <FieldLabel>Category</FieldLabel>
-          <div class="flex flex-wrap gap-2">
+          <div class="flex flex-wrap gap-2 h-[250px] overflow-y-auto">
             <Button
               v-for="category in availableCategories"
               :key="category.id"
@@ -85,7 +85,7 @@ const onClickClearFilters = () => {
             </Button>
           </div>
         </Field>
-        <Field class="py-6">
+        <Field class="pt-4">
           <FieldLabel>User</FieldLabel>
           <div class="flex flex-wrap gap-2">
             <Button
