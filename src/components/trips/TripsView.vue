@@ -9,9 +9,9 @@ import { isBefore } from "date-fns/isBefore";
 import { parse } from "date-fns/parse";
 import { computed, onMounted, ref } from "vue";
 import Button from "../ui/button/Button.vue";
-import Trip from "./Trip.vue";
 import AddOrEditTrip from "./modals/AddOrEditTrip/AddOrEditTrip.vue";
 import TripInfoModal from "./modals/TripInfoModal/TripInfoModal.vue";
+import TripSection from "./TripSection.vue";
 
 const tripsStore = useTripsStore();
 const { setIsAddingOrEditingTrip } = useUIStateStore();
@@ -110,42 +110,28 @@ onMounted(() => {
 
     <div class="overflow-y-scroll flex-1 min-h-0 px-5 pt-2 pb-20">
       <!-- Active Trips -->
-      <section v-if="activeTrips.length > 0" class="pb-6">
-        <div class="flex justify-between items-baseline mb-3">
-          <h2 class="font-display text-xl m-0">Happening now</h2>
-          <span class="text-mono text-md">{{ activeTrips.length }}</span>
-        </div>
-        <div class="flex flex-col gap-3.5">
-          <Trip v-for="trip in activeTrips" :key="trip.id" :trip="trip" @long-press="onLongPressTrip(trip)" />
-        </div>
-      </section>
+      <TripSection
+        v-if="activeTrips.length"
+        title="Happening now"
+        :trips="activeTrips"
+        @long-press="onLongPressTrip"
+      />
 
       <!-- Upcoming Trips -->
-      <section v-if="upcomingTrips.length > 0" class="pb-6">
-        <div class="flex justify-between items-baseline mb-3">
-          <h2 class="font-display text-xl m-0">Up next</h2>
-          <span class="text-mono text-md">{{ upcomingTrips.length }}</span>
-        </div>
-        <div class="flex flex-col gap-3.5">
-          <Trip
-            v-for="trip in upcomingTrips"
-            :key="trip.id"
-            :trip="trip"
-            @long-press="onLongPressTrip(trip)"
-          />
-        </div>
-      </section>
+      <TripSection
+        v-if="upcomingTrips.length"
+        title="Up next"
+        :trips="upcomingTrips"
+        @long-press="onLongPressTrip"
+      />
 
       <!-- Past Trips -->
-      <section v-if="pastTrips.length > 0">
-        <div class="flex justify-between items-baseline mb-3">
-          <h2 class="font-display text-xl m-0">Past trips</h2>
-          <span class="text-mono text-md">{{ pastTrips.length }}</span>
-        </div>
-        <div class="flex flex-col gap-3.5">
-          <Trip v-for="trip in pastTrips" :key="trip.id" :trip="trip" @long-press="onLongPressTrip(trip)" />
-        </div>
-      </section>
+      <TripSection
+        v-if="pastTrips.length"
+        title="Past trips"
+        :trips="pastTrips"
+        @long-press="onLongPressTrip"
+      />
     </div>
 
     <Button

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/ui";
 import { CircleX } from "@lucide/vue";
 import { useVModel } from "@vueuse/core";
-import { computed, useAttrs, type HTMLAttributes } from "vue";
+import { computed, ref, useAttrs, type HTMLAttributes } from "vue";
 import Button from "../button/Button.vue";
 
 defineOptions({ inheritAttrs: false });
@@ -45,6 +45,9 @@ const dateTimeResetClass =
 // iOS Safari ONLY (other browsers render date inputs fine): it wraps the value onto
 // two lines when narrow and top-aligns the fields. Force a single, vertically-centred
 // line that respects h-9. Guarded so it never clips the value on desktop/Android.
+const inputRef = ref<HTMLInputElement | null>(null);
+defineExpose({ inputRef });
+
 const dateTimeIosClass =
   "supports-[-webkit-touch-callout:none]:block supports-[-webkit-touch-callout:none]:overflow-hidden supports-[-webkit-touch-callout:none]:whitespace-nowrap supports-[-webkit-touch-callout:none]:[&::-webkit-datetime-edit]:flex supports-[-webkit-touch-callout:none]:[&::-webkit-datetime-edit]:items-center supports-[-webkit-touch-callout:none]:[&::-webkit-datetime-edit]:whitespace-nowrap supports-[-webkit-touch-callout:none]:[&::-webkit-datetime-edit-fields-wrapper]:flex";
 </script>
@@ -52,6 +55,7 @@ const dateTimeIosClass =
 <template>
   <div class="relative">
     <input
+      ref="inputRef"
       v-model="modelValue"
       data-slot="input"
       @blur="emits('blur')"

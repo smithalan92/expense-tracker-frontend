@@ -119,7 +119,7 @@ const onClick = () => {
               €{{ Intl.NumberFormat().format(trip.totalExpenseAmount) }}
             </div>
             <div class="mono text-[11px]" style="color: oklch(0.95 0.02 80 / 0.7)">
-              {{ trip.expenseCount > 0 ? `${trip.expenseCount} expenses` : "nothing logged yet" }}
+              {{ trip.expenseCount > 0 ? `${trip.expenseCount} expenses` : "no expenses yet" }}
             </div>
           </div>
         </div>

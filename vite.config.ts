@@ -1,18 +1,22 @@
 import tailwindcss from "@tailwindcss/vite";
 import vue from "@vitejs/plugin-vue";
 import { fileURLToPath, URL } from "node:url";
-import { defineConfig } from 'vite';
 import checker from "vite-plugin-checker";
 import svgLoader from "vite-svg-loader";
+import { defineConfig } from "vitest/config";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [vue(), tailwindcss(), svgLoader(),
+  plugins: [
+    vue(),
+    tailwindcss(),
+    svgLoader(),
     checker({
       vueTsc: { tsconfigPath: "tsconfig.app.json" },
       enableBuild: false,
-    })],
-    resolve: {
+    }),
+  ],
+  resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
@@ -33,4 +37,10 @@ export default defineConfig({
       },
     },
   },
-})
+  test: {
+    environment: "jsdom",
+    globals: true,
+    setupFiles: ["./tests/setup.ts"],
+    typecheck: { tsconfig: "./tsconfig.vitest.json" },
+  },
+});

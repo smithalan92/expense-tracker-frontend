@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/ui";
 import { Loader2Icon } from "@lucide/vue";
 import type { HTMLAttributes } from "vue";
 

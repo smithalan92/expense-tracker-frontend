@@ -13,15 +13,15 @@ import NativeSelect from "@/components/ui/native-select/NativeSelect.vue";
 import NativeSelectOptGroup from "@/components/ui/native-select/NativeSelectOptGroup.vue";
 import NativeSelectOption from "@/components/ui/native-select/NativeSelectOption.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
-import { cn } from "@/lib/utils.ts";
 import useAppStore from "@/store/appStore.ts";
 import useTripDataStore from "@/store/tripDataStore.ts";
 import useUIStateStore from "@/store/uiState.ts";
+import { cn } from "@/utils/ui";
 import { getAvatarStyles } from "@/utils/ui.ts";
 import { User, XCircle } from "@lucide/vue";
 import { format } from "date-fns";
 import { storeToRefs } from "pinia";
-import { computed, ref, toRefs } from "vue";
+import { computed, onMounted, ref, toRefs } from "vue";
 import { toast } from "vue-sonner";
 import CategorySelection from "./CategorySelection.vue";
 import useExpenseData from "./hooks/useExpenseData.ts";
@@ -33,6 +33,8 @@ const tripDataStore = useTripDataStore();
 const { addExpense, updateExpense } = tripDataStore;
 const { countries, userIds } = storeToRefs(tripDataStore);
 const { currencies, users } = storeToRefs(useAppStore());
+
+const amountInputRef = ref<InstanceType<typeof Input> | null>(null);
 
 const isEditingExpense = computed(() => !!expense && !isCopying);
 const isCopyingExpense = computed(() => !!expense && isCopying);
@@ -133,6 +135,12 @@ const onClickAddOrEditExpense = async () => {
     isSavingExpense.value = false;
   }
 };
+
+onMounted(() => {
+  if (!expense) {
+    setTimeout(() => amountInputRef.value?.inputRef?.focus(), 400);
+  }
+});
 </script>
 <template>
   <DrawerContent :disable-outside-pointer-events="true">
@@ -185,6 +193,7 @@ const onClickAddOrEditExpense = async () => {
             </Field>
             <Field class="w-[160px]">
               <Input
+                ref="amountInputRef"
                 v-model="expenseData.amount"
                 type="text"
                 placeholder="0.00"

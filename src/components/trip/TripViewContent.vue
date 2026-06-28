@@ -5,7 +5,7 @@ import { formatDateRange, getTripCoverStyle } from "@/utils/ui";
 import { Calendar, ChevronLeft, CloudSync, PencilIcon, PlusCircle } from "@lucide/vue";
 import { useOnline } from "@vueuse/core";
 import { storeToRefs } from "pinia";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
 import AddOrEditTrip from "../trips/modals/AddOrEditTrip/AddOrEditTrip.vue";
@@ -23,11 +23,16 @@ const tripDataStore = useTripData();
 const { setIsAddingOrEditingExpense, setIsAddingOrEditingTrip, setActiveTripData } = useUIStateStore();
 const router = useRouter();
 
-const { trip, countries, userIds, totalExpenseAmount, hasUnsavedExpenses } = storeToRefs(tripDataStore);
+const { trip, countries, userIds, totalExpenseAmount, hasUnsavedExpenses, getExpenses, areAnyFiltersActive } =
+  storeToRefs(tripDataStore);
 
 const { syncUnsavedExpenses } = tripDataStore;
 
 const isSyncingExpenses = ref(false);
+
+const hasNoExpenses = computed(() => {
+  return !getExpenses.value.length && !areAnyFiltersActive.value;
+});
 
 const onClickEditTrip = () => {
   setActiveTripData({
@@ -98,7 +103,7 @@ const onClickSync = async () => {
     </div>
 
     <!-- Spending Amount/Filters etc.. -->
-    <div class="flex pt-2 px-4 items-center">
+    <div v-if="!hasNoExpenses" class="flex pt-2 px-4 items-center">
       <div class="flex flex-col">
         <span class="font-mono text-sm text-text-3 uppercase">Total Spent</span>
         <div class="mt-2 font-mono text-xl">

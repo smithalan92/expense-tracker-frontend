@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import type { TripExpense } from "@/api/expense";
 import useTripData from "@/store/tripDataStore";
+import { BanknoteX } from "@lucide/vue";
 import { format, isSameYear } from "date-fns";
-import { computed, toRefs } from "vue";
+import { storeToRefs } from "pinia";
+import { computed } from "vue";
 import Button from "../ui/button/Button.vue";
 import Expense from "./Expense.vue";
 
 const props = defineProps<{ class?: string }>();
 
 const store = useTripData();
-const { getExpenses, areAnyFiltersActive } = toRefs(store);
+const { getExpenses, areAnyFiltersActive } = storeToRefs(store);
 const { clearFilters } = store;
 
 const expensesGroupedByDate = computed(() => {
@@ -65,12 +67,21 @@ const expensesToDisplayByDate = computed(() => {
 
 <template>
   <div class="overflow-y-auto overscroll-contain w-full flex-1 lex flex-col" :class="props.class">
-    <div v-if="!getExpenses.length" class="flex flex-col flex-1 justify-center items-center py-8">
-      <span v-if="!areAnyFiltersActive">No expenses available.</span>
-      <span v-if="areAnyFiltersActive">No expenses match your filters.</span>
-      <Button v-if="areAnyFiltersActive" variant="secondary" class="mt-4" @click="clearFilters">
-        Clear filters
-      </Button>
+    <div
+      v-if="!getExpenses.length"
+      class="flex flex-col flex-1 justify-center items-center py-12"
+      :class="!areAnyFiltersActive ? 'border border-dashed m-24 rounded-lg' : ''"
+    >
+      <BanknoteX class="mb-4 size-12" />
+
+      <div v-if="areAnyFiltersActive" class="flex flex-col">
+        <span v-if="areAnyFiltersActive">No expenses match your filters</span>
+        <Button v-if="areAnyFiltersActive" variant="secondary" class="mt-6" @click="clearFilters">
+          Clear filters
+        </Button>
+      </div>
+
+      <span v-else>No expenses just yet</span>
     </div>
 
     <div v-for="value in expensesToDisplayByDate" :key="value.date">

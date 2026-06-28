@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/ui";
 import type { DialogContentEmits, DialogContentProps } from "reka-ui";
 import { useForwardPropsEmits } from "reka-ui";
 import { DrawerContent, DrawerPortal } from "vaul-vue";

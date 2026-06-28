@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/ui";
 import { computed, defineAsyncComponent, useAttrs, type Component } from "vue";
 
 defineOptions({ inheritAttrs: false });

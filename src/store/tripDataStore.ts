@@ -60,8 +60,8 @@ const useTripDataStore = defineStore("tripData", {
     hasUnsavedExpenses(state) {
       return state.unsavedExpenses.length > 0;
     },
-    totalExpenseAmount(): string {
-      const total = this.getExpenses.reduce((acc, exp) => {
+    totalExpenseAmount(state): string {
+      const total = [...state.expenses, ...state.unsavedExpenses].reduce((acc, exp) => {
         return acc + parseFloat(exp.euroAmount);
       }, 0);
 

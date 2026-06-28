@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/ui";
 import { ChevronDownIcon } from "@lucide/vue";
 import { reactiveOmit, useVModel } from "@vueuse/core";
 import type { AcceptableValue } from "reka-ui";

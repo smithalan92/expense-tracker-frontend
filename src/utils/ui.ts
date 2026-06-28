@@ -1,6 +1,13 @@
 import type { User } from "@/api/app";
+import type { ClassValue } from "clsx";
+import { clsx } from "clsx";
 import { format } from "date-fns/format";
 import { parse } from "date-fns/parse";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 export function getTripCoverStyle(image?: string) {
   const style: Record<string, string> = { "--cover-h": "350" };
