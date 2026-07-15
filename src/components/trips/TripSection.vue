@@ -16,7 +16,9 @@ const emit = defineEmits<{
   <section class="pb-6">
     <div class="flex justify-between items-baseline mb-3">
       <h2 class="font-display text-xl m-0">{{ title }}</h2>
-      <span class="font-mono text-text-2 text-sm">{{ trips.length }} trips</span>
+      <span class="font-mono text-text-2 text-sm">
+        {{ trips.length }} {{ `trip${trips.length === 1 ? "" : "s"}` }}
+      </span>
     </div>
     <div class="flex flex-col gap-3.5">
       <Trip v-for="trip in trips" :key="trip.id" :trip="trip" @long-press="emit('longPress', trip)" />

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import useTripData from "@/store/tripDataStore";
 import useUIStateStore from "@/store/uiState.ts";
+import { useIsOnline } from "@/utils/network.ts";
 import { formatDateRange, getTripCoverStyle } from "@/utils/ui";
 import { Calendar, ChevronLeft, CloudSync, PencilIcon, PlusCircle } from "@lucide/vue";
-import { useOnline } from "@vueuse/core";
 import { storeToRefs } from "pinia";
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
@@ -17,7 +17,7 @@ import Filters from "./Filters.vue";
 import AddOrEditExpense from "./modals/AddOrEditExpense/AddOrEditExpense.vue";
 import ViewExpense from "./modals/ViewExpense/ViewExpense.vue";
 
-const isOnline = useOnline();
+const isOnline = useIsOnline();
 
 const tripDataStore = useTripData();
 const { setIsAddingOrEditingExpense, setIsAddingOrEditingTrip, setActiveTripData } = useUIStateStore();
@@ -58,7 +58,7 @@ const onClickSync = async () => {
 </script>
 <template>
   <div class="flex flex-col flex-1 min-h-0 relative">
-    <div class="flex flex-col px-4 py-6" :style="getTripCoverStyle(trip.image)">
+    <div class="flex flex-col pb-6 px-4 pt-10" :style="getTripCoverStyle(trip.image)">
       <!--- Back & Edit Icons -->
       <div class="flex justify-between">
         <Button

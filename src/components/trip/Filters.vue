@@ -72,7 +72,7 @@ const onClickClearFilters = () => {
         </Field>
         <Field class="pt-4 overflow-hidden">
           <FieldLabel>Category</FieldLabel>
-          <div class="flex flex-wrap gap-2 h-[250px] overflow-y-auto">
+          <div class="flex flex-wrap gap-2 max-h-[250px] overflow-y-auto">
             <Button
               v-for="category in availableCategories"
               :key="category.id"

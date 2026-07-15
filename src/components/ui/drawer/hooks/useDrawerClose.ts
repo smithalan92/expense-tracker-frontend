@@ -20,7 +20,7 @@ export default function useDrawerClose(isDrawerOpen: Ref<boolean>) {
   const onAnimationEnd = (open: boolean) => {
     if (open) return;
 
-    if (!isViewingExpense.value && !isAddingOrEditingExpense.value && !isCopyingExpense) {
+    if (!isViewingExpense.value && !isAddingOrEditingExpense.value && !isCopyingExpense.value) {
       setActiveExpense(null);
     }
 

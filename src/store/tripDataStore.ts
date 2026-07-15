@@ -177,7 +177,6 @@ const useTripDataStore = defineStore("tripData", {
 
         this.$patch({
           expenses: [...this.expenses, ...result.data.expenses],
-          unsavedExpenses: [],
         });
       } catch (err: any) {
         if (isNetworkError(err)) {

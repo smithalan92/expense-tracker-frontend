@@ -11,11 +11,14 @@ import Separator from "@/components/ui/separator/Separator.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import useTripDataStore from "@/store/tripDataStore.ts";
 import useUIStateStore from "@/store/uiState.ts";
+import { useIsOnline } from "@/utils/network.ts";
 import { Calendar, Copy, Edit, MapPin, Notebook, Trash, User, XCircle } from "@lucide/vue";
 import { format } from "date-fns";
 import { computed, ref } from "vue";
 import { toast } from "vue-sonner";
 import ExpenseCategoryChip from "../../ExpenseCategoryChip.vue";
+
+const isOnline = useIsOnline();
 
 const { expense } = defineProps<{ expense: TripExpense }>();
 const { setIsAddingOrEditingExpense, setIsViewingExpense, setIsCopyingExpense } = useUIStateStore();
@@ -44,6 +47,8 @@ const onConfirmDelete = async () => {
 
 const date = computed(() => format(new Date(expense.localDateTime), "HH:mm, do MMM yyyy"));
 const users = computed(() => expense.users.map((u) => u.firstName).join(", "));
+
+const areActionsDisabled = computed(() => !isOnline.value && expense.id >= 0);
 </script>
 <template>
   <DrawerContent :disable-outside-pointer-events="true">
@@ -88,16 +93,22 @@ const users = computed(() => expense.users.map((u) => u.firstName).join(", "));
         </div>
       </div>
       <DrawerFooter class="flex-1">
-        <div class="grid grid-cols-3 gap-2 pb-2">
-          <Button @click="setIsAddingOrEditingExpense(true)">
+        <div class="grid grid-cols-3 gap-2 pb-2 relative">
+          <div
+            v-if="areActionsDisabled"
+            class="absolute w-full bg-orange-800 rounded-sm flex items-center justify-center text-sm font-bold bottom-2 p-2 z-5"
+          >
+            Actions disabled when offline
+          </div>
+          <Button class="w-full" @click="setIsAddingOrEditingExpense(true)" :disabled="areActionsDisabled">
             <Edit class="mr-1 size-[12px]" />
             Edit
           </Button>
-          <Button variant="secondary" @click="setIsCopyingExpense(true)">
+          <Button variant="secondary" @click="setIsCopyingExpense(true)" :disabled="areActionsDisabled">
             <Copy class="mr-1 size-[12px]" />
             Copy
           </Button>
-          <Button variant="destructive" @click="onClickDelete">
+          <Button variant="destructive" @click="onClickDelete" :disabled="areActionsDisabled">
             <Trash class="mr-1 size-[12px]" />
             Delete
           </Button>

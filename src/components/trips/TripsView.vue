@@ -83,7 +83,7 @@ onMounted(() => {
 <template>
   <div class="relative flex flex-col flex-1 min-h-0">
     <!-- Header -->
-    <div class="flex justify-between items-start px-5 pt-3.5 pb-1">
+    <div class="flex justify-between items-start px-5 pb-1 pt-8">
       <div class="font-mono text-3xl tracking-[1.4px] text-text-3">Your trips</div>
     </div>
 
