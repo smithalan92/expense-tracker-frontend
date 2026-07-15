@@ -92,6 +92,7 @@ const onClickSync = async () => {
 
         <div class="flex">
           <div
+            :data-testid="`country-flag-${country.code}`"
             class="overflow-hidden rounded-full -ml-2 first:ml-0 border border-solid border-white"
             v-for="country in countries"
             :key="country.code"
@@ -106,7 +107,7 @@ const onClickSync = async () => {
     <div v-if="!hasNoExpenses" class="flex pt-2 px-4 items-center">
       <div class="flex flex-col">
         <span class="font-mono text-sm text-text-3 uppercase">Total Spent</span>
-        <div class="mt-2 font-mono text-xl">
+        <div class="mt-2 font-mono text-xl" data-testid="total-expense-amount">
           {{ totalExpenseAmount }}
         </div>
       </div>
@@ -132,6 +133,7 @@ const onClickSync = async () => {
         Sync
       </Button>
       <Button
+        data-testid="add-expense-button"
         @click="setIsAddingOrEditingExpense(true)"
         class="text-white h-[50px] w-[50px] font-bold rounded-full"
       >

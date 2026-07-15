@@ -16,7 +16,7 @@ const isAddingEditingOrCopyingExpense = computed(() => {
 const { onAnimationEnd, isContentOpen } = useDrawerClose(isAddingEditingOrCopyingExpense);
 </script>
 <template>
-  <Drawer :open="isAddingEditingOrCopyingExpense" @animation-end="onAnimationEnd">
+  <Drawer :open="isAddingEditingOrCopyingExpense" @update:openComplete="onAnimationEnd">
     <AddOrEditExpenseContent v-if="isContentOpen" :expense="activeExpense" :is-copying="isCopyingExpense" />
   </Drawer>
 </template>

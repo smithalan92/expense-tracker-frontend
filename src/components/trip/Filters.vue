@@ -49,7 +49,7 @@ const onClickClearFilters = () => {
 };
 </script>
 <template>
-  <Button :variant="areAnyFiltersActive ? 'default' : 'outline'" @click="isDrawerOpen = true">
+  <Button data-testid="open-filters-button" :variant="areAnyFiltersActive ? 'default' : 'outline'" @click="isDrawerOpen = true">
     <ListFilter class="size-4" />
   </Button>
 

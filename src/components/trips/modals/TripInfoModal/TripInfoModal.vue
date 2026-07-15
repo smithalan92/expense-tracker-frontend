@@ -21,7 +21,7 @@ watch(
 const { onAnimationEnd, isContentOpen } = useDrawerClose(isViewingTrip);
 </script>
 <template>
-  <Drawer :open="isViewingTrip" @animation-end="onAnimationEnd">
+  <Drawer :open="isViewingTrip" @update:openComplete="onAnimationEnd">
     <TripInfoModalContent v-if="isContentOpen && trip" :trip="trip" @close="emit('close')" />
   </Drawer>
 </template>

@@ -132,16 +132,16 @@ const onClickAddOrSaveTrip = async () => {
       <div class="flex flex-col px-4 mb-4 max-h-[500px] overflow-y-scroll">
         <Field class="min-w-0 flex-1">
           <FieldLabel>Name</FieldLabel>
-          <Input type="text" v-model="tripData.tripName" class="text-xs" />
+          <Input type="text" v-model="tripData.tripName" class="text-xs" data-testid="trip-name-input" />
         </Field>
         <FieldGroup class="mt-4 flex-row gap-2">
           <Field class="min-w-0 flex-1">
             <FieldLabel>Start</FieldLabel>
-            <Input type="date" v-model="tripData.startDate" class="text-xs" />
+            <Input type="date" v-model="tripData.startDate" class="text-xs" data-testid="trip-start-date-input" />
           </Field>
           <Field class="min-w-0 flex-1">
             <FieldLabel>End</FieldLabel>
-            <Input type="date" v-model="tripData.endDate" class="text-xs" />
+            <Input type="date" v-model="tripData.endDate" class="text-xs" data-testid="trip-end-date-input" />
           </Field>
         </FieldGroup>
         <Field class="min-w-0 flex-1 mt-4">

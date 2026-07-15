@@ -161,11 +161,11 @@ onMounted(() => {
         <FieldGroup class="mt-2 flex-row gap-2">
           <Field class="min-w-0 flex-1">
             <FieldLabel>When</FieldLabel>
-            <Input type="datetime-local" v-model="expenseData.expenseDate" class="text-xs" />
+            <Input type="datetime-local" v-model="expenseData.expenseDate" class="text-xs" data-testid="expense-date-input" />
           </Field>
           <Field class="w-[160px]">
             <FieldLabel>Where</FieldLabel>
-            <NativeSelect v-model="expenseData.selectedCity" placeholder="Select city">
+            <NativeSelect v-model="expenseData.selectedCity" placeholder="Select city" data-testid="expense-city-select">
               <NativeSelectOption disabled value="null">Select city</NativeSelectOption>
               <NativeSelectOptGroup v-for="country in countries" :key="country.id" :label="country.name">
                 <NativeSelectOption v-for="city in country.cities" :key="city.id" :value="city.id">
@@ -181,7 +181,7 @@ onMounted(() => {
           <FieldLegend variant="label" class="text-text-2">Amount paid</FieldLegend>
           <FieldGroup class="flex-row gap-2">
             <Field class="min-w-0 flex-1">
-              <NativeSelect v-model="selectedCurrency">
+              <NativeSelect v-model="selectedCurrency" data-testid="expense-currency-select">
                 <NativeSelectOption
                   v-for="currency in availableCurrencies"
                   :key="currency.id"
@@ -197,6 +197,7 @@ onMounted(() => {
                 v-model="expenseData.amount"
                 type="text"
                 placeholder="0.00"
+                data-testid="expense-amount-input"
                 @blur="formatAmount"
                 inputmode="decimal"
                 min="0"
@@ -219,7 +220,7 @@ onMounted(() => {
         <!-- Description -->
         <Field class="mt-4">
           <FieldLabel>What was paid for</FieldLabel>
-          <Input type="text" v-model="expenseData.description" />
+          <Input type="text" v-model="expenseData.description" data-testid="expense-description-input" />
         </Field>
 
         <!-- Users -->
@@ -252,6 +253,7 @@ onMounted(() => {
       </div>
       <DrawerFooter class="flex-1 pt-2 py-4">
         <Button
+          data-testid="submit-expense-button"
           variant="default"
           @click="onClickAddOrEditExpense"
           :disabled="!isDataValid || isSavingExpense"

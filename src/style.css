@@ -196,3 +196,17 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Reka UI drawer: apply swipe-movement CSS vars during drag gesture */
+[data-slot="drawer-content"][data-swipe-direction="down"],
+[data-slot="drawer-content"][data-swipe-direction="up"] {
+  transform: translateY(var(--drawer-swipe-movement-y, 0px));
+}
+[data-slot="drawer-content"][data-swipe-direction="right"],
+[data-slot="drawer-content"][data-swipe-direction="left"] {
+  transform: translateX(var(--drawer-swipe-movement-x, 0px));
+}
+/* Disable the slide animation while actively swiping so drag transform takes over */
+[data-slot="drawer-content"][data-swiping] {
+  animation: none !important;
+}

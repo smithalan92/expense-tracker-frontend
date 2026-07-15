@@ -10,7 +10,7 @@ const { isViewingExpense, activeExpense } = storeToRefs(store);
 const { onAnimationEnd, isContentOpen } = useDrawerClose(isViewingExpense);
 </script>
 <template>
-  <Drawer :open="isViewingExpense" @animation-end="onAnimationEnd">
+  <Drawer :open="isViewingExpense" @update:openComplete="onAnimationEnd">
     <ViewExpenseContent v-if="isContentOpen && activeExpense" :expense="activeExpense" />
   </Drawer>
 </template>

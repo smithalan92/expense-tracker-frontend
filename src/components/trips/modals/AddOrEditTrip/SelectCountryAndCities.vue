@@ -65,14 +65,22 @@ const onSelectCity = (city: CityForCountry) => {
   }
 };
 
+function resetState() {
+  mode.value = "selectCountry";
+  countrySearchTerm.value = "";
+  citySearchTerm.value = "";
+  selectedCountryId.value = null;
+  selectedCities.value = [];
+}
+
+// Reset state whenever the drawer closes — whether the parent sets :isOpen to
+// false or reka-ui internally dismisses it (swipe/escape/outside-press).
+watch(() => isOpen, (newVal) => {
+  if (!newVal) resetState();
+});
+
 const onOpenChange = (open: boolean) => {
-  if (!open) {
-    mode.value = "selectCountry";
-    countrySearchTerm.value = "";
-    citySearchTerm.value = "";
-    selectedCountryId.value = null;
-    selectedCities.value = [];
-  }
+  if (!open) resetState();
 };
 
 const onClickSave = () => {

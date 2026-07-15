@@ -10,7 +10,7 @@ const { isAddingOrEditingTrip, activeTripData } = storeToRefs(store);
 const { onAnimationEnd, isContentOpen } = useDrawerClose(isAddingOrEditingTrip);
 </script>
 <template>
-  <Drawer :open="isAddingOrEditingTrip" @animation-end="onAnimationEnd">
+  <Drawer :open="isAddingOrEditingTrip" @update:openComplete="onAnimationEnd">
     <AddOrEditTripContent
       v-if="isContentOpen"
       :trip="activeTripData?.trip ?? null"

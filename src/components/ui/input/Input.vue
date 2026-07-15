@@ -33,6 +33,13 @@ const modelValue = useVModel(props, "modelValue", emits, {
 
 const attrs = useAttrs();
 
+// Spread all non-class attrs (e.g. data-testid) onto the underlying <input>.
+// class is handled separately via cn() so we exclude it here to avoid doubling.
+const forwardedAttrs = computed(() => {
+  const { class: _, ...rest } = attrs as Record<string, unknown>;
+  return rest;
+});
+
 const isDateTimeType = computed(
   () => props.type === "date" || props.type === "time" || props.type === "datetime-local",
 );
@@ -57,6 +64,7 @@ const dateTimeIosClass =
     <input
       ref="inputRef"
       v-model="modelValue"
+      v-bind="forwardedAttrs"
       data-slot="input"
       @blur="emits('blur')"
       @change="($event) => emits('change', $event)"
