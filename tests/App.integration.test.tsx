@@ -513,6 +513,14 @@ describe("App.integration", () => {
       // New expense appears in the list
       await waitFor(() => expect(screen.getByTestId("expense-99")).toBeInTheDocument());
       expect(within(screen.getByTestId("expense-99")).getByText("Lunch at restaurant")).toBeInTheDocument();
+
+      // Reopening the form (even before the closing drawer animation finishes) must not show stale data
+      await fireEvent.click(screen.getByTestId("add-expense-button"));
+      await waitFor(() => expect(screen.getByRole("heading", { name: "Add Expense" })).toBeInTheDocument());
+
+      expect((screen.getByTestId("expense-description-input") as HTMLInputElement).value).toBe("");
+      expect((screen.getByTestId("expense-amount-input") as HTMLInputElement).value).toBe("");
+      expect((screen.getByTestId("expense-city-select") as HTMLSelectElement).value).toBe("null");
     });
 
     it("allows editing an existing expense", async () => {
@@ -580,6 +588,37 @@ describe("App.integration", () => {
         within(screen.getByTestId(`expense-${EXPENSE_ONE_ID}`)).getByText("Updated description"),
       ).toBeInTheDocument();
       expect(within(screen.getByTestId(`expense-${EXPENSE_ONE_ID}`)).getByText("€25.00")).toBeInTheDocument();
+    });
+
+    it("does not prefill the add expense form with a previously edited expense", async () => {
+      vi.mocked(loadAppData).mockResolvedValue(GET_APP_DATA_FIXTURE);
+      vi.mocked(getTripData).mockResolvedValue(makeExpenseTripData());
+
+      await navigateToTrip();
+      await waitFor(() => expect(screen.getByTestId(`expense-${EXPENSE_ONE_ID}`)).toBeInTheDocument());
+
+      // Open ViewExpense, then Edit
+      await fireEvent.click(screen.getByTestId(`expense-${EXPENSE_ONE_ID}`));
+      await waitFor(() => expect(screen.getByRole("heading", { name: /€/ })).toBeInTheDocument());
+      await fireEvent.click(screen.getByRole("button", { name: /^Edit$/ }));
+      await waitFor(() => expect(screen.getByRole("heading", { name: "Edit Expense" })).toBeInTheDocument());
+      expect((screen.getByTestId("expense-description-input") as HTMLInputElement).value).toBe(
+        EURO_MOCK_EXPENSE_ONE.description,
+      );
+
+      // Close without saving
+      await fireEvent.click(screen.getByTestId("close-expense-form-button"));
+      await waitFor(() =>
+        expect(screen.queryByRole("heading", { name: "Edit Expense" })).not.toBeInTheDocument(),
+      );
+
+      // Open the add expense form and confirm it's blank, not the edited expense's data
+      await fireEvent.click(screen.getByTestId("add-expense-button"));
+      await waitFor(() => expect(screen.getByRole("heading", { name: "Add Expense" })).toBeInTheDocument());
+
+      expect((screen.getByTestId("expense-description-input") as HTMLInputElement).value).toBe("");
+      expect((screen.getByTestId("expense-amount-input") as HTMLInputElement).value).toBe("");
+      expect((screen.getByTestId("expense-city-select") as HTMLSelectElement).value).toBe("null");
     });
 
     it("allows deleting an expense", async () => {

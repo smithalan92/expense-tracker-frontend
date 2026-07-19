@@ -55,6 +55,7 @@ const availableUsers = computed(() => {
 const defaultCurrency =
   availableCurrencies.value.find((c) => c.code === "EUR") ?? availableCurrencies.value[0];
 
+console.log("[DEBUG] AddOrEditExpenseContent setup running, expense=", expense);
 const { expenseData, isDataValid } = useExpenseData(expense, defaultCurrency.id, isCopyingExpense.value);
 
 const { selectedCity, selectedCurrency } = toRefs(expenseData);
@@ -151,7 +152,7 @@ onMounted(() => {
           <span v-else-if="isCopyingExpense">Copy Expense</span>
           <span v-else>Add Expense</span>
         </DrawerTitle>
-        <Button variant="ghost" @click="onClickClose">
+        <Button variant="ghost" data-testid="close-expense-form-button" @click="onClickClose">
           <XCircle class="size-6" />
         </Button>
       </DrawerHeader>

@@ -25,6 +25,13 @@ const useUIStateStore = defineStore("ui", {
       this.isAddingOrEditingExpense = value;
       if (value) this.isViewingExpense = false; // Close the view panel
     },
+    startAddingExpense() {
+      // Unlike setIsAddingOrEditingExpense, this clears activeExpense so a fresh
+      // "Add Expense" can't reuse a stale expense left over from a prior view/edit.
+      this.activeExpense = null;
+      this.isViewingExpense = false;
+      this.isAddingOrEditingExpense = true;
+    },
     setIsCopyingExpense(value: boolean) {
       this.isCopyingExpense = value;
       if (value) this.isViewingExpense = false;
