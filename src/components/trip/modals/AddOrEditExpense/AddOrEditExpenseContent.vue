@@ -28,7 +28,7 @@ import useExpenseData from "./hooks/useExpenseData.ts";
 import useSyncCurrencyWithSelectedCountry from "./hooks/useSyncCurrencyWithSelectedCountry.ts";
 
 const { expense, isCopying } = defineProps<{ expense: TripExpense | null; isCopying: boolean }>();
-const { setIsAddingOrEditingExpense, setIsCopyingExpense } = useUIStateStore();
+const { setIsAddingExpense, setExpenseToEdit, setExpenseToCopy } = useUIStateStore();
 const tripDataStore = useTripDataStore();
 const { addExpense, updateExpense } = tripDataStore;
 const { countries, userIds } = storeToRefs(tripDataStore);
@@ -55,7 +55,6 @@ const availableUsers = computed(() => {
 const defaultCurrency =
   availableCurrencies.value.find((c) => c.code === "EUR") ?? availableCurrencies.value[0];
 
-console.log("[DEBUG] AddOrEditExpenseContent setup running, expense=", expense);
 const { expenseData, isDataValid } = useExpenseData(expense, defaultCurrency.id, isCopyingExpense.value);
 
 const { selectedCity, selectedCurrency } = toRefs(expenseData);
@@ -90,8 +89,9 @@ const onSelectUser = (userId: number) => {
 };
 
 const onClickClose = () => {
-  setIsAddingOrEditingExpense(false);
-  setIsCopyingExpense(false);
+  setIsAddingExpense(false);
+  setExpenseToEdit(null);
+  setExpenseToCopy(null);
 };
 
 const onClickAddOrEditExpense = async () => {
@@ -162,11 +162,20 @@ onMounted(() => {
         <FieldGroup class="mt-2 flex-row gap-2">
           <Field class="min-w-0 flex-1">
             <FieldLabel>When</FieldLabel>
-            <Input type="datetime-local" v-model="expenseData.expenseDate" class="text-xs" data-testid="expense-date-input" />
+            <Input
+              type="datetime-local"
+              v-model="expenseData.expenseDate"
+              class="text-xs"
+              data-testid="expense-date-input"
+            />
           </Field>
           <Field class="w-[160px]">
             <FieldLabel>Where</FieldLabel>
-            <NativeSelect v-model="expenseData.selectedCity" placeholder="Select city" data-testid="expense-city-select">
+            <NativeSelect
+              v-model="expenseData.selectedCity"
+              placeholder="Select city"
+              data-testid="expense-city-select"
+            >
               <NativeSelectOption disabled value="null">Select city</NativeSelectOption>
               <NativeSelectOptGroup v-for="country in countries" :key="country.id" :label="country.name">
                 <NativeSelectOption v-for="city in country.cities" :key="city.id" :value="city.id">

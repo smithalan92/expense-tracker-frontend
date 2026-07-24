@@ -1,27 +1,21 @@
 <script setup lang="ts">
 import type { Trip } from "@/api/trip.ts";
-import { Drawer } from "@/components/ui/drawer";
-import { ref, watch } from "vue";
-import useDrawerClose from "../../../ui/drawer/hooks/useDrawerClose.ts";
+import { Drawer, useDrawerClose } from "@/components/ui/drawer";
+import { computed } from "vue";
 import TripInfoModalContent from "./TripInfoModalContent.vue";
 
-const { trip, isOpen } = defineProps<{ trip: Nullable<Trip>; isOpen: boolean }>();
+const { trip, isOpen: isOpenProp } = defineProps<{ trip: Nullable<Trip>; isOpen: boolean }>();
 
 const emit = defineEmits<{
   (e: "close"): void;
 }>();
 
-const isViewingTrip = ref(false);
+const source = computed(() => (isOpenProp && trip ? trip : null));
 
-watch(
-  () => isOpen,
-  (newVal) => (isViewingTrip.value = newVal),
-);
-
-const { onAnimationEnd, isContentOpen } = useDrawerClose(isViewingTrip);
+const { isOpen, content: activeTrip, key, onOpenComplete } = useDrawerClose(source);
 </script>
 <template>
-  <Drawer :open="isViewingTrip" @update:openComplete="onAnimationEnd">
-    <TripInfoModalContent v-if="isContentOpen && trip" :trip="trip" @close="emit('close')" />
+  <Drawer :open="isOpen" @update:open-complete="onOpenComplete">
+    <TripInfoModalContent v-if="activeTrip" :key="key" :trip="activeTrip" @close="emit('close')" />
   </Drawer>
 </template>

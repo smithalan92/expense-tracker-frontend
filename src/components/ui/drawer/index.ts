@@ -7,3 +7,4 @@ export { default as DrawerHeader } from "./DrawerHeader.vue";
 export { default as DrawerOverlay } from "./DrawerOverlay.vue";
 export { default as DrawerTitle } from "./DrawerTitle.vue";
 export { default as DrawerTrigger } from "./DrawerTrigger.vue";
+export { default as useDrawerClose } from "./hooks/useDrawerClose.ts";

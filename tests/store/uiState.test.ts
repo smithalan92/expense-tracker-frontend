@@ -10,125 +10,138 @@ describe("uiState store", () => {
     setActivePinia(createPinia());
   });
 
+  describe("state", () => {
+    it("starts with every panel closed", () => {
+      const store = useUIStateStore();
+
+      expect(store.isAddingTrip).toBe(false);
+      expect(store.tripToEdit).toBeNull();
+      expect(store.isAddingExpense).toBe(false);
+      expect(store.expenseToView).toBeNull();
+      expect(store.expenseToEdit).toBeNull();
+      expect(store.expenseToCopy).toBeNull();
+    });
+  });
+
   describe("actions", () => {
-    describe("setIsAddingOrEditingTrip", () => {
-      it("sets the isAddingOrEditingTrip value", () => {
+    describe("setIsAddingTrip", () => {
+      it("sets the isAddingTrip value", () => {
         const store = useUIStateStore();
-        store.$patch({ isAddingOrEditingTrip: true });
 
-        store.setIsAddingOrEditingTrip(false);
-        expect(store.isAddingOrEditingTrip).toBe(false);
+        store.setIsAddingTrip(true);
+        expect(store.isAddingTrip).toBe(true);
 
-        store.setIsAddingOrEditingTrip(true);
-        expect(store.isAddingOrEditingTrip).toBe(true);
+        store.setIsAddingTrip(false);
+        expect(store.isAddingTrip).toBe(false);
       });
     });
 
-    describe("setActiveTripData", () => {
-      it("sets active trip data", () => {
+    describe("setTripToEdit", () => {
+      it("sets the trip to edit", () => {
         const store = useUIStateStore();
         const data = { trip: TESTING_TRIP, countries: [IRELAND_FOR_TRIP], userIds: [1] };
 
-        store.setActiveTripData(data);
+        store.setTripToEdit(data);
 
-        expect(store.activeTripData).toEqual(data);
+        expect(store.tripToEdit).toEqual(data);
       });
 
-      it("clears active trip data when passed null", () => {
+      it("clears the trip to edit when passed null", () => {
         const store = useUIStateStore();
-        store.$patch({ activeTripData: { trip: TESTING_TRIP, countries: [], userIds: [] } });
+        store.$patch({ tripToEdit: { trip: TESTING_TRIP, countries: [], userIds: [] } });
 
-        store.setActiveTripData(null);
+        store.setTripToEdit(null);
 
-        expect(store.activeTripData).toBeNull();
-      });
-    });
-
-    describe("setIsViewingExpense", () => {
-      it("sets the isViewingExpense value", () => {
-        const store = useUIStateStore();
-        store.$patch({ isViewingExpense: true });
-
-        store.setIsViewingExpense(false);
-        expect(store.isViewingExpense).toBe(false);
-
-        store.setIsViewingExpense(true);
-        expect(store.isViewingExpense).toBe(true);
+        expect(store.tripToEdit).toBeNull();
       });
     });
 
-    describe("setIsAddingOrEditingExpense", () => {
-      it("sets the IsAddingOrEditingExpense value", () => {
+    describe("setIsAddingExpense", () => {
+      it("sets the isAddingExpense value", () => {
         const store = useUIStateStore();
-        store.setIsAddingOrEditingExpense(true);
-        expect(store.isAddingOrEditingExpense).toBe(true);
 
-        store.setIsAddingOrEditingExpense(false);
-        expect(store.isAddingOrEditingExpense).toBe(false);
-      });
+        store.setIsAddingExpense(true);
+        expect(store.isAddingExpense).toBe(true);
 
-      it("closes the view panel when opening the edit panel", () => {
-        const store = useUIStateStore();
-        store.$patch({ isViewingExpense: true });
-
-        store.setIsAddingOrEditingExpense(true);
-
-        expect(store.isViewingExpense).toBe(false);
-      });
-
-      it("does not close the view panel when setting to false", () => {
-        const store = useUIStateStore();
-        store.$patch({ isViewingExpense: true, isAddingOrEditingExpense: true });
-
-        store.setIsAddingOrEditingExpense(false);
-
-        expect(store.isViewingExpense).toBe(true);
+        store.setIsAddingExpense(false);
+        expect(store.isAddingExpense).toBe(false);
       });
     });
 
-    describe("setIsCopyingExpense", () => {
-      it("sets the isCopyingExpense value", () => {
+    describe("setExpenseToView", () => {
+      it("sets the expense to view", () => {
         const store = useUIStateStore();
-        store.setIsCopyingExpense(true);
-        expect(store.isCopyingExpense).toBe(true);
 
-        store.setIsCopyingExpense(false);
-        expect(store.isCopyingExpense).toBe(false);
+        store.setExpenseToView(EURO_MOCK_EXPENSE_ONE);
+
+        expect(store.expenseToView).toEqual(EURO_MOCK_EXPENSE_ONE);
       });
 
-      it("closes the view panel when starting to copy", () => {
+      it("clears the expense to view when passed null", () => {
         const store = useUIStateStore();
-        store.$patch({ isViewingExpense: true });
+        store.$patch({ expenseToView: EURO_MOCK_EXPENSE_ONE });
 
-        store.setIsCopyingExpense(true);
+        store.setExpenseToView(null);
 
-        expect(store.isViewingExpense).toBe(false);
-      });
-
-      it("does not close the view panel when setting to false", () => {
-        const store = useUIStateStore();
-        store.$patch({ isViewingExpense: true, isCopyingExpense: true });
-
-        store.setIsCopyingExpense(false);
-
-        expect(store.isViewingExpense).toBe(true);
+        expect(store.expenseToView).toBeNull();
       });
     });
 
-    describe("setActiveExpense", () => {
-      it("sets the active expense", () => {
+    describe("setExpenseToEdit", () => {
+      it("sets the expense to edit", () => {
         const store = useUIStateStore();
-        store.setActiveExpense(EURO_MOCK_EXPENSE_ONE);
-        expect(store.activeExpense).toEqual(EURO_MOCK_EXPENSE_ONE);
+
+        store.setExpenseToEdit(EURO_MOCK_EXPENSE_ONE);
+
+        expect(store.expenseToEdit).toEqual(EURO_MOCK_EXPENSE_ONE);
       });
 
-      it("clears the active expense when passed null", () => {
+      it("clears the expense to edit when passed null", () => {
         const store = useUIStateStore();
-        store.$patch({ activeExpense: EURO_MOCK_EXPENSE_ONE });
+        store.$patch({ expenseToEdit: EURO_MOCK_EXPENSE_ONE });
 
-        store.setActiveExpense(null);
+        store.setExpenseToEdit(null);
 
-        expect(store.activeExpense).toBeNull();
+        expect(store.expenseToEdit).toBeNull();
+      });
+
+      // Closing the view panel is the caller's job (see ViewExpenseContent.onClickEdit),
+      // the store deliberately keeps the two independent.
+      it("leaves the expense to view untouched", () => {
+        const store = useUIStateStore();
+        store.$patch({ expenseToView: EURO_MOCK_EXPENSE_ONE });
+
+        store.setExpenseToEdit(EURO_MOCK_EXPENSE_ONE);
+
+        expect(store.expenseToView).toEqual(EURO_MOCK_EXPENSE_ONE);
+      });
+    });
+
+    describe("setExpenseToCopy", () => {
+      it("sets the expense to copy", () => {
+        const store = useUIStateStore();
+
+        store.setExpenseToCopy(EURO_MOCK_EXPENSE_ONE);
+
+        expect(store.expenseToCopy).toEqual(EURO_MOCK_EXPENSE_ONE);
+      });
+
+      it("clears the expense to copy when passed null", () => {
+        const store = useUIStateStore();
+        store.$patch({ expenseToCopy: EURO_MOCK_EXPENSE_ONE });
+
+        store.setExpenseToCopy(null);
+
+        expect(store.expenseToCopy).toBeNull();
+      });
+
+      it("leaves the expense to view untouched", () => {
+        const store = useUIStateStore();
+        store.$patch({ expenseToView: EURO_MOCK_EXPENSE_ONE });
+
+        store.setExpenseToCopy(EURO_MOCK_EXPENSE_ONE);
+
+        expect(store.expenseToView).toEqual(EURO_MOCK_EXPENSE_ONE);
       });
     });
   });

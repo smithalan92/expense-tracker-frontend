@@ -14,7 +14,7 @@ import TripInfoModal from "./modals/TripInfoModal/TripInfoModal.vue";
 import TripSection from "./TripSection.vue";
 
 const tripsStore = useTripsStore();
-const { setIsAddingOrEditingTrip } = useUIStateStore();
+const { setIsAddingTrip } = useUIStateStore();
 
 const activeTrip = ref<Nullable<TripType>>(null);
 const isViewingTrip = ref(false);
@@ -137,7 +137,7 @@ onMounted(() => {
     <Button
       variant="default"
       class="absolute bottom-[22px] right-[18px] z-20 items-center justify-center rounded-full font-display text-white"
-      @click="setIsAddingOrEditingTrip(true)"
+      @click="setIsAddingTrip(true)"
     >
       <PlusCircle class="size-4" />
       Add Trip

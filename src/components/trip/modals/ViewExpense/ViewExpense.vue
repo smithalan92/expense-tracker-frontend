@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { Drawer } from "@/components/ui/drawer";
+import { Drawer, useDrawerClose } from "@/components/ui/drawer";
 import useUIStateStore from "@/store/uiState.ts";
 import { storeToRefs } from "pinia";
-import useDrawerClose from "../../../ui/drawer/hooks/useDrawerClose.ts";
 import ViewExpenseContent from "./ViewExpenseContent.vue";
 
 const store = useUIStateStore();
-const { isViewingExpense, activeExpense } = storeToRefs(store);
-const { onAnimationEnd, isContentOpen } = useDrawerClose(isViewingExpense);
+const { expenseToView } = storeToRefs(store);
+
+const { isOpen, content: expense, key, onOpenComplete } = useDrawerClose(expenseToView);
 </script>
 <template>
-  <Drawer :open="isViewingExpense" @update:openComplete="onAnimationEnd">
-    <ViewExpenseContent v-if="isContentOpen && activeExpense" :expense="activeExpense" />
+  <Drawer :open="isOpen" @update:open-complete="onOpenComplete">
+    <ViewExpenseContent v-if="expense" :key="key" :expense="expense" />
   </Drawer>
 </template>

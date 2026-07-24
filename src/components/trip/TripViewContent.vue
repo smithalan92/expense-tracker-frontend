@@ -20,7 +20,7 @@ import ViewExpense from "./modals/ViewExpense/ViewExpense.vue";
 const isOnline = useIsOnline();
 
 const tripDataStore = useTripData();
-const { startAddingExpense, setIsAddingOrEditingTrip, setActiveTripData } = useUIStateStore();
+const { setIsAddingExpense, setTripToEdit } = useUIStateStore();
 const router = useRouter();
 
 const { trip, countries, userIds, totalExpenseAmount, hasUnsavedExpenses, getExpenses, areAnyFiltersActive } =
@@ -35,12 +35,11 @@ const hasNoExpenses = computed(() => {
 });
 
 const onClickEditTrip = () => {
-  setActiveTripData({
+  setTripToEdit({
     trip: trip.value,
     countries: countries.value,
     userIds: userIds.value,
   });
-  setIsAddingOrEditingTrip(true);
 };
 
 const onClickSync = async () => {
@@ -134,7 +133,7 @@ const onClickSync = async () => {
       </Button>
       <Button
         data-testid="add-expense-button"
-        @click="startAddingExpense"
+        @click="setIsAddingExpense(true)"
         class="text-white h-[50px] w-[50px] font-bold rounded-full"
       >
         <PlusCircle class="size-8" />

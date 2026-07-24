@@ -31,7 +31,7 @@ const isEditingTrip = computed(() => {
   return !!trip;
 });
 
-const { setIsAddingOrEditingTrip } = useUIStateStore();
+const { setIsAddingTrip, setTripToEdit } = useUIStateStore();
 
 const appStore = useAppStore();
 const { users, user: currentUser } = storeToRefs(appStore);
@@ -46,6 +46,11 @@ const selectedUsers = toRef(tripData.selectedUsers);
 
 const isSelectCountryAndCitiesOpen = ref(false);
 const isAddingOrUpdatingTrip = ref(false);
+
+const onClose = () => {
+  setIsAddingTrip(false);
+  setTripToEdit(null);
+};
 
 const onSaveCountry = (country: TripModalCountry) => {
   const existingIndex = selectedCountries.value.findIndex((c) => c.id === country.id);
@@ -108,7 +113,7 @@ const onClickAddOrSaveTrip = async () => {
       toast.success("Trip created.");
     }
 
-    setIsAddingOrEditingTrip(false);
+    onClose();
   } catch (err) {
     console.error(err);
     toast.error("Failed to create trip.");
@@ -125,7 +130,7 @@ const onClickAddOrSaveTrip = async () => {
           <span v-if="isEditingTrip">Edit Trip</span>
           <span v-else>Add Trip</span>
         </DrawerTitle>
-        <Button variant="ghost" @click="setIsAddingOrEditingTrip(false)">
+        <Button variant="ghost" @click="onClose()">
           <XCircle class="size-6" />
         </Button>
       </DrawerHeader>
@@ -137,7 +142,12 @@ const onClickAddOrSaveTrip = async () => {
         <FieldGroup class="mt-4 flex-row gap-2">
           <Field class="min-w-0 flex-1">
             <FieldLabel>Start</FieldLabel>
-            <Input type="date" v-model="tripData.startDate" class="text-xs" data-testid="trip-start-date-input" />
+            <Input
+              type="date"
+              v-model="tripData.startDate"
+              class="text-xs"
+              data-testid="trip-start-date-input"
+            />
           </Field>
           <Field class="min-w-0 flex-1">
             <FieldLabel>End</FieldLabel>

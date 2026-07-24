@@ -1,38 +1,45 @@
-import useUIStateStore from "@/store/uiState";
-import { storeToRefs } from "pinia";
-import { ref, watch, type Ref } from "vue";
+import { computed, ref, watch, type Ref } from "vue";
 
 /*
-  Use this hook with the @animation-end prop of a Drawer that may need to reset the active expense
+  Keeps drawer content mounted until the close animation has finished.
+
+  Drawer content is usually rendered from a nullable source (e.g. the expense being viewed).
+  Clearing that source unmounts the content immediately, so the drawer has nothing left to
+  animate out. This keeps a copy of the last non-null value around and only drops it once
+  the drawer reports its close animation is complete.
+
+  Because the content outlives the close, reopening the drawer mid-animation would otherwise
+  reuse the old component instance and show stale data. `key` changes on every open, so bind it
+  to the content's :key to force a fresh instance.
+
+  Bind `onOpenComplete` to the Drawer's @update:open-complete handler.
 */
-export default function useDrawerClose(isDrawerOpen: Ref<boolean>) {
-  const uiState = useUIStateStore();
-  const { isViewingExpense, isAddingOrEditingExpense, isCopyingExpense, isAddingOrEditingTrip } =
-    storeToRefs(uiState);
-  const { setActiveExpense, setActiveTripData } = uiState;
+export default function useDrawerClose<T>(source: Ref<T | null | undefined>) {
+  const content = ref(source.value ?? null) as Ref<T | null>;
+  const key = ref(0);
 
-  const isContentOpen = ref(false);
+  const isOpen = computed(() => !!source.value);
 
-  watch(isDrawerOpen, (newValue) => {
-    if (newValue) isContentOpen.value = true;
-  });
+  // Sync flush so a close immediately followed by a reopen is still seen as two separate
+  // opens - with the default pre flush both changes collapse into one and the key never moves.
+  watch(
+    source,
+    (value, previousValue) => {
+      if (!value) return;
+      if (!previousValue) key.value++;
+      content.value = value;
+    },
+    { flush: "sync" },
+  );
 
-  const onAnimationEnd = (open: boolean) => {
-    if (open) return;
-
-    if (!isViewingExpense.value && !isAddingOrEditingExpense.value && !isCopyingExpense.value) {
-      setActiveExpense(null);
-    }
-
-    if (!isAddingOrEditingTrip.value) {
-      setActiveTripData(null);
-    }
-
-    isContentOpen.value = false;
+  const onOpenComplete = (open: boolean) => {
+    if (!open) content.value = null;
   };
 
   return {
-    onAnimationEnd,
-    isContentOpen,
+    isOpen,
+    content,
+    key,
+    onOpenComplete,
   };
 }

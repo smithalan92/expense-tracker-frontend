@@ -1,37 +1,31 @@
 <script setup lang="ts">
-import { Drawer } from "@/components/ui/drawer";
+import { Drawer, useDrawerClose } from "@/components/ui/drawer";
 import useUIStateStore from "@/store/uiState.ts";
 import { storeToRefs } from "pinia";
-import { computed, ref, watch } from "vue";
-import useDrawerClose from "../../../ui/drawer/hooks/useDrawerClose.ts";
+import { computed } from "vue";
 import AddOrEditExpenseContent from "./AddOrEditExpenseContent.vue";
 
-console.log("[DEBUG] AddOrEditExpense setup running");
 const store = useUIStateStore();
-const { isAddingOrEditingExpense, isCopyingExpense, activeExpense } = storeToRefs(store);
+const { isAddingExpense, expenseToEdit, expenseToCopy } = storeToRefs(store);
 
-const isAddingEditingOrCopyingExpense = computed(() => {
-  return isAddingOrEditingExpense.value || isCopyingExpense.value;
+const source = computed(() => {
+  if (!isAddingExpense.value && !expenseToEdit.value && !expenseToCopy.value) return null;
+
+  return {
+    expense: expenseToEdit.value ?? expenseToCopy.value ?? null,
+    isCopying: !!expenseToCopy.value,
+  };
 });
 
-const { onAnimationEnd, isContentOpen } = useDrawerClose(isAddingEditingOrCopyingExpense);
-
-// Forces a fresh AddOrEditExpenseContent instance on every open, so stale form
-// state can't survive a reopen that happens before the previous close animation finishes.
-const openNonce = ref(0);
-watch(isAddingEditingOrCopyingExpense, (newValue) => {
-  console.log("[DEBUG] isAddingEditingOrCopyingExpense watch fired", newValue, "activeExpense", activeExpense.value);
-  if (newValue) openNonce.value++;
-  console.log("[DEBUG] openNonce is now", openNonce.value);
-});
+const { isOpen, content, key, onOpenComplete } = useDrawerClose(source);
 </script>
 <template>
-  <Drawer :open="isAddingEditingOrCopyingExpense" @update:openComplete="onAnimationEnd">
+  <Drawer :open="isOpen" @update:open-complete="onOpenComplete">
     <AddOrEditExpenseContent
-      v-if="isContentOpen"
-      :key="openNonce"
-      :expense="activeExpense"
-      :is-copying="isCopyingExpense"
+      v-if="content"
+      :key="key"
+      :expense="content.expense"
+      :is-copying="content.isCopying"
     />
   </Drawer>
 </template>

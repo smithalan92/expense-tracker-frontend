@@ -21,14 +21,29 @@ import ExpenseCategoryChip from "../../ExpenseCategoryChip.vue";
 const isOnline = useIsOnline();
 
 const { expense } = defineProps<{ expense: TripExpense }>();
-const { setIsAddingOrEditingExpense, setIsViewingExpense, setIsCopyingExpense } = useUIStateStore();
+const { setExpenseToEdit, setExpenseToView, setExpenseToCopy } = useUIStateStore();
 const { deleteExpense } = useTripDataStore();
 
 const isConfirmDeleteModalOpen = ref(false);
 const isDeletingExpense = ref(false);
 
+const onClose = () => {
+  setExpenseToView(null);
+  isConfirmDeleteModalOpen.value = false;
+};
+
 const onClickDelete = () => {
   isConfirmDeleteModalOpen.value = true;
+};
+
+const onClickEdit = () => {
+  setExpenseToEdit(expense);
+  onClose();
+};
+
+const onClickClone = () => {
+  setExpenseToCopy(expense);
+  onClose();
 };
 
 const onConfirmDelete = async () => {
@@ -36,7 +51,7 @@ const onConfirmDelete = async () => {
   try {
     await deleteExpense(expense.id);
     toast.success("Expense deleted.");
-    setIsViewingExpense(false);
+    onClose();
   } catch (err) {
     console.log(err);
     toast.error("Failed to delete expense.");
@@ -55,7 +70,7 @@ const areActionsDisabled = computed(() => !isOnline.value && expense.id >= 0);
     <div class="mx-auto w-full max-w-sm">
       <DrawerHeader class="flex-row items-center space-between flex-1">
         <DrawerTitle class="flex-1 text-2xl">€{{ expense.euroAmount }}</DrawerTitle>
-        <Button variant="ghost" @click="setIsViewingExpense(false)">
+        <Button variant="ghost" @click="onClose">
           <XCircle class="size-6" />
         </Button>
       </DrawerHeader>
@@ -100,11 +115,11 @@ const areActionsDisabled = computed(() => !isOnline.value && expense.id >= 0);
           >
             Actions disabled when offline
           </div>
-          <Button class="w-full" @click="setIsAddingOrEditingExpense(true)" :disabled="areActionsDisabled">
+          <Button class="w-full" @click="onClickEdit" :disabled="areActionsDisabled">
             <Edit class="mr-1 size-[12px]" />
             Edit
           </Button>
-          <Button variant="secondary" @click="setIsCopyingExpense(true)" :disabled="areActionsDisabled">
+          <Button variant="secondary" @click="onClickClone" :disabled="areActionsDisabled">
             <Copy class="mr-1 size-[12px]" />
             Copy
           </Button>

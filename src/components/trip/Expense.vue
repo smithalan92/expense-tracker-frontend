@@ -11,7 +11,7 @@ const { expense } = defineProps<{
   expense: TripExpense;
 }>();
 
-const { setIsViewingExpense, setActiveExpense } = useUIStateStore();
+const { setExpenseToView } = useUIStateStore();
 
 const date = computed(() => new Date(expense.localDateTime));
 const expenseTime = computed(() => format(date.value, "HH:mm"));
@@ -26,8 +26,7 @@ const expenseLocalAmount = computed(() => {
 });
 
 const onClick = () => {
-  setActiveExpense(expense);
-  setIsViewingExpense(true);
+  setExpenseToView(expense);
 };
 </script>
 

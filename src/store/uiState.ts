@@ -4,40 +4,31 @@ import { acceptHMRUpdate, defineStore } from "pinia";
 
 const useUIStateStore = defineStore("ui", {
   state: (): UIState => ({
-    isAddingOrEditingTrip: false,
-    activeTripData: null,
-    isViewingExpense: false,
-    isAddingOrEditingExpense: false,
-    isCopyingExpense: false,
-    activeExpense: null,
+    isAddingTrip: false,
+    tripToEdit: null,
+    isAddingExpense: false,
+    expenseToView: null,
+    expenseToEdit: null,
+    expenseToCopy: null,
   }),
   actions: {
-    setIsAddingOrEditingTrip(value: boolean) {
-      this.isAddingOrEditingTrip = value;
+    setIsAddingTrip(value: boolean) {
+      this.isAddingTrip = value;
     },
-    setActiveTripData(data: Nullable<ActiveTripData>) {
-      this.activeTripData = data;
+    setTripToEdit(data: Nullable<ActiveTripData>) {
+      this.tripToEdit = data;
     },
-    setIsViewingExpense(value: boolean) {
-      this.isViewingExpense = value;
+    setIsAddingExpense(value: boolean) {
+      this.isAddingExpense = value;
     },
-    setIsAddingOrEditingExpense(value: boolean) {
-      this.isAddingOrEditingExpense = value;
-      if (value) this.isViewingExpense = false; // Close the view panel
+    setExpenseToView(value: Nullable<TripExpense>) {
+      this.expenseToView = value;
     },
-    startAddingExpense() {
-      // Unlike setIsAddingOrEditingExpense, this clears activeExpense so a fresh
-      // "Add Expense" can't reuse a stale expense left over from a prior view/edit.
-      this.activeExpense = null;
-      this.isViewingExpense = false;
-      this.isAddingOrEditingExpense = true;
+    setExpenseToEdit(value: Nullable<TripExpense>) {
+      this.expenseToEdit = value;
     },
-    setIsCopyingExpense(value: boolean) {
-      this.isCopyingExpense = value;
-      if (value) this.isViewingExpense = false;
-    },
-    setActiveExpense(expense: TripExpense | null) {
-      this.activeExpense = expense;
+    setExpenseToCopy(value: Nullable<TripExpense>) {
+      this.expenseToCopy = value;
     },
   },
   persist: false,
@@ -56,10 +47,10 @@ interface ActiveTripData {
 }
 
 interface UIState {
-  isAddingOrEditingTrip: boolean;
-  activeTripData: Nullable<ActiveTripData>;
-  isViewingExpense: boolean;
-  isAddingOrEditingExpense: boolean;
-  isCopyingExpense: boolean;
-  activeExpense: TripExpense | null;
+  isAddingTrip: boolean;
+  tripToEdit: Nullable<ActiveTripData>;
+  isAddingExpense: boolean;
+  expenseToView: Nullable<TripExpense>;
+  expenseToEdit: Nullable<TripExpense>;
+  expenseToCopy: Nullable<TripExpense>;
 }
