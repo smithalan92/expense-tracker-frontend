@@ -48,6 +48,9 @@ export interface Trip {
   endDate: string;
   image: string;
   totalExpenseAmount: number;
+  countries: Array<{ id: number; name: string; code: string }>;
+  users: Array<{ id: number; name: string }>;
+  expenseCount: number;
 }
 
 export interface GetTripsResponse {
@@ -98,6 +101,7 @@ export interface TripCountry {
   name: string;
   currencyId: number;
   cities: TripCountryCity[];
+  code: string;
 }
 
 interface Category {

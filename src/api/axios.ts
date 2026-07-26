@@ -1,5 +1,5 @@
+import useAppStore from "@/store/appStore";
 import axios, { type AxiosInstance } from "axios";
-import useAppStore from "../stores/appStore";
 
 let http: Nullable<AxiosInstance> = null;
 

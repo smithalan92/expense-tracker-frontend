@@ -1,0 +1,217 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap");
+
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+@theme inline {
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-mono: var(--font-mono);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* ExpensIt extras surfaced as Tailwind colors */
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-hairline: var(--hairline);
+  --color-hairline-strong: var(--hairline-strong);
+  --color-text-2: var(--text-2);
+  --color-text-3: var(--text-3);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-line: var(--accent-line);
+  --color-accent-press: var(--accent-press);
+  --color-ochre: var(--ochre);
+  --color-positive: var(--positive);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) * 1.3);
+  --radius-xl: calc(var(--radius) * 1.6);
+  --radius-pill: 999px;
+
+  --shadow-card: var(--shadow);
+  --shadow-sheet: var(--shadow-sheet);
+
+  --ease-app: var(--ease);
+
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --font-heading: var(--font-sans);
+}
+
+/* ── Dark (default) ───────────────────────────────────────────── */
+:root {
+  /* ExpensIt raw tokens */
+  --bg: oklch(0.155 0.012 55);
+  --bg-2: oklch(0.185 0.014 55);
+  --surface: oklch(0.218 0.015 55);
+  --surface-2: oklch(0.262 0.016 55);
+  --surface-3: oklch(0.315 0.018 55);
+  --hairline: oklch(0.4 0.014 55 / 0.45);
+  --hairline-strong: oklch(0.5 0.016 55 / 0.6);
+  --text: oklch(0.945 0.012 78);
+  --text-2: oklch(0.745 0.016 72);
+  --text-3: oklch(0.595 0.016 66);
+
+  --accent-raw: oklch(0.675 0.145 42);
+  --accent-press: oklch(0.62 0.145 42);
+  --on-accent: oklch(0.18 0.03 42);
+  --accent-soft: oklch(0.675 0.145 42 / 0.16);
+  --accent-line: oklch(0.675 0.145 42 / 0.4);
+
+  --ochre: oklch(0.78 0.13 80);
+  --positive: oklch(0.74 0.09 158);
+
+  --radius: 0.75rem;
+
+  --shadow: 0 1px 2px oklch(0 0 0 / 0.3), 0 12px 30px -12px oklch(0 0 0 / 0.55);
+  --shadow-sheet: 0 -8px 40px -8px oklch(0 0 0 / 0.6);
+
+  --font-display: "Bricolage Grotesque", system-ui, sans-serif;
+  --font-body: "Hanken Grotesk", system-ui, sans-serif;
+  --font-mono: "Spline Sans Mono", ui-monospace, monospace;
+
+  --ease: cubic-bezier(0.32, 0.72, 0, 1);
+
+  /* shadcn mappings */
+  --background: var(--bg);
+  --foreground: var(--text);
+  --card: var(--surface);
+  --card-foreground: var(--text);
+  --popover: var(--bg-2);
+  --popover-foreground: var(--text);
+  --primary: var(--accent-raw);
+  --primary-foreground: var(--on-accent);
+  --secondary: var(--surface-2);
+  --secondary-foreground: var(--text);
+  --muted: var(--surface-2);
+  --muted-foreground: var(--text-2);
+  --accent: var(--accent-raw);
+  --accent-foreground: var(--on-accent);
+  --destructive: oklch(0.65 0.22 25);
+  --border: var(--hairline);
+  --input: var(--surface-2);
+  --ring: var(--accent-line);
+
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+
+  --sidebar: var(--bg-2);
+  --sidebar-foreground: var(--text);
+  --sidebar-primary: var(--accent-raw);
+  --sidebar-primary-foreground: var(--on-accent);
+  --sidebar-accent: var(--surface-2);
+  --sidebar-accent-foreground: var(--text);
+  --sidebar-border: var(--hairline);
+  --sidebar-ring: var(--accent-line);
+}
+
+/* ── Accent variants ──────────────────────────────────────────── */
+[data-accent="ochre"] {
+  --accent-raw: oklch(0.77 0.135 78);
+  --accent-press: oklch(0.71 0.135 78);
+  --on-accent: oklch(0.22 0.04 78);
+  --accent-soft: oklch(0.77 0.135 78 / 0.16);
+  --accent-line: oklch(0.77 0.135 78 / 0.42);
+}
+[data-accent="clay"] {
+  --accent-raw: oklch(0.64 0.15 25);
+  --accent-press: oklch(0.58 0.15 25);
+  --on-accent: oklch(0.97 0.02 25);
+  --accent-soft: oklch(0.64 0.15 25 / 0.17);
+  --accent-line: oklch(0.64 0.15 25 / 0.42);
+}
+[data-accent="sage"] {
+  --accent-raw: oklch(0.7 0.075 158);
+  --accent-press: oklch(0.64 0.075 158);
+  --on-accent: oklch(0.2 0.03 158);
+  --accent-soft: oklch(0.7 0.075 158 / 0.18);
+  --accent-line: oklch(0.7 0.075 158 / 0.42);
+}
+
+/* ── Font pairing variants ────────────────────────────────────── */
+[data-fonts="clean"] {
+  --font-display: "Hanken Grotesk", system-ui, sans-serif;
+}
+[data-fonts="mono-display"] {
+  --font-display: "Spline Sans Mono", ui-monospace, monospace;
+}
+
+/* ── Base layer ───────────────────────────────────────────────── */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    font-family: var(--font-body);
+    @apply bg-background text-foreground w-full;
+    /* Dynamic viewport height: 100vh is the *large* viewport on mobile, so the
+       bottom of the layout (and the FABs sitting on it) hides behind browser
+       chrome — e.g. Firefox Android's bottom toolbar. */
+    height: 100vh;
+    height: 100dvh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #app {
+    @apply w-full h-full flex flex-col items-center;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Reka UI drawer: apply swipe-movement CSS vars during drag gesture */
+[data-slot="drawer-content"][data-swipe-direction="down"],
+[data-slot="drawer-content"][data-swipe-direction="up"] {
+  transform: translateY(var(--drawer-swipe-movement-y, 0px));
+}
+[data-slot="drawer-content"][data-swipe-direction="right"],
+[data-slot="drawer-content"][data-swipe-direction="left"] {
+  transform: translateX(var(--drawer-swipe-movement-x, 0px));
+}
+/* Disable the slide animation while actively swiping so drag transform takes over */
+[data-slot="drawer-content"][data-swiping] {
+  animation: none !important;
+}

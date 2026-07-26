@@ -20,6 +20,16 @@ export default defineConfigWithVueTs(
     rules: {
       "vue/multi-word-component-names": 0,
       "@typescript-eslint/no-explicit-any": 0,
+      "vue/no-undef-components": ["error", { ignorePatterns: [] }],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+          ignoreRestSiblings: true,
+        },
+      ],
     },
   },
 );

@@ -38,10 +38,12 @@ export const IRELAND_FOR_TRIP: TripCountry = {
   ...IRELAND_WITH_CURRENCY,
   currencyId: EURO.id,
   cities: [CORK, DUBLIN],
+  code: "IE",
 };
 
 export const UAE_FOR_TRIP: TripCountry = {
   ...UAE_WITH_CURRENCY,
   currencyId: AED.id,
   cities: [DUBAI, ABU_DHABIO],
+  code: "AE",
 };

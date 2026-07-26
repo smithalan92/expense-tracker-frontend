@@ -1,11 +1,6 @@
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+type Nullable<T> = T | null;
 
-declare global {
-  export type Nullable<T> = T | null;
-}
-
-declare module "@vue/runtime-core" {
-  export interface GlobalComponents {
-    "fa-icon": typeof FontAwesomeIcon;
-  }
+interface PickerOption {
+  label: string;
+  value: number;
 }

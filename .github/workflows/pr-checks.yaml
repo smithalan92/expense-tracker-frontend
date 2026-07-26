@@ -1,0 +1,35 @@
+name: PR Checks
+
+on:
+  pull_request:
+    branches:
+      - master
+
+concurrency:
+  group: pr-checks-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: TS check, lint & test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout this application repo
+        uses: actions/checkout@v4
+      - name: Use Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install dependencies
+        shell: bash
+        run: npm ci
+      - name: TS check
+        shell: bash
+        run: npm run ts-check
+      - name: Lint
+        shell: bash
+        run: npm run lint
+      - name: Test
+        shell: bash
+        run: npm run test:run

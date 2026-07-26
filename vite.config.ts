@@ -2,84 +2,34 @@ import tailwindcss from "@tailwindcss/vite";
 import vue from "@vitejs/plugin-vue";
 import { fileURLToPath, URL } from "node:url";
 import checker from "vite-plugin-checker";
-import { VitePWA, VitePWAOptions } from "vite-plugin-pwa";
-import vueDevTools from "vite-plugin-vue-devtools";
+import { VitePWA } from "vite-plugin-pwa";
 import svgLoader from "vite-svg-loader";
 import { defineConfig } from "vitest/config";
-
-const pwaOptions: Partial<VitePWAOptions> = {
-  mode: "development",
-  base: "/",
-  includeAssets: ["favicon.svg"],
-  manifest: {
-    name: "expensit",
-    short_name: "expensit",
-    theme_color: "#1d283a",
-    icons: [
-      {
-        src: "icon-192x192.png", // <== don't add slash, for testing
-        sizes: "192x192",
-        type: "image/png",
-      },
-      {
-        src: "/icon-512x512.png", // <== don't remove slash, for testing
-        sizes: "512x512",
-        type: "image/png",
-      },
-      {
-        src: "icon-512x512.png", // <== don't add slash, for testing
-        sizes: "512x512",
-        type: "image/png",
-        purpose: "any maskable",
-      },
-    ],
-  },
-  devOptions: {
-    enabled: false,
-  },
-  strategies: "generateSW",
-  registerType: "prompt",
-  injectRegister: "script",
-  workbox: {
-    globPatterns: ["**/*.{js,css,html}", "**/*.{svg,png,jpg,gif}"],
-  },
-};
+import pwaOptions from "./pwaConfig";
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
-    vueDevTools(),
+    tailwindcss(),
     svgLoader(),
     checker({
       vueTsc: { tsconfigPath: "tsconfig.app.json" },
       enableBuild: false,
     }),
     VitePWA(pwaOptions),
-    tailwindcss(),
   ],
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
-  server: {
-    open: true,
-  },
-  test: {
-    environment: "jsdom",
-    globals: true,
-    setupFiles: ["./tests/setup.ts"],
-    typecheck: { tsconfig: "./tsconfig.vitest.json" },
-  },
   build: {
     chunkSizeWarningLimit: 1024,
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          if (id.includes("@fortawesome")) {
-            return "faicons";
-          } else if (id.includes("node_modules")) {
+          if (id.includes("node_modules")) {
             return "thirdparty";
           }
 
@@ -87,5 +37,11 @@ export default defineConfig({
         },
       },
     },
+  },
+  test: {
+    environment: "jsdom",
+    globals: true,
+    setupFiles: ["./tests/setup.ts"],
+    typecheck: { tsconfig: "./tsconfig.vitest.json" },
   },
 });

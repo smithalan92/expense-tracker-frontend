@@ -1,4 +1,4 @@
-import type { TripDataState } from "@/stores/tripDataStore";
+import type { TripDataState } from "@/store/tripDataStore";
 import destr from "destr";
 
 export const BASE_LOCALSTORAGE_KEY = "expense-tracker-v3";
@@ -35,4 +35,4 @@ export function getTripFromLocalStorage(tripId: number) {
   return getFromLocalStorage<SavedTripData>(`${TRIP_DATA_KEY}__${tripId}`);
 }
 
-type SavedTripData = Omit<TripDataState, "isLoadingTripData" | "hasFailedToLoadTripData">;
+type SavedTripData = Omit<TripDataState, "isLoadingTripData" | "hasFailedToLoadTripData" | "filters">;
