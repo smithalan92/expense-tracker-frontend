@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import PWAUpdate from "@/components/PWAUpdate.vue";
 import { Toaster } from "@/components/ui/sonner";
 import useAppStore from "@/store/appStore";
 import { AlertCircle } from "@lucide/vue";
@@ -7,8 +8,6 @@ import { watch } from "vue";
 import { RouterView, useRouter } from "vue-router";
 import "vue-sonner/style.css";
 import "/node_modules/flag-icons/css/flag-icons.min.css";
-
-// import PWAUpdateAlert from "./PWAUpdateAlert.vue";
 
 const appStore = useAppStore();
 const router = useRouter();
@@ -44,6 +43,6 @@ watch(
       :toast-options="{ class: 'pointer-events-auto' }"
     />
 
-    <!-- <PWAUpdateAlert /> -->
+    <PWAUpdate />
   </div>
 </template>

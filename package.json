@@ -12,7 +12,8 @@
     "ts-check": "vue-tsc --project tsconfig.app.json",
     "lint": "npx eslint .",
     "test": "vitest",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "generate-pwa-assets": "pwa-assets-generator --preset minimal-2023 public/logo-app-icon.svg"
   },
   "dependencies": {
     "@lucide/vue": "^1.27.0",
