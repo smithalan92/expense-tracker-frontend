@@ -49,6 +49,7 @@ const onConfirmDelete = async () => {
   try {
     await deleteTrip(trip.id);
     toast.success("Trip deleted.");
+    isConfirmDeleteModalOpen.value = false;
     emit("close");
   } catch (err) {
     console.log(err);

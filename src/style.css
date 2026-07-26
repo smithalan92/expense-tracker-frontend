@@ -179,7 +179,12 @@
   }
   body {
     font-family: var(--font-body);
-    @apply bg-background text-foreground w-full h-screen;
+    @apply bg-background text-foreground w-full;
+    /* Dynamic viewport height: 100vh is the *large* viewport on mobile, so the
+       bottom of the layout (and the FABs sitting on it) hides behind browser
+       chrome — e.g. Firefox Android's bottom toolbar. */
+    height: 100vh;
+    height: 100dvh;
     -webkit-font-smoothing: antialiased;
   }
 
