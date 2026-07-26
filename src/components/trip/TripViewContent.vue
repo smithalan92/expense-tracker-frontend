@@ -3,7 +3,7 @@ import useTripData from "@/store/tripDataStore";
 import useUIStateStore from "@/store/uiState.ts";
 import { useIsOnline } from "@/utils/network.ts";
 import { formatDateRange, getTripCoverStyle } from "@/utils/ui";
-import { Calendar, ChevronLeft, CloudSync, PencilIcon, PlusCircle } from "@lucide/vue";
+import { Calendar, ChartColumn, ChevronLeft, CloudSync, PencilIcon, PlusCircle } from "@lucide/vue";
 import { storeToRefs } from "pinia";
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
@@ -14,6 +14,7 @@ import Flag from "../ui/flag/Flag.vue";
 import Spinner from "../ui/spinner/Spinner.vue";
 import ExpenseList from "./ExpenseList.vue";
 import Filters from "./Filters.vue";
+import StatsView from "./StatsView.vue";
 import AddOrEditExpense from "./modals/AddOrEditExpense/AddOrEditExpense.vue";
 import ViewExpense from "./modals/ViewExpense/ViewExpense.vue";
 
@@ -29,6 +30,7 @@ const { trip, countries, userIds, totalExpenseAmount, hasUnsavedExpenses, getExp
 const { syncUnsavedExpenses } = tripDataStore;
 
 const isSyncingExpenses = ref(false);
+const isShowingStats = ref(false);
 
 const hasNoExpenses = computed(() => {
   return !getExpenses.value.length && !areAnyFiltersActive.value;
@@ -110,13 +112,21 @@ const onClickSync = async () => {
           {{ totalExpenseAmount }}
         </div>
       </div>
-      <div class="flex-1 flex justify-end">
+      <div class="flex-1 flex justify-end gap-2">
+        <Button
+          data-testid="toggle-stats-button"
+          :variant="isShowingStats ? 'default' : 'outline'"
+          @click="isShowingStats = !isShowingStats"
+        >
+          <ChartColumn class="size-4" />
+        </Button>
         <Filters />
       </div>
     </div>
 
     <div class="flex flex-col flex-1 overflow-hidden">
-      <ExpenseList class="pb-20" />
+      <StatsView v-if="isShowingStats" class="pb-20" />
+      <ExpenseList v-else class="pb-20" />
     </div>
 
     <div class="absolute bottom-[22px] right-[18px] z-20 flex items-center justify-center gap-4">

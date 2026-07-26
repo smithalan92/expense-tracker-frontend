@@ -15,7 +15,7 @@
     "test:run": "vitest run"
   },
   "dependencies": {
-    "@lucide/vue": "^1.18.0",
+    "@lucide/vue": "^1.27.0",
     "@vueuse/core": "^14.3.0",
     "axios": "^1.16.1",
     "class-variance-authority": "^0.7.1",
@@ -48,6 +48,7 @@
     "eslint-plugin-oxlint": "^1.67.0",
     "eslint-plugin-vue": "^10.9.1",
     "jsdom": "^29.1.1",
+    "kapi-ui": "^0.3.5",
     "oxlint": "^1.67.0",
     "prettier": "^3.8.3",
     "tailwindcss": "^4.3.0",
