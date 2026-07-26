@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Button } from "@/components/ui/button";
+import { RefreshCw } from "@lucide/vue";
 import { useRegisterSW } from "virtual:pwa-register/vue";
 
 const { needRefresh, updateServiceWorker } = useRegisterSW({
@@ -18,11 +20,25 @@ const { needRefresh, updateServiceWorker } = useRegisterSW({
   },
 });
 </script>
+
 <template>
-  <div v-if="needRefresh" class="absolute w-full h-full flex justify-center items-end py-8">
-    <div class="et-dropdown shadow-lg flex p-4 items-center z-50">
-      <div class="font-bold text-lg pr-4 text-slate-200">An app update is available.</div>
-      <button class="et-btn-primary et-btn-sm" @click="updateServiceWorker()">Reload</button>
+  <!-- pointer-events-none so the full-width wrapper doesn't swallow taps on the
+       app behind it; the card itself opts back in. -->
+  <div
+    v-if="needRefresh"
+    class="fixed inset-x-0 bottom-0 z-50 flex justify-center px-4 pointer-events-none pb-[max(1.25rem,env(safe-area-inset-bottom))]"
+  >
+    <div
+      class="pointer-events-auto flex w-full max-w-[420px] flex-row items-center gap-3.5 rounded-md border border-hairline bg-surface p-4 text-foreground shadow-card animate-in fade-in slide-in-from-bottom-4 duration-300 ease-app"
+    >
+      <div class="flex size-9 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent">
+        <RefreshCw class="size-4" />
+      </div>
+      <div class="flex-1">
+        <div class="mb-[3px] font-mono text-xs uppercase tracking-[1.4px] text-text-3">Update available</div>
+        <div class="text-sm text-text-2">A new version of ExpensIt is ready.</div>
+      </div>
+      <Button size="sm" class="shrink-0 font-medium" @click="updateServiceWorker()">Reload</Button>
     </div>
   </div>
 </template>

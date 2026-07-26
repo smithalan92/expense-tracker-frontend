@@ -2,11 +2,13 @@ import type { VitePWAOptions } from "vite-plugin-pwa";
 
 const pwaOptions: Partial<VitePWAOptions> = {
   base: "/",
-  includeAssets: ["favicon.ico", "apple-touch-icon-180x180.png", "logo-app-icon.svg"],
   manifest: {
     name: "expensit",
     short_name: "expensit",
-    theme_color: "#1d283a",
+    // Both track --bg in style.css: oklch(0.155 0.012 55). Hex because manifest
+    // colour parsing for oklch isn't reliable across platforms.
+    theme_color: "#100b08",
+    background_color: "#100b08",
     icons: [
       {
         src: "pwa-64x64.png",

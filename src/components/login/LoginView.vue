@@ -42,7 +42,7 @@ const onClickLogin = () => {
         <Input type="password" placeholder="password" v-model="password" class="px-4 py-6" />
       </Field>
       <div class="mt-8 w-full">
-        <Button class="w-full" @click="onClickLogin" :disabled="!canLogin">Log In</Button>
+        <Button class="w-full" @click="onClickLogin" :disabled="!canLogin">Log In now</Button>
         <span v-if="hasFailedToLogin" class="mt-4 text-red">Invalid username or password...</span>
       </div>
     </Card>
