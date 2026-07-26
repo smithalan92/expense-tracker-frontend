@@ -13,7 +13,7 @@
     "lint": "npx eslint .",
     "test": "vitest",
     "test:run": "vitest run",
-    "generate-pwa-assets": "pwa-assets-generator --preset minimal-2023 public/logo-app-icon.svg"
+    "generate-pwa-assets": "pwa-assets-generator"
   },
   "dependencies": {
     "@lucide/vue": "^1.27.0",
