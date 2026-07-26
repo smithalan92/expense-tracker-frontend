@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { User } from "@/api/app.ts";
+import { FileUploadError } from "@/api/file.ts";
 import { type CreateTripPayload, type Trip, type TripCountry } from "@/api/trip.ts";
 import Badge from "@/components/ui/badge/Badge.vue";
 import Button from "@/components/ui/button/Button.vue";
@@ -116,7 +117,11 @@ const onClickAddOrSaveTrip = async () => {
     onClose();
   } catch (err) {
     console.error(err);
-    toast.error("Failed to create trip.");
+    if (err instanceof FileUploadError) {
+      toast.error(err.message);
+    } else {
+      toast.error(isEditingTrip.value ? "Failed to update trip." : "Failed to create trip.");
+    }
   } finally {
     isAddingOrUpdatingTrip.value = false;
   }

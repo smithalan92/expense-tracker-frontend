@@ -47,7 +47,14 @@ const onRemoveFile = () => {
       </div>
     </div>
 
-    <Input id="imagepicker" type="file" class="text-xs" :hidden="true" @change="onFileChanged($event)" />
+    <Input
+      id="imagepicker"
+      type="file"
+      accept="image/*"
+      class="text-xs"
+      :hidden="true"
+      @change="onFileChanged($event)"
+    />
 
     <button v-if="selectedImage" class="absolute bottom-2 right-2 p-1" @click="onRemoveFile">
       <XCircle class="size-10" />

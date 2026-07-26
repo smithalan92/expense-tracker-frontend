@@ -8,7 +8,7 @@ import {
 } from "@/api/expense";
 import { getTripData, updateTrip, type CreateTripPayload, type Trip, type TripCountry } from "@/api/trip";
 
-import { uploadFile } from "@/api/file";
+import { FileUploadError, uploadFile } from "@/api/file";
 import useAppStore from "@/store/appStore";
 import useTripsStore from "@/store/tripsStore";
 import { getTripFromLocalStorage } from "@/utils/localstorage";
@@ -144,7 +144,9 @@ const useTripDataStore = defineStore("tripData", {
           const fileUrl = await uploadFile(file);
           payload.file = fileUrl;
         }
-      } catch {
+      } catch (err) {
+        // Keep the reason when the API gave us one, so it can be shown to the user
+        if (err instanceof FileUploadError) throw err;
         throw new Error("Failed to save file");
       }
 

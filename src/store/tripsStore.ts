@@ -1,4 +1,4 @@
-import { uploadFile } from "@/api/file";
+import { FileUploadError, uploadFile } from "@/api/file";
 import { createTrip, deleteTrip, getTrips, type CreateTripPayload, type Trip } from "@/api/trip";
 import { isNetworkError } from "@/utils/network";
 import { acceptHMRUpdate, defineStore } from "pinia";
@@ -38,7 +38,9 @@ const useTripsStore = defineStore("trips", {
           const fileUrl = await uploadFile(file);
           payload.file = fileUrl;
         }
-      } catch {
+      } catch (err) {
+        // Keep the reason when the API gave us one, so it can be shown to the user
+        if (err instanceof FileUploadError) throw err;
         throw new Error("Failed to save file");
       }
 

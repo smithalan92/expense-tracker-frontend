@@ -9,7 +9,10 @@ vi.mock("@/api/trip", () => ({
   deleteTrip: vi.fn(),
 }));
 
-vi.mock("@/api/file", () => ({
+// Partial mock: createTrip does `err instanceof FileUploadError`, so the real
+// class has to survive or the check throws instead of matching.
+vi.mock("@/api/file", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/api/file")>()),
   uploadFile: vi.fn(),
 }));
 
