@@ -110,7 +110,7 @@ describe("App.integration", () => {
     it("shows error message on failed login", async () => {
       vi.mocked(login).mockRejectedValue(new Error("Invalid credentials"));
 
-      const { router } = await renderApp();
+      const { router } = await renderApp({ skipAppDataLoad: true });
 
       await router.push("/");
 
@@ -475,7 +475,7 @@ describe("App.integration", () => {
       await fireEvent.update(screen.getByTestId("expense-date-input"), "2026-09-01T14:30");
 
       // Select Dubai (UAE) — city id=20, which belongs to UAE so currency should auto-switch to AED
-      await fireEvent.change(screen.getByTestId("expense-city-select"), { target: { value: "20" } });
+      await fireEvent.update(screen.getByTestId("expense-city-select"), "20");
       await waitFor(() => {
         const currencySelect = screen.getByTestId("expense-currency-select") as HTMLSelectElement;
         expect(currencySelect.value).toBe(String(AED.id));

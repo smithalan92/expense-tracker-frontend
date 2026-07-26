@@ -3,6 +3,7 @@ import type { TripExpense } from "@/api/expense.ts";
 import Button from "@/components/ui/button/Button.vue";
 import Dialog from "@/components/ui/dialog/Dialog.vue";
 import DialogContent from "@/components/ui/dialog/DialogContent.vue";
+import DialogDescription from "@/components/ui/dialog/DialogDescription.vue";
 import DialogFooter from "@/components/ui/dialog/DialogFooter.vue";
 import DialogHeader from "@/components/ui/dialog/DialogHeader.vue";
 import DialogTitle from "@/components/ui/dialog/DialogTitle.vue";
@@ -137,7 +138,9 @@ const areActionsDisabled = computed(() => !isOnline.value && expense.id >= 0);
         <DialogTitle>Confirm Delete</DialogTitle>
       </DialogHeader>
       <div class="flex items-center gap-2">
-        <div class="text-center py-4">Are you sure you want to delete this expense?</div>
+        <DialogDescription class="text-center py-4 text-base text-foreground">
+          Are you sure you want to delete this expense?
+        </DialogDescription>
       </div>
       <DialogFooter>
         <Button variant="secondary" @click="isConfirmDeleteModalOpen = false">Cancel</Button>
