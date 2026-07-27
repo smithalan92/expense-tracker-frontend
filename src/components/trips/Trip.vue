@@ -44,22 +44,45 @@ const emit = defineEmits<{
   longPress: [trip: Trip];
 }>();
 
+// If the finger moves more than this before the timer fires, treat it as a scroll
+// rather than a long press.
+const MOVE_CANCEL_THRESHOLD_PX = 10;
+
 let pressTimer: ReturnType<typeof setTimeout> | null = null;
 let didLongPress = false;
+let pressStartX = 0;
+let pressStartY = 0;
 
-const onPointerDown = () => {
+const cancelPress = () => {
+  if (pressTimer) {
+    clearTimeout(pressTimer);
+    pressTimer = null;
+  }
+};
+
+const onPointerDown = (e: PointerEvent) => {
   didLongPress = false;
+  pressStartX = e.clientX;
+  pressStartY = e.clientY;
   pressTimer = setTimeout(() => {
+    pressTimer = null;
     didLongPress = true;
     emit("longPress", trip);
   }, 500);
 };
 
-const onPointerUp = () => {
-  if (pressTimer) {
-    clearTimeout(pressTimer);
-    pressTimer = null;
+const onPointerMove = (e: PointerEvent) => {
+  if (!pressTimer) return;
+
+  const distance = Math.hypot(e.clientX - pressStartX, e.clientY - pressStartY);
+
+  if (distance > MOVE_CANCEL_THRESHOLD_PX) {
+    cancelPress();
   }
+};
+
+const onPointerUp = () => {
+  cancelPress();
 };
 
 const onClick = () => {
@@ -73,7 +96,9 @@ const onClick = () => {
     class="h-auto w-full p-0 text-left cursor-pointer"
     @click="onClick"
     @pointerdown="onPointerDown"
+    @pointermove="onPointerMove"
     @pointerup="onPointerUp"
+    @pointercancel="onPointerUp"
     @pointerleave="onPointerUp"
   >
     <Card
