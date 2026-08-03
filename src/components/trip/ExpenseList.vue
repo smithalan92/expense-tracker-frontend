@@ -1,18 +1,45 @@
 <script setup lang="ts">
 import type { TripExpense } from "@/api/expense";
 import useTripData from "@/store/tripDataStore";
-import { BanknoteX } from "@lucide/vue";
+import { useIsOnline } from "@/utils/network";
+import { ArrowDown, BanknoteX } from "@lucide/vue";
 import { format, isSameYear } from "date-fns";
 import { storeToRefs } from "pinia";
-import { computed } from "vue";
+import { computed, ref } from "vue";
+import { toast } from "vue-sonner";
 import Button from "../ui/button/Button.vue";
+import Spinner from "../ui/spinner/Spinner.vue";
 import Expense from "./Expense.vue";
+import useGetCurrentTripId from "./hooks/useGetCurrentTripId";
+import usePullToRefresh from "./hooks/usePullToRefresh";
 
 const props = defineProps<{ class?: string }>();
 
 const store = useTripData();
 const { getExpenses, areAnyFiltersActive } = storeToRefs(store);
-const { clearFilters } = store;
+const { clearFilters, refreshTripData } = store;
+
+const isOnline = useIsOnline();
+const currentTripId = useGetCurrentTripId();
+
+const scrollEl = ref<HTMLElement | null>(null);
+
+const { pullDistance, isRefreshing, isDragging, isArmed, thresholdPx } = usePullToRefresh(
+  scrollEl,
+  async () => {
+    if (!isOnline.value) {
+      toast.error("Can't refresh while offline");
+      return;
+    }
+
+    try {
+      await refreshTripData(currentTripId.value);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to refresh expenses");
+    }
+  },
+);
 
 const expensesGroupedByDate = computed(() => {
   return getExpenses.value.reduce<Record<string, TripExpense[]>>((acc, current) => {
@@ -66,7 +93,28 @@ const expensesToDisplayByDate = computed(() => {
 </script>
 
 <template>
-  <div class="overflow-y-auto overscroll-contain w-full flex-1 lex flex-col" :class="props.class">
+  <div
+    ref="scrollEl"
+    class="overflow-y-auto overscroll-contain w-full flex-1 flex flex-col"
+    :class="props.class"
+  >
+    <!-- Pull to refresh indicator. Opens by growing rather than translating so the
+         sticky date headers below keep working. -->
+    <div
+      class="flex shrink-0 items-center justify-center overflow-hidden"
+      :class="!isDragging && 'transition-[height] duration-200'"
+      :style="{ height: `${pullDistance}px` }"
+      aria-hidden="true"
+    >
+      <Spinner v-if="isRefreshing" class="size-5" />
+      <ArrowDown
+        v-else
+        class="size-5 transition-transform"
+        :class="isArmed && 'rotate-180'"
+        :style="{ opacity: Math.min(1, pullDistance / thresholdPx) }"
+      />
+    </div>
+
     <div
       v-if="!getExpenses.length"
       class="flex flex-col flex-1 justify-center items-center py-12"

@@ -365,6 +365,78 @@ describe("tripDataStore", () => {
       });
     });
 
+    describe("refreshTripData", () => {
+      const REFRESHED_RESPONSE = {
+        trip: { ...TESTING_TRIP, name: "Renamed Trip" },
+        expenses: [EURO_MOCK_EXPENSE_ONE, AED_MOCK_EXPENSE_ONE],
+        countries: [IRELAND_FOR_TRIP],
+        currencyIds: [1],
+        categories: [RESTAURANTS],
+        userIds: [1],
+      };
+
+      it("replaces the loaded data with the API response", async () => {
+        vi.mocked(getTripData).mockResolvedValue(REFRESHED_RESPONSE);
+
+        const store = useTripDataStore();
+        store.$patch(MOCK_TRIP_DATA_STATE);
+
+        await store.refreshTripData(TRIP_ID);
+
+        expect(getTripData).toHaveBeenCalledWith(TRIP_ID);
+        expect(store.trip.name).toBe("Renamed Trip");
+        expect(store.expenses).toHaveLength(2);
+        expect(store.categories).toEqual([RESTAURANTS]);
+      });
+
+      it("keeps unsaved expenses and active filters", async () => {
+        vi.mocked(getTripData).mockResolvedValue(REFRESHED_RESPONSE);
+
+        const store = useTripDataStore();
+        store.$patch({
+          unsavedExpenses: [AED_MOCK_EXPENSE_ONE],
+          filters: { search: "coffee", filterByUserId: USER_ONE.id, filterByCategoryId: SNACKS_DRINKS.id },
+        });
+
+        await store.refreshTripData(TRIP_ID);
+
+        expect(store.unsavedExpenses).toEqual([AED_MOCK_EXPENSE_ONE]);
+        expect(store.filters).toEqual({
+          search: "coffee",
+          filterByUserId: USER_ONE.id,
+          filterByCategoryId: SNACKS_DRINKS.id,
+        });
+      });
+
+      it("does not flip isLoadingTripData, so the view stays on screen", async () => {
+        let loadingDuringFetch = false;
+
+        const store = useTripDataStore();
+        vi.mocked(getTripData).mockImplementation(async () => {
+          loadingDuringFetch = store.isLoadingTripData;
+          return REFRESHED_RESPONSE;
+        });
+
+        await store.refreshTripData(TRIP_ID);
+
+        expect(loadingDuringFetch).toBe(false);
+        expect(store.isLoadingTripData).toBe(false);
+      });
+
+      it("leaves the existing data alone and rethrows when the refresh fails", async () => {
+        vi.mocked(getTripData).mockRejectedValue(makeNetworkError());
+
+        const store = useTripDataStore();
+        store.$patch(MOCK_TRIP_DATA_STATE);
+
+        await expect(store.refreshTripData(TRIP_ID)).rejects.toThrow();
+
+        expect(store.trip.name).toBe(TESTING_TRIP.name);
+        expect(store.expenses).toHaveLength(1);
+        expect(store.hasFailedToLoadTripData).toBe(false);
+      });
+    });
+
     describe("updateTrip", () => {
       const TRIP_PAYLOAD = {
         name: "Updated Trip",

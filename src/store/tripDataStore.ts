@@ -130,6 +130,22 @@ const useTripDataStore = defineStore("tripData", {
       }
     },
 
+    // Refreshes trip data in place. Unlike loadTripData this doesn't reset state or
+    // toggle isLoadingTripData, so the list stays on screen while we refetch. Unsaved
+    // expenses and filters are left alone, and a failure leaves the existing data be.
+    async refreshTripData(tripId: number) {
+      const data = await getTripData(tripId);
+
+      this.$patch({
+        trip: data.trip,
+        expenses: data.expenses,
+        countries: data.countries,
+        currencyIds: data.currencyIds,
+        categories: data.categories,
+        userIds: data.userIds,
+      });
+    },
+
     async updateTrip({
       tripId,
       payload,
