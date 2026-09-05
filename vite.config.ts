@@ -5,7 +5,7 @@ import checker from "vite-plugin-checker";
 import { VitePWA } from "vite-plugin-pwa";
 import svgLoader from "vite-svg-loader";
 import { defineConfig } from "vitest/config";
-import pwaOptions from "./pwaConfig";
+import pwaOptions from "./pwaConfig.ts";
 
 // https://vite.dev/config/
 export default defineConfig({

@@ -7,6 +7,7 @@ import { acceptHMRUpdate, defineStore } from "pinia";
 const useAppStore = defineStore("app", {
   state: (): AppState => ({
     user: null,
+    lastCurrencySyncDateTime: "<unknown>",
     authToken: null,
     users: [],
     countries: [],
@@ -31,10 +32,11 @@ const useAppStore = defineStore("app", {
 
     async loadAppData() {
       try {
-        const { users, countries, currencies } = await loadAppData();
+        const { users, countries, currencies, lastCurrencySyncDateTime } = await loadAppData();
         this.users = users;
         this.countries = countries;
         this.currencies = currencies;
+        this.lastCurrencySyncDateTime = lastCurrencySyncDateTime;
       } catch (err: any) {
         if (!isNetworkError(err)) {
           console.log(err);
@@ -57,4 +59,5 @@ interface AppState {
   currencies: Currency[];
   user: Nullable<LoginUser>;
   users: User[];
+  lastCurrencySyncDateTime: string;
 }

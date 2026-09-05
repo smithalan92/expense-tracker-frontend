@@ -25,6 +25,7 @@ export interface GetAppDataResponse {
   countries: CountryWithCurrency[];
   users: User[];
   currencies: Currency[];
+  lastCurrencySyncDateTime: string;
 }
 
 export interface User {
