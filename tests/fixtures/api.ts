@@ -19,6 +19,7 @@ export const GET_APP_DATA_FIXTURE: GetAppDataResponse = {
   countries: [IRELAND_WITH_CURRENCY, UAE_WITH_CURRENCY],
   currencies: [EURO, AED],
   users: [USER_ONE, USER_TWO],
+  lastCurrencySyncDateTime: "2026-01-10 23:44:00",
 };
 
 export const GET_TRIPS_FIXTURE: GetTripsResponse = {

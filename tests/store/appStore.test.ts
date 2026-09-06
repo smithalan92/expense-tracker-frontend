@@ -48,7 +48,12 @@ describe("appStore", () => {
     describe("loginUser", () => {
       it("sets user and authToken & loads app data on success", async () => {
         vi.mocked(login).mockResolvedValue({ user: USER_ONE, token: MOCK_TOKEN });
-        vi.mocked(loadAppData).mockResolvedValue({ users: [], countries: [], currencies: [] });
+        vi.mocked(loadAppData).mockResolvedValue({
+          users: [],
+          countries: [],
+          currencies: [],
+          lastCurrencySyncDateTime: "",
+        });
 
         const store = useAppStore();
         await store.loginUser({ email: "test@test.com", password: "password" });
@@ -61,7 +66,12 @@ describe("appStore", () => {
 
       it("creates the axios instance with the token", async () => {
         vi.mocked(login).mockResolvedValue({ user: USER_ONE, token: MOCK_TOKEN });
-        vi.mocked(loadAppData).mockResolvedValue({ users: [], countries: [], currencies: [] });
+        vi.mocked(loadAppData).mockResolvedValue({
+          users: [],
+          countries: [],
+          currencies: [],
+          lastCurrencySyncDateTime: "",
+        });
 
         const store = useAppStore();
         await store.loginUser({ email: "test@test.com", password: "password" });
@@ -98,10 +108,13 @@ describe("appStore", () => {
 
     describe("loadAppData", () => {
       it("sets users, countries and currencies from the API", async () => {
+        const lastCurrencySyncDateTime = "2026-01-10 23:44:00";
+
         vi.mocked(loadAppData).mockResolvedValue({
           users: [USER_ONE],
           countries: [IRELAND_WITH_CURRENCY],
           currencies: [EURO, AED],
+          lastCurrencySyncDateTime,
         });
 
         const store = useAppStore();
@@ -110,6 +123,7 @@ describe("appStore", () => {
         expect(store.users).toEqual([USER_ONE]);
         expect(store.countries).toEqual([IRELAND_WITH_CURRENCY]);
         expect(store.currencies).toEqual([EURO, AED]);
+        expect(store.lastCurrencySyncDateTime).toEqual(lastCurrencySyncDateTime);
       });
     });
   });

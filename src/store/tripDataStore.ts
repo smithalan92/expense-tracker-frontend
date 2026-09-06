@@ -48,11 +48,11 @@ const useTripDataStore = defineStore("tripData", {
         const { search, filterByUserId, filterByCategoryId } = state.filters;
         const hasMatchingDescription = search.trim() ? exp.description.includes(search.trim()) : true;
 
-        const hasMatchingUser = !!filterByUserId
+        const hasMatchingUser = filterByUserId
           ? exp.users.find((user) => user.id === filterByUserId) !== undefined
           : true;
 
-        const hasMatchingCategory = !!filterByCategoryId ? exp.category.id === filterByCategoryId : true;
+        const hasMatchingCategory = filterByCategoryId ? exp.category.id === filterByCategoryId : true;
 
         return hasMatchingDescription && hasMatchingUser && hasMatchingCategory;
       });

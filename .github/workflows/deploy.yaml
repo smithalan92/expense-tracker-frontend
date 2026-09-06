@@ -11,26 +11,28 @@ jobs:
     steps:
       - name: Checkout this application repo
         uses: actions/checkout@v4
+      - name: Use pnpm (from packageManager field)
+        uses: pnpm/action-setup@v4
       - name: Use Node.js 24
         uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: npm
+          cache: pnpm
       - name: Install dependencies
         shell: bash
-        run: npm ci
+        run: pnpm install --frozen-lockfile
       - name: TS check
         shell: bash
-        run: npm run ts-check
+        run: pnpm run ts
       - name: Lint
         shell: bash
-        run: npm run lint
+        run: pnpm run lint
       - name: Test
         shell: bash
-        run: npm run test:run
+        run: pnpm run test:run
       - name: Build
         shell: bash
-        run: npm run build
+        run: pnpm run build
       - name: Deploy app
         uses: appleboy/scp-action@master
         with:

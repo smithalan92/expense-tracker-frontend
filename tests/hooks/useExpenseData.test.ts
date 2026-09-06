@@ -193,7 +193,7 @@ describe("useExpenseData", () => {
     it("treats reordered users as unchanged", () => {
       const { isDataValid, expenseData } = useExpenseData(AED_MOCK_EXPENSE_ONE, 1, false);
 
-      expenseData.selectedUsers = [...AED_MOCK_EXPENSE_ONE.users.map((u) => u.id)].reverse();
+      expenseData.selectedUsers = AED_MOCK_EXPENSE_ONE.users.map((u) => u.id).reverse();
 
       expect(isDataValid.value).toBe(false);
     });
