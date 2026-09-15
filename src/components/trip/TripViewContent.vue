@@ -3,12 +3,11 @@ import useTripData from "@/store/tripDataStore";
 import useUIStateStore from "@/store/uiState.ts";
 import { useIsOnline } from "@/utils/network.ts";
 import { formatDateRange, getTripCoverStyle } from "@/utils/ui";
-import { Calendar, ChartColumn, ChevronLeft, CloudSync, PencilIcon, PlusCircle } from "@lucide/vue";
+import { Calendar, ChartColumn, ChevronLeft, CloudSync, PlusCircle } from "@lucide/vue";
 import { storeToRefs } from "pinia";
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
-import AddOrEditTrip from "../trips/modals/AddOrEditTrip/AddOrEditTrip.vue";
 import Button from "../ui/button/Button.vue";
 import Flag from "../ui/flag/Flag.vue";
 import Spinner from "../ui/spinner/Spinner.vue";
@@ -21,10 +20,10 @@ import ViewExpense from "./modals/ViewExpense/ViewExpense.vue";
 const isOnline = useIsOnline();
 
 const tripDataStore = useTripData();
-const { setIsAddingExpense, setTripToEdit } = useUIStateStore();
+const { setIsAddingExpense } = useUIStateStore();
 const router = useRouter();
 
-const { trip, countries, userIds, totalExpenseAmount, hasUnsavedExpenses, getExpenses, areAnyFiltersActive } =
+const { trip, countries, totalExpenseAmount, hasUnsavedExpenses, getExpenses, areAnyFiltersActive } =
   storeToRefs(tripDataStore);
 
 const { syncUnsavedExpenses } = tripDataStore;
@@ -35,14 +34,6 @@ const isShowingStats = ref(false);
 const hasNoExpenses = computed(() => {
   return !getExpenses.value.length && !areAnyFiltersActive.value;
 });
-
-const onClickEditTrip = () => {
-  setTripToEdit({
-    trip: trip.value,
-    countries: countries.value,
-    userIds: userIds.value,
-  });
-};
 
 const onClickSync = async () => {
   try {
@@ -68,12 +59,12 @@ const onClickSync = async () => {
         >
           <ChevronLeft class="size-[16px] text-white" />
         </Button>
-        <div>
+        <!-- <div>
           <Button variant="secondary" @click="onClickEditTrip">
             <PencilIcon class="size-[12px]" />
             Edit trip
           </Button>
-        </div>
+        </div> -->
       </div>
 
       <!-- Trip Name -->
@@ -152,6 +143,5 @@ const onClickSync = async () => {
 
     <ViewExpense />
     <AddOrEditExpense />
-    <AddOrEditTrip />
   </div>
 </template>

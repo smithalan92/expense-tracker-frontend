@@ -1,4 +1,5 @@
-<script setup lang="ts">
+<script lang="ts" setup>
+import { getTripData } from "@/api/trip.ts";
 import { Drawer, useDrawerClose } from "@/components/ui/drawer";
 import useUIStateStore from "@/store/uiState.ts";
 import { storeToRefs } from "pinia";
@@ -6,15 +7,17 @@ import { computed } from "vue";
 import AddOrEditTripContent from "./AddOrEditTripContent.vue";
 
 const store = useUIStateStore();
-const { isAddingTrip, tripToEdit } = storeToRefs(store);
+const { tripIdToEdit } = storeToRefs(store);
+
+const data = tripIdToEdit.value ? await getTripData(tripIdToEdit.value) : null;
 
 const source = computed(() => {
-  if (!isAddingTrip.value && !tripToEdit.value) return null;
+  if (!tripIdToEdit.value || !data) return null;
 
   return {
-    trip: tripToEdit.value?.trip ?? null,
-    countries: tripToEdit.value?.countries ?? null,
-    userIds: tripToEdit.value?.userIds ?? null,
+    trip: data.trip,
+    countries: data.countries,
+    userIds: data.userIds,
   };
 });
 

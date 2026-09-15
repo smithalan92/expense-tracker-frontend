@@ -11,7 +11,6 @@ import FieldLabel from "@/components/ui/field/FieldLabel.vue";
 import Input from "@/components/ui/input/Input.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import useAppStore from "@/store/appStore.ts";
-import useTripDataStore from "@/store/tripDataStore.ts";
 import useTripsStore from "@/store/tripsStore.ts";
 import useUIStateStore from "@/store/uiState.ts";
 import { PlusIcon, X, XCircle } from "@lucide/vue";
@@ -32,13 +31,12 @@ const isEditingTrip = computed(() => {
   return !!trip;
 });
 
-const { setIsAddingTrip, setTripToEdit } = useUIStateStore();
+const { setIsAddingTrip, setTripIdToEdit } = useUIStateStore();
 
 const appStore = useAppStore();
 const { users, user: currentUser } = storeToRefs(appStore);
 
-const { createTrip } = useTripsStore();
-const { updateTrip } = useTripDataStore();
+const { createTrip, updateTrip } = useTripsStore();
 
 const { tripData, isDataValid } = useTripData({ trip, countries, userIds });
 
@@ -50,7 +48,7 @@ const isAddingOrUpdatingTrip = ref(false);
 
 const onClose = () => {
   setIsAddingTrip(false);
-  setTripToEdit(null);
+  setTripIdToEdit(null);
 };
 
 const onSaveCountry = (country: TripModalCountry) => {

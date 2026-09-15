@@ -12,10 +12,13 @@ import Separator from "@/components/ui/separator/Separator.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import router from "@/router";
 import useTripsStore from "@/store/tripsStore";
-import { Calendar, Copy, MapPin, Trash, XCircle } from "@lucide/vue";
+import useUIStateStore from "@/store/uiState";
+import { Calendar, Copy, Edit, MapPin, Trash, XCircle } from "@lucide/vue";
 import { format } from "date-fns";
 import { computed, ref } from "vue";
 import { toast } from "vue-sonner";
+
+const { setTripIdToEdit } = useUIStateStore();
 
 const { trip } = defineProps<{ trip: Trip }>();
 
@@ -35,6 +38,11 @@ const countryList = computed(() => {
 const onClickView = () => {
   emit("close");
   router.push({ name: "tripData", params: { tripId: trip.id } });
+};
+
+const onClickEdit = () => {
+  emit("close");
+  setTripIdToEdit(trip.id);
 };
 
 const isConfirmDeleteModalOpen = ref(false);
@@ -88,6 +96,10 @@ const onConfirmDelete = async () => {
         <Button variant="secondary" @click="onClickView">
           <Copy class="mr-1 size-[12px]" />
           View
+        </Button>
+        <Button variant="secondary" @click="onClickEdit">
+          <Edit class="mr-1 size-[12px]" />
+          Edit
         </Button>
         <Button class="mt-4" variant="destructive" @click="onClickDelete">
           <Trash class="mr-1 size-[12px]" />

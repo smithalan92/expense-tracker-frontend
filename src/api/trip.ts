@@ -77,9 +77,6 @@ export interface CreateTripResponse {
 
 export interface UpdateTripResponse {
   trip: Trip;
-  countries: TripCountry[];
-  userIds: number[];
-  currencyIds: number[];
 }
 
 export interface GetTripDataResponse {

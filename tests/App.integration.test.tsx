@@ -314,6 +314,53 @@ describe("App.integration", () => {
         expect(screen.queryByText("Testing Trip")).not.toBeInTheDocument();
       });
     });
+
+    it("allows editing a trip", async () => {
+      const updatedName = "Updated Trip Name";
+
+      vi.mocked(loadAppData).mockResolvedValue(GET_APP_DATA_FIXTURE);
+      vi.mocked(getTrips).mockResolvedValue([TESTING_TRIP]);
+      vi.mocked(getTripData).mockResolvedValue(GET_TRIP_DATA_FIXTURE);
+      vi.mocked(updateTrip).mockResolvedValue({
+        trip: { ...TESTING_TRIP, name: updatedName },
+      });
+
+      await renderApp({ initialState: loggedInState });
+
+      await waitFor(() => expect(screen.getByText("Testing Trip")).toBeInTheDocument());
+
+      // Long-press the trip card to open the info drawer
+      vi.useFakeTimers();
+      const tripCard = screen.getByText("Testing Trip").closest("button")!;
+      await fireEvent.pointerDown(tripCard);
+      vi.advanceTimersByTime(510);
+      vi.useRealTimers();
+
+      // Click Edit in the info drawer — this loads the trip's edit data from the API
+      // and opens the edit modal, populated with the response
+      await waitFor(() => expect(screen.getByRole("button", { name: /^Edit$/ })).toBeInTheDocument());
+      await fireEvent.click(screen.getByRole("button", { name: /^Edit$/ }));
+
+      await waitFor(() => expect(screen.getByRole("heading", { name: "Edit Trip" })).toBeInTheDocument());
+      expect(getTripData).toHaveBeenCalledWith(TESTING_TRIP.id);
+
+      // Update the trip name
+      await fireEvent.update(screen.getByTestId("trip-name-input"), updatedName);
+
+      // Save button becomes enabled once a field changes
+      await waitFor(() => expect(screen.getByRole("button", { name: "Save" })).not.toBeDisabled());
+      await fireEvent.click(screen.getByRole("button", { name: "Save" }));
+
+      await waitFor(() => {
+        expect(updateTrip).toHaveBeenCalledWith(
+          TESTING_TRIP.id,
+          expect.objectContaining({ name: updatedName }),
+        );
+      });
+
+      // Updated name reflected in the trips list
+      await waitFor(() => expect(screen.getByText(updatedName)).toBeInTheDocument());
+    });
   });
 
   describe("Trip View", () => {
@@ -683,52 +730,6 @@ describe("App.integration", () => {
 
       // Copied expense appears alongside the original
       await waitFor(() => expect(screen.getByTestId("expense-88")).toBeInTheDocument());
-    });
-
-    it("allows editing the trip", async () => {
-      const updatedName = "Updated Trip Name";
-      const tripData = makeExpenseTripData();
-
-      vi.mocked(loadAppData).mockResolvedValue(GET_APP_DATA_FIXTURE);
-      vi.mocked(getTripData).mockResolvedValue(tripData);
-      vi.mocked(updateTrip).mockResolvedValue({
-        trip: { ...TESTING_TRIP, name: updatedName },
-        countries: tripData.countries,
-        userIds: tripData.userIds,
-        currencyIds: tripData.currencyIds,
-      });
-
-      await navigateToTrip();
-
-      await waitFor(() => expect(screen.getByText(TESTING_TRIP.name)).toBeInTheDocument());
-
-      // Open the edit drawer
-      await fireEvent.click(screen.getByRole("button", { name: /edit trip/i }));
-      await waitFor(() => expect(screen.getByRole("heading", { name: "Edit Trip" })).toBeInTheDocument());
-
-      // Update the trip name
-      await fireEvent.update(screen.getByTestId("trip-name-input"), updatedName);
-
-      // Save button becomes enabled once a field changes
-      await waitFor(() => expect(screen.getByRole("button", { name: "Save" })).not.toBeDisabled());
-      await fireEvent.click(screen.getByRole("button", { name: "Save" }));
-
-      await waitFor(() => {
-        expect(updateTrip).toHaveBeenCalledWith(
-          TESTING_TRIP.id,
-          expect.objectContaining({
-            name: updatedName,
-            countries: [
-              { countryId: IRELAND.id, cityIds: [CORK_CITY.id, 11] },
-              { countryId: UAE.id, cityIds: [DUBAI_CITY.id, 21] },
-            ],
-            userIds: [USER_ONE.id, USER_TWO.id],
-          }),
-        );
-      });
-
-      // Updated name reflected in the trip header
-      await waitFor(() => expect(screen.getByText(updatedName)).toBeInTheDocument());
     });
   });
 });

@@ -1,9 +1,7 @@
 import useUIStateStore from "@/store/uiState";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it } from "vitest";
-import { IRELAND_FOR_TRIP } from "../fixtures/countries_cities";
 import { EURO_MOCK_EXPENSE_ONE } from "../fixtures/expenses";
-import { TESTING_TRIP } from "../fixtures/trip";
 
 describe("uiState store", () => {
   beforeEach(() => {
@@ -15,7 +13,7 @@ describe("uiState store", () => {
       const store = useUIStateStore();
 
       expect(store.isAddingTrip).toBe(false);
-      expect(store.tripToEdit).toBeNull();
+      expect(store.tripIdToEdit).toBeNull();
       expect(store.isAddingExpense).toBe(false);
       expect(store.expenseToView).toBeNull();
       expect(store.expenseToEdit).toBeNull();
@@ -36,23 +34,23 @@ describe("uiState store", () => {
       });
     });
 
-    describe("setTripToEdit", () => {
-      it("sets the trip to edit", () => {
+    describe("setTripIdToEdit", () => {
+      it("sets the trip id to edit", () => {
         const store = useUIStateStore();
-        const data = { trip: TESTING_TRIP, countries: [IRELAND_FOR_TRIP], userIds: [1] };
+        const data = 1234;
 
-        store.setTripToEdit(data);
+        store.setTripIdToEdit(data);
 
-        expect(store.tripToEdit).toEqual(data);
+        expect(store.tripIdToEdit).toEqual(data);
       });
 
       it("clears the trip to edit when passed null", () => {
         const store = useUIStateStore();
-        store.$patch({ tripToEdit: { trip: TESTING_TRIP, countries: [], userIds: [] } });
+        store.$patch({ tripIdToEdit: 1234 });
 
-        store.setTripToEdit(null);
+        store.setTripIdToEdit(null);
 
-        expect(store.tripToEdit).toBeNull();
+        expect(store.tripIdToEdit).toBeNull();
       });
     });
 

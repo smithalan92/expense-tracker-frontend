@@ -1,7 +1,8 @@
 import { FileUploadError, uploadFile } from "@/api/file";
-import { createTrip, deleteTrip, getTrips, type CreateTripPayload, type Trip } from "@/api/trip";
+import { createTrip, deleteTrip, getTrips, updateTrip, type CreateTripPayload, type Trip } from "@/api/trip";
 import { isNetworkError } from "@/utils/network";
 import { acceptHMRUpdate, defineStore } from "pinia";
+import useTripDataStore from "./tripDataStore";
 
 const useTripsStore = defineStore("trips", {
   state: (): TripsState => ({ trips: [], isLoading: false, hasFailedToLoad: false }),
@@ -51,6 +52,47 @@ const useTripsStore = defineStore("trips", {
     async deleteTrip(tripId: number) {
       await deleteTrip(tripId);
       this.trips = this.trips.filter((t) => t.id !== tripId);
+    },
+
+    async updateTrip({
+      tripId,
+      payload,
+      file,
+    }: {
+      tripId: number;
+      payload: CreateTripPayload;
+      file?: Nullable<File>;
+    }) {
+      try {
+        if (file) {
+          const fileUrl = await uploadFile(file);
+          payload.file = fileUrl;
+        }
+      } catch (err) {
+        // Keep the reason when the API gave us one, so it can be shown to the user
+        if (err instanceof FileUploadError) throw err;
+        throw new Error("Failed to save file");
+      }
+
+      const { trip } = await updateTrip(tripId, payload);
+
+      const currentTrips: Trip[] = JSON.parse(JSON.stringify(this.trips));
+      const tripIdx = currentTrips.findIndex((t: Trip) => t.id === trip.id);
+
+      if (tripIdx > -1) {
+        currentTrips[tripIdx] = trip;
+      }
+
+      this.$patch({
+        trips: currentTrips,
+      });
+
+      const tripDataStore = useTripDataStore();
+
+      if (tripDataStore.trip.id === trip.id) {
+        // Force a state reload, this will also update localstorage
+        tripDataStore.loadTripData(trip.id);
+      }
     },
   },
   persist: true,

@@ -1,11 +1,10 @@
 import type { TripExpense } from "@/api/expense";
-import type { Trip, TripCountry } from "@/api/trip";
 import { acceptHMRUpdate, defineStore } from "pinia";
 
 const useUIStateStore = defineStore("ui", {
   state: (): UIState => ({
     isAddingTrip: false,
-    tripToEdit: null,
+    tripIdToEdit: null,
     isAddingExpense: false,
     expenseToView: null,
     expenseToEdit: null,
@@ -15,8 +14,8 @@ const useUIStateStore = defineStore("ui", {
     setIsAddingTrip(value: boolean) {
       this.isAddingTrip = value;
     },
-    setTripToEdit(data: Nullable<ActiveTripData>) {
-      this.tripToEdit = data;
+    setTripIdToEdit(data: Nullable<number>) {
+      this.tripIdToEdit = data;
     },
     setIsAddingExpense(value: boolean) {
       this.isAddingExpense = value;
@@ -40,15 +39,9 @@ if (import.meta.hot) {
   import.meta.hot.accept(acceptHMRUpdate(useUIStateStore, import.meta.hot));
 }
 
-interface ActiveTripData {
-  trip: Trip;
-  countries: TripCountry[];
-  userIds: number[];
-}
-
 interface UIState {
   isAddingTrip: boolean;
-  tripToEdit: Nullable<ActiveTripData>;
+  tripIdToEdit: Nullable<number>;
   isAddingExpense: boolean;
   expenseToView: Nullable<TripExpense>;
   expenseToEdit: Nullable<TripExpense>;

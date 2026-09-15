@@ -6,11 +6,9 @@ import {
   type ExpensePayload,
   type TripExpense,
 } from "@/api/expense";
-import { getTripData, updateTrip, type CreateTripPayload, type Trip, type TripCountry } from "@/api/trip";
+import { getTripData, type Trip, type TripCountry } from "@/api/trip";
 
-import { FileUploadError, uploadFile } from "@/api/file";
 import useAppStore from "@/store/appStore";
-import useTripsStore from "@/store/tripsStore";
 import { getTripFromLocalStorage } from "@/utils/localstorage";
 import { isNetworkError } from "@/utils/network";
 import { acceptHMRUpdate, defineStore } from "pinia";
@@ -143,49 +141,6 @@ const useTripDataStore = defineStore("tripData", {
         currencyIds: data.currencyIds,
         categories: data.categories,
         userIds: data.userIds,
-      });
-    },
-
-    async updateTrip({
-      tripId,
-      payload,
-      file,
-    }: {
-      tripId: number;
-      payload: CreateTripPayload;
-      file?: Nullable<File>;
-    }) {
-      try {
-        if (file) {
-          const fileUrl = await uploadFile(file);
-          payload.file = fileUrl;
-        }
-      } catch (err) {
-        // Keep the reason when the API gave us one, so it can be shown to the user
-        if (err instanceof FileUploadError) throw err;
-        throw new Error("Failed to save file");
-      }
-
-      const { trip, userIds, currencyIds, countries } = await updateTrip(tripId, payload);
-
-      this.$patch({
-        trip,
-        currencyIds,
-        userIds,
-        countries,
-      });
-
-      const tripStore = useTripsStore();
-
-      const currentTrips: Trip[] = JSON.parse(JSON.stringify(tripStore.trips));
-      const tripIdx = currentTrips.findIndex((t: Trip) => t.id === trip.id);
-
-      if (tripIdx > -1) {
-        currentTrips[tripIdx] = trip;
-      }
-
-      tripStore.$patch({
-        trips: currentTrips,
       });
     },
 

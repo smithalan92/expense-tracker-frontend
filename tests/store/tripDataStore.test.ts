@@ -12,7 +12,6 @@ import { USER_ONE, USER_TWO } from "../fixtures/users";
 // --- module mocks ---
 vi.mock("@/api/trip", () => ({
   getTripData: vi.fn(),
-  updateTrip: vi.fn(),
 }));
 
 vi.mock("@/api/expense", () => ({
@@ -47,8 +46,7 @@ vi.mock("@/store/appStore", () => ({
 }));
 
 import { addExpensesToTrip, deleteExpense, updateExpense } from "@/api/expense";
-import { uploadFile } from "@/api/file";
-import { getTripData, updateTrip } from "@/api/trip";
+import { getTripData } from "@/api/trip";
 import useTripDataStore from "@/store/tripDataStore";
 
 const TRIP_ID = 1;
@@ -434,89 +432,6 @@ describe("tripDataStore", () => {
         expect(store.trip.name).toBe(TESTING_TRIP.name);
         expect(store.expenses).toHaveLength(1);
         expect(store.hasFailedToLoadTripData).toBe(false);
-      });
-    });
-
-    describe("updateTrip", () => {
-      const TRIP_PAYLOAD = {
-        name: "Updated Trip",
-        startDate: "2024-01-01",
-        endDate: "2024-01-10",
-        countries: [],
-        userIds: [1],
-      };
-
-      it("patches the store with the API response", async () => {
-        const updatedTrip = { ...TESTING_TRIP, name: "Updated Trip" };
-        vi.mocked(updateTrip).mockResolvedValue({
-          trip: updatedTrip,
-          countries: [IRELAND_FOR_TRIP],
-          currencyIds: [1],
-          userIds: [1],
-        });
-
-        const store = useTripDataStore();
-        store.$patch(MOCK_TRIP_DATA_STATE);
-
-        await store.updateTrip({ tripId: TRIP_ID, payload: TRIP_PAYLOAD });
-
-        expect(store.trip.name).toBe("Updated Trip");
-        expect(store.countries).toEqual([IRELAND_FOR_TRIP]);
-      });
-
-      it("uploads file and includes URL in payload before updating", async () => {
-        vi.mocked(uploadFile).mockResolvedValue("https://cdn.example.com/image.jpg");
-        vi.mocked(updateTrip).mockResolvedValue({
-          trip: TESTING_TRIP,
-          countries: [],
-          currencyIds: [],
-          userIds: [],
-        });
-
-        const store = useTripDataStore();
-        const file = new File(["img"], "photo.jpg", { type: "image/jpeg" });
-
-        await store.updateTrip({ tripId: TRIP_ID, payload: { ...TRIP_PAYLOAD }, file });
-
-        expect(uploadFile).toHaveBeenCalledWith(file);
-        expect(updateTrip).toHaveBeenCalledWith(
-          TRIP_ID,
-          expect.objectContaining({ file: "https://cdn.example.com/image.jpg" }),
-        );
-      });
-
-      it("throws when file upload fails", async () => {
-        vi.mocked(uploadFile).mockRejectedValue(new Error("Upload failed"));
-
-        const store = useTripDataStore();
-        const file = new File(["img"], "photo.jpg", { type: "image/jpeg" });
-
-        await expect(store.updateTrip({ tripId: TRIP_ID, payload: TRIP_PAYLOAD, file })).rejects.toThrow(
-          "Failed to save file",
-        );
-
-        expect(updateTrip).not.toHaveBeenCalled();
-      });
-
-      it("updates the matching trip in the trips store", async () => {
-        const updatedTrip = { ...TESTING_TRIP, name: "Updated Trip" };
-        vi.mocked(updateTrip).mockResolvedValue({
-          trip: updatedTrip,
-          countries: [],
-          currencyIds: [],
-          userIds: [],
-        });
-
-        const store = useTripDataStore();
-        store.$patch(MOCK_TRIP_DATA_STATE);
-
-        await store.updateTrip({ tripId: TRIP_ID, payload: TRIP_PAYLOAD });
-
-        expect(mockTripsStorePatch).toHaveBeenCalledWith(
-          expect.objectContaining({
-            trips: expect.arrayContaining([expect.objectContaining({ name: "Updated Trip" })]),
-          }),
-        );
       });
     });
 

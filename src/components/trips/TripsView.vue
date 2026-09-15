@@ -1,21 +1,37 @@
 <script setup lang="ts">
 import { type Trip as TripType } from "@/api/trip.ts";
 import { Card } from "@/components/ui/card";
+import { Spinner } from "@/components/ui/spinner";
 import useTripsStore from "@/store/tripsStore";
 import useUIStateStore from "@/store/uiState.ts";
 import { PlusCircle } from "@lucide/vue";
 import { isAfter } from "date-fns/isAfter";
 import { isBefore } from "date-fns/isBefore";
 import { parse } from "date-fns/parse";
-import { computed, onMounted, ref } from "vue";
+import { storeToRefs } from "pinia";
+import { computed, onMounted, ref, watch } from "vue";
 import Button from "../ui/button/Button.vue";
 import UserMenu from "../usermenu/UserMenu.vue";
-import AddOrEditTrip from "./modals/AddOrEditTrip/AddOrEditTrip.vue";
+import AddTrip from "./modals/AddOrEditTrip/AddTrip.vue";
+import EditTrip from "./modals/AddOrEditTrip/EditTrip.vue";
 import TripInfoModal from "./modals/TripInfoModal/TripInfoModal.vue";
 import TripSection from "./TripSection.vue";
 
 const tripsStore = useTripsStore();
-const { setIsAddingTrip } = useUIStateStore();
+const uiStateStore = useUIStateStore();
+const { setIsAddingTrip } = uiStateStore;
+const { tripIdToEdit } = storeToRefs(uiStateStore);
+
+// Only remount EditTrip when a new edit is opened (null -> id), never on close, so the
+// Drawer's close animation isn't cut short by tearing down its parent mid-animation.
+const editTripKey = ref(0);
+watch(
+  tripIdToEdit,
+  (value, previousValue) => {
+    if (value && !previousValue) editTripKey.value++;
+  },
+  { flush: "sync" },
+);
 
 const activeTrip = ref<Nullable<TripType>>(null);
 const isViewingTrip = ref(false);
@@ -145,6 +161,14 @@ onMounted(() => {
       Add Trip
     </Button>
     <TripInfoModal :is-open="isViewingTrip" :trip="activeTrip" @close="onCloseTripInfoModal" />
-    <AddOrEditTrip />
+    <AddTrip />
+    <Suspense>
+      <template #default>
+        <EditTrip :key="editTripKey" />
+      </template>
+      <template #fallback>
+        <Spinner :use-overlay="true" />
+      </template>
+    </Suspense>
   </div>
 </template>

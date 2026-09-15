@@ -7,6 +7,7 @@ vi.mock("@/api/trip", () => ({
   getTrips: vi.fn(),
   createTrip: vi.fn(),
   deleteTrip: vi.fn(),
+  updateTrip: vi.fn(),
 }));
 
 // Partial mock: createTrip does `err instanceof FileUploadError`, so the real
@@ -16,8 +17,16 @@ vi.mock("@/api/file", async (importOriginal) => ({
   uploadFile: vi.fn(),
 }));
 
+const loadTripDataMock = vi.fn();
+vi.mock("@/store/tripDataStore", () => ({
+  default: vi.fn(() => ({
+    trip: TESTING_TRIP,
+    loadTripData: loadTripDataMock,
+  })),
+}));
+
 import { uploadFile } from "@/api/file";
-import { createTrip, deleteTrip, getTrips } from "@/api/trip";
+import { createTrip, deleteTrip, getTrips, updateTrip } from "@/api/trip";
 import useTripsStore from "@/store/tripsStore";
 
 describe("tripsStore", () => {
@@ -179,6 +188,85 @@ describe("tripsStore", () => {
         expect(deleteTrip).toHaveBeenCalledWith(TESTING_TRIP.id);
         expect(store.trips).toHaveLength(1);
         expect(store.trips[0]!.id).toBe(FAKE_TRIP.id);
+      });
+    });
+
+    describe("updateTrip", () => {
+      const TRIP_PAYLOAD = {
+        name: "Updated Trip",
+        startDate: "2024-01-01",
+        endDate: "2024-01-10",
+        countries: [],
+        userIds: [1],
+      };
+
+      it("patches the store with the API response", async () => {
+        const updatedTrip = { ...TESTING_TRIP, name: "Updated Trip" };
+        vi.mocked(updateTrip).mockResolvedValue({
+          trip: updatedTrip,
+        });
+
+        const store = useTripsStore();
+        store.$patch({ trips: [TESTING_TRIP, FAKE_TRIP] });
+
+        expect(store.trips.length).toBe(2);
+        const originalTrip = store.trips.find((t) => t.id === updatedTrip.id);
+        expect(originalTrip).not.toBeNull();
+        expect(originalTrip!.name).toEqual(TESTING_TRIP.name);
+
+        await store.updateTrip({ tripId: updatedTrip.id, payload: TRIP_PAYLOAD });
+
+        expect(store.trips.length).toBe(2);
+
+        const updatedTripFromStore = store.trips.find((t) => t.id === updatedTrip.id);
+
+        expect(updatedTripFromStore).not.toBeNull();
+        expect(updatedTripFromStore!.name).toEqual(updatedTrip.name);
+      });
+
+      it("uploads file and includes URL in payload before updating", async () => {
+        vi.mocked(uploadFile).mockResolvedValue("https://cdn.example.com/image.jpg");
+        vi.mocked(updateTrip).mockResolvedValue({
+          trip: TESTING_TRIP,
+        });
+
+        const store = useTripsStore();
+        const file = new File(["img"], "photo.jpg", { type: "image/jpeg" });
+
+        await store.updateTrip({ tripId: TESTING_TRIP.id, payload: { ...TRIP_PAYLOAD }, file });
+
+        expect(uploadFile).toHaveBeenCalledWith(file);
+        expect(updateTrip).toHaveBeenCalledWith(
+          TESTING_TRIP.id,
+          expect.objectContaining({ file: "https://cdn.example.com/image.jpg" }),
+        );
+      });
+
+      it("throws when file upload fails", async () => {
+        vi.mocked(uploadFile).mockRejectedValue(new Error("Upload failed"));
+
+        const store = useTripsStore();
+        const file = new File(["img"], "photo.jpg", { type: "image/jpeg" });
+
+        await expect(
+          store.updateTrip({ tripId: TESTING_TRIP.id, payload: TRIP_PAYLOAD, file }),
+        ).rejects.toThrow("Failed to save file");
+
+        expect(updateTrip).not.toHaveBeenCalled();
+      });
+
+      it("reloads the matching trip in the trip data store if thats what was previously loaded", async () => {
+        const updatedTrip = { ...TESTING_TRIP, name: "Updated Trip" };
+        vi.mocked(updateTrip).mockResolvedValue({
+          trip: updatedTrip,
+        });
+
+        const store = useTripsStore();
+        store.$patch({ trips: [TESTING_TRIP, FAKE_TRIP] });
+
+        await store.updateTrip({ tripId: updatedTrip.id, payload: TRIP_PAYLOAD });
+
+        expect(loadTripDataMock).toHaveBeenCalledWith(updatedTrip.id);
       });
     });
   });

@@ -5,7 +5,6 @@ type StorePropery = keyof ReturnType<typeof useTripDataStore>;
 
 const ACTIONS_TO_SYNC: StorePropery[] = [
   "loadTripData",
-  "updateTrip",
   "deleteExpense",
   "addExpense",
   "updateExpense",
