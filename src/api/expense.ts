@@ -25,6 +25,7 @@ export interface ExpensePayload {
   categoryId: number;
   description: string;
   userIds: number[];
+  latlong?: string | null;
 }
 
 export interface TripExpense {
@@ -40,6 +41,7 @@ export interface TripExpense {
   users: ExpenseUser[];
   createdAt: string;
   updatedAt: string;
+  latlong?: string | null;
 }
 
 export interface ExpenseCountry {

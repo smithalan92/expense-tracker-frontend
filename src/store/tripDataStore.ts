@@ -200,6 +200,7 @@ const useTripDataStore = defineStore("tripData", {
         users: expenseUsers,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
+        latlong: payload.latlong,
       });
     },
 
@@ -216,6 +217,7 @@ const useTripDataStore = defineStore("tripData", {
           categoryId: exp.category.id,
           description: exp.description,
           userIds: exp.users.map((u) => u.id),
+          latlong: exp.latlong,
         };
 
         acc.push(expense);

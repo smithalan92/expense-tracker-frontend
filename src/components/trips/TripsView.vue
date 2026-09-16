@@ -2,6 +2,7 @@
 import { type Trip as TripType } from "@/api/trip.ts";
 import { Card } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
+import useLocationAccess from "@/hooks/useLocationAccess.ts";
 import useTripsStore from "@/store/tripsStore";
 import useUIStateStore from "@/store/uiState.ts";
 import { PlusCircle } from "@lucide/vue";
@@ -21,6 +22,8 @@ const tripsStore = useTripsStore();
 const uiStateStore = useUIStateStore();
 const { setIsAddingTrip } = uiStateStore;
 const { tripIdToEdit } = storeToRefs(uiStateStore);
+
+const { ensureLocationAccess } = useLocationAccess();
 
 // Only remount EditTrip when a new edit is opened (null -> id), never on close, so the
 // Drawer's close animation isn't cut short by tearing down its parent mid-animation.
@@ -95,6 +98,7 @@ const onCloseTripInfoModal = () => {
 
 onMounted(() => {
   tripsStore.loadTrips();
+  ensureLocationAccess();
 });
 </script>
 <template>

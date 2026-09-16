@@ -13,6 +13,7 @@ import NativeSelect from "@/components/ui/native-select/NativeSelect.vue";
 import NativeSelectOptGroup from "@/components/ui/native-select/NativeSelectOptGroup.vue";
 import NativeSelectOption from "@/components/ui/native-select/NativeSelectOption.vue";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
+import useLocationAccess from "@/hooks/useLocationAccess.ts";
 import useAppStore from "@/store/appStore.ts";
 import useTripDataStore from "@/store/tripDataStore.ts";
 import useUIStateStore from "@/store/uiState.ts";
@@ -33,6 +34,7 @@ const tripDataStore = useTripDataStore();
 const { addExpense, updateExpense } = tripDataStore;
 const { countries, userIds } = storeToRefs(tripDataStore);
 const { currencies, users } = storeToRefs(useAppStore());
+const { hasLocationAccess, requestLocation, ensureLocationAccess } = useLocationAccess();
 
 const amountInputRef = ref<InstanceType<typeof Input> | null>(null);
 
@@ -120,6 +122,16 @@ const onClickAddOrEditExpense = async () => {
       await updateExpense({ expenseId: expense!.id, payload });
       toast.success("Expense updated.");
     } else {
+      if (hasLocationAccess.value) {
+        try {
+          const { coords } = await requestLocation();
+          payload.latlong = `${coords.latitude},${coords.longitude}`;
+          console.log(payload.latlong);
+        } catch {
+          // Do nothing if we cant get the location
+        }
+      }
+
       await addExpense({ payload });
       if (isCopyingExpense.value) {
         toast.success("Expense copied.");
@@ -138,6 +150,7 @@ const onClickAddOrEditExpense = async () => {
 };
 
 onMounted(() => {
+  ensureLocationAccess();
   if (!expense) {
     setTimeout(() => amountInputRef.value?.inputRef?.focus(), 400);
   }

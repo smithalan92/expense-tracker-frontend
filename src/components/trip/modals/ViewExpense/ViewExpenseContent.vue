@@ -18,6 +18,7 @@ import { format } from "date-fns";
 import { computed, ref } from "vue";
 import { toast } from "vue-sonner";
 import ExpenseCategoryChip from "../../ExpenseCategoryChip.vue";
+import ExpenseMap from "./ExpenseMap.vue";
 
 const isOnline = useIsOnline();
 
@@ -106,6 +107,9 @@ const areActionsDisabled = computed(() => !isOnline.value && expense.id >= 0);
         <div class="flex mt-2 items-center">
           <User class="mr-1 size-[12px]" />
           <span>{{ users }}</span>
+        </div>
+        <div class="flex mt-4 items-center" v-if="expense.latlong">
+          <ExpenseMap :latlng="expense.latlong" />
         </div>
       </div>
       <DrawerFooter class="flex-1">
