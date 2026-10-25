@@ -50,9 +50,7 @@ watch(
   (newVal) => {
     const existingCities = selectedCountries.find((c) => c.id === newVal)?.cities;
 
-    if (existingCities) {
-      selectedCities.value = existingCities;
-    }
+    selectedCities.value = existingCities ? [...existingCities] : [];
   },
 );
 

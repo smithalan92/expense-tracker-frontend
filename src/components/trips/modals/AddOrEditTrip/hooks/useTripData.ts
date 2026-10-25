@@ -17,7 +17,7 @@ const parseTripCountries = (countries: Nullable<TripCountry[]>) => {
     acc.push({
       id: current.id,
       name: current.name,
-      cities: current.cities,
+      cities: current.cities.map((c) => ({ id: c.id, name: c.name })),
     });
 
     return acc;

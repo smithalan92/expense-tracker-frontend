@@ -158,6 +158,20 @@ describe("useTripData", () => {
       expect(isDataValid.value).toBe(true);
     });
 
+    it("is true when a city is pushed onto an existing country's cities, without mutating the source", () => {
+      const source = { ...IRELAND_FOR_TRIP, cities: [DUBLIN] };
+      const { tripData, isDataValid } = useTripData({
+        trip: TESTING_TRIP,
+        countries: [source],
+        userIds: [USER_ONE.id],
+      });
+
+      tripData.selectedCountries[0].cities.push(CORK);
+
+      expect(source.cities).toEqual([DUBLIN]);
+      expect(isDataValid.value).toBe(true);
+    });
+
     it("is true when an added country has the same city count but different cities", () => {
       const { tripData, isDataValid } = useTripData({
         trip: TESTING_TRIP,
