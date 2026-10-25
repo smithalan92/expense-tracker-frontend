@@ -43,6 +43,26 @@ const availableUsers = computed(() => {
   return Array.from(list.values());
 });
 
+const getCategoryState = (id: number) => {
+  if (filters.value.filterByCategoryId === id) return "included";
+  if (filters.value.excludedCategoryIds.includes(id)) return "excluded";
+  return "off";
+};
+
+// off -> included -> excluded -> off
+const cycleCategory = (id: number) => {
+  const state = getCategoryState(id);
+
+  if (state === "off") {
+    filters.value.filterByCategoryId = id;
+  } else if (state === "included") {
+    filters.value.filterByCategoryId = null;
+    filters.value.excludedCategoryIds.push(id);
+  } else {
+    filters.value.excludedCategoryIds = filters.value.excludedCategoryIds.filter((c) => c !== id);
+  }
+};
+
 const onClickClearFilters = () => {
   clearFilters();
   isDrawerOpen.value = false;
@@ -76,14 +96,15 @@ const onClickClearFilters = () => {
             <Button
               v-for="category in availableCategories"
               :key="category.id"
-              :variant="category.id === filters.filterByCategoryId ? 'default' : 'outline'"
-              @click="
-                filters.filterByCategoryId = filters.filterByCategoryId === category.id ? null : category.id
-              "
+              :data-testid="`category-chip-${category.id}`"
+              :variant="getCategoryState(category.id) === 'excluded' ? 'destructive' : getCategoryState(category.id) === 'included' ? 'default' : 'outline'"
+              :class="getCategoryState(category.id) === 'excluded' ? 'line-through' : ''"
+              @click="cycleCategory(category.id)"
             >
               {{ category.name }}
             </Button>
           </div>
+          <span class="text-xs text-muted-foreground">Tap once to include, twice to exclude.</span>
         </Field>
         <Field class="pt-4">
           <FieldLabel>User</FieldLabel>

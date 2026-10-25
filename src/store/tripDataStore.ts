@@ -38,19 +38,22 @@ const useTripDataStore = defineStore("tripData", {
       search: "",
       filterByUserId: null,
       filterByCategoryId: null,
+      excludedCategoryIds: [],
     },
   }),
   getters: {
     getExpenses(state) {
       return [...state.expenses, ...state.unsavedExpenses].filter((exp) => {
-        const { search, filterByUserId, filterByCategoryId } = state.filters;
+        const { search, filterByUserId, filterByCategoryId, excludedCategoryIds } = state.filters;
         const hasMatchingDescription = search.trim() ? exp.description.includes(search.trim()) : true;
 
         const hasMatchingUser = filterByUserId
           ? exp.users.find((user) => user.id === filterByUserId) !== undefined
           : true;
 
-        const hasMatchingCategory = filterByCategoryId ? exp.category.id === filterByCategoryId : true;
+        const hasMatchingCategory =
+          (filterByCategoryId ? exp.category.id === filterByCategoryId : true) &&
+          !excludedCategoryIds.includes(exp.category.id);
 
         return hasMatchingDescription && hasMatchingUser && hasMatchingCategory;
       });
@@ -73,6 +76,7 @@ const useTripDataStore = defineStore("tripData", {
       return (
         state.filters.search.trim().length > 0 ||
         !!state.filters.filterByCategoryId ||
+        state.filters.excludedCategoryIds.length > 0 ||
         !!state.filters.filterByUserId
       );
     },
@@ -323,6 +327,7 @@ const useTripDataStore = defineStore("tripData", {
       this.filters = {
         search: "",
         filterByCategoryId: null,
+        excludedCategoryIds: [],
         filterByUserId: null,
       };
     },
@@ -350,5 +355,6 @@ export interface TripDataState {
     search: string;
     filterByUserId: number | null;
     filterByCategoryId: number | null;
+    excludedCategoryIds: number[];
   };
 }

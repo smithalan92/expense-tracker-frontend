@@ -123,6 +123,18 @@ describe("tripDataStore", () => {
         expect(results[0]!.id).toBe(AED_MOCK_EXPENSE_ONE.id);
       });
 
+      it("excludes categories listed in excludedCategoryIds", () => {
+        const store = useTripDataStore();
+        store.$patch({
+          expenses: [EURO_MOCK_EXPENSE_ONE, AED_MOCK_EXPENSE_ONE],
+          filters: { excludedCategoryIds: [SNACKS_DRINKS.id] },
+        });
+
+        const results = store.getExpenses;
+        expect(results).toHaveLength(1);
+        expect(results[0]!.id).toBe(EURO_MOCK_EXPENSE_ONE.id);
+      });
+
       it("applies multiple filters together", () => {
         const store = useTripDataStore();
         store.$patch({
@@ -403,6 +415,7 @@ describe("tripDataStore", () => {
           search: "coffee",
           filterByUserId: USER_ONE.id,
           filterByCategoryId: SNACKS_DRINKS.id,
+          excludedCategoryIds: [],
         });
       });
 
@@ -670,7 +683,7 @@ describe("tripDataStore", () => {
       it("resets all filters to their defaults", () => {
         const store = useTripDataStore();
         store.$patch({
-          filters: { search: "coffee", filterByUserId: 1, filterByCategoryId: 2 },
+          filters: { search: "coffee", filterByUserId: 1, filterByCategoryId: 2, excludedCategoryIds: [3] },
         });
 
         store.clearFilters();
@@ -678,6 +691,7 @@ describe("tripDataStore", () => {
         expect(store.filters.search).toBe("");
         expect(store.filters.filterByUserId).toBeNull();
         expect(store.filters.filterByCategoryId).toBeNull();
+        expect(store.filters.excludedCategoryIds).toEqual([]);
       });
     });
 

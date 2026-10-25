@@ -17,9 +17,7 @@ const { getExpenses } = storeToRefs(store);
 const formatEuro = (amount: number) =>
   Intl.NumberFormat(undefined, { style: "currency", currency: "EUR" }).format(amount);
 
-const total = computed(() =>
-  getExpenses.value.reduce((acc, exp) => acc + parseFloat(exp.euroAmount), 0),
-);
+const total = computed(() => getExpenses.value.reduce((acc, exp) => acc + parseFloat(exp.euroAmount), 0));
 
 const byCategory = computed(() => {
   const map = new Map<number, { id: number; name: string; amount: number; count: number }>();
