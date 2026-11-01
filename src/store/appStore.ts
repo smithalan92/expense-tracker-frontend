@@ -12,9 +12,11 @@ const useAppStore = defineStore("app", {
     users: [],
     countries: [],
     currencies: [],
+    userPreferences: {},
   }),
   getters: {
     isLoggedIn: (state) => state.authToken !== null,
+    shouldUseAddExpenseWizard: (state) => state.userPreferences?.useAddExpenseWizard ?? false,
   },
   actions: {
     async loginUser({ email, password }: { email: string; password: string }) {
@@ -43,6 +45,10 @@ const useAppStore = defineStore("app", {
         }
       }
     },
+
+    setUseAddExpenseWizard(shouldUse: boolean) {
+      this.userPreferences.useAddExpenseWizard = shouldUse;
+    },
   },
   persist: true,
 });
@@ -60,4 +66,5 @@ interface AppState {
   user: Nullable<LoginUser>;
   users: User[];
   lastCurrencySyncDateTime: string;
+  userPreferences: Record<string, boolean>;
 }

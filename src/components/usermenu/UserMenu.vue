@@ -5,6 +5,8 @@ import DialogContent from "@/components/ui/dialog/DialogContent.vue";
 import DialogFooter from "@/components/ui/dialog/DialogFooter.vue";
 import DialogHeader from "@/components/ui/dialog/DialogHeader.vue";
 import DialogTitle from "@/components/ui/dialog/DialogTitle.vue";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import useAppStore from "@/store/appStore";
 import { getAvatarStyles } from "@/utils/ui";
 import { format } from "date-fns";
@@ -13,7 +15,7 @@ import { computed, ref } from "vue";
 
 const appStore = useAppStore();
 
-const { user, lastCurrencySyncDateTime } = storeToRefs(appStore);
+const { user, lastCurrencySyncDateTime, shouldUseAddExpenseWizard } = storeToRefs(appStore);
 
 const isModalOpen = ref(false);
 
@@ -45,8 +47,19 @@ const onClickLogout = () => {
       <DialogHeader>
         <DialogTitle>Hi {{ user?.firstName }}</DialogTitle>
       </DialogHeader>
+      <div
+        class="flex items-center justify-between gap-4 px-2 py-4 border-t border-b border-solid border-white/20"
+      >
+        <Label for="use-add-expense-wizard">Use add expense wizard</Label>
+        <Switch
+          id="use-add-expense-wizard"
+          data-testid="use-add-expense-wizard-toggle"
+          :model-value="shouldUseAddExpenseWizard"
+          @update:model-value="appStore.setUseAddExpenseWizard"
+        />
+      </div>
       <div class="flex flex-col">
-        <div class="p-2">
+        <div class="p-2 text-sm">
           Last currency sync:
           <strong>{{ currencySyncDate }}</strong>
         </div>

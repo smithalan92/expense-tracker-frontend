@@ -570,6 +570,94 @@ describe("App.integration", () => {
       expect((screen.getByTestId("expense-city-select") as HTMLSelectElement).value).toBe("null");
     });
 
+    it("allows adding a new expense using the wizard", async () => {
+      const addedExpense = {
+        ...AED_MOCK_EXPENSE_ONE,
+        id: 99,
+        description: "Lunch at restaurant",
+        city: DUBAI_CITY,
+        currency: AED,
+        euroAmount: "13.62",
+        amount: "50.00",
+        category: RESTAURANTS,
+        users: [USER_ONE, USER_TWO],
+        localDateTime: "2026-09-01T14:30:00",
+      };
+
+      vi.mocked(loadAppData).mockResolvedValue(GET_APP_DATA_FIXTURE);
+      vi.mocked(getTripData).mockResolvedValue(makeExpenseTripData({ expenses: [] }));
+      vi.mocked(addExpensesToTrip).mockResolvedValue({ data: { expenses: [addedExpense] } } as any);
+
+      await navigateToTrip();
+      await waitFor(() => expect(screen.getByText("No expenses just yet")).toBeInTheDocument());
+
+      // Opt in to the wizard flow
+      useAppStore().setUseAddExpenseWizard(true);
+
+      const clickNext = async () => {
+        await waitFor(() => expect(screen.getByTestId("expense-wizard-next-button")).not.toBeDisabled());
+        await fireEvent.click(screen.getByTestId("expense-wizard-next-button"));
+      };
+
+      await fireEvent.click(screen.getByTestId("add-expense-button"));
+      await waitFor(() => expect(screen.getByRole("heading", { name: "Add Expense" })).toBeInTheDocument());
+
+      // Step 1: date and time
+      expect(screen.getByTestId("expense-wizard-step-title")).toHaveTextContent("When did you pay?");
+      await fireEvent.update(screen.getByTestId("expense-date-input"), "2026-09-01");
+      await fireEvent.update(screen.getByTestId("expense-time-input"), "14:30");
+      await clickNext();
+
+      // Step 2: Dubai (UAE) — city id=20, which belongs to UAE so currency should auto-switch to AED
+      expect(screen.getByTestId("expense-wizard-next-button")).toBeDisabled();
+      await fireEvent.update(screen.getByTestId("expense-city-select"), "20");
+      await clickNext();
+
+      // Step 3: currency and amount
+      await waitFor(() => {
+        const currencySelect = screen.getByTestId("expense-currency-select") as HTMLSelectElement;
+        expect(currencySelect.value).toBe(String(AED.id));
+      });
+      expect(screen.getByTestId("expense-wizard-next-button")).toBeDisabled();
+      await fireEvent.update(screen.getByTestId("expense-amount-input"), "50.00");
+      await clickNext();
+
+      // Step 4: category
+      expect(screen.getByTestId("expense-wizard-next-button")).toBeDisabled();
+      await fireEvent.click(screen.getByRole("button", { name: /restaurants/i }));
+      await clickNext();
+
+      // Step 5: description and users (neither is pre-selected for a new expense)
+      await fireEvent.update(screen.getByTestId("expense-description-input"), "Lunch at restaurant");
+      await fireEvent.click(screen.getByRole("button", { name: "One" }));
+      await fireEvent.click(screen.getByRole("button", { name: "Two" }));
+
+      await waitFor(() => expect(screen.getByTestId("submit-expense-button")).not.toBeDisabled());
+      await fireEvent.click(screen.getByTestId("submit-expense-button"));
+
+      await waitFor(() => {
+        expect(addExpensesToTrip).toHaveBeenCalledWith(TESTING_TRIP.id, [
+          expect.objectContaining({
+            localDateTime: "2026-09-01T14:30:00",
+            cityId: 20,
+            currencyId: AED.id,
+            amount: 50,
+            categoryId: RESTAURANTS.id,
+            description: "Lunch at restaurant",
+            userIds: expect.arrayContaining([USER_ONE.id, USER_TWO.id]),
+          }),
+        ]);
+      });
+
+      await waitFor(() => expect(screen.getByTestId("expense-99")).toBeInTheDocument());
+
+      // Reopening the wizard must restart on step 1 without stale data
+      await fireEvent.click(screen.getByTestId("add-expense-button"));
+      await waitFor(() => expect(screen.getByRole("heading", { name: "Add Expense" })).toBeInTheDocument());
+      expect(screen.getByTestId("expense-wizard-step-title")).toHaveTextContent("When did you pay?");
+      expect(screen.queryByTestId("expense-description-input")).not.toBeInTheDocument();
+    });
+
     it("allows editing an existing expense", async () => {
       const updatedExpense = {
         ...EURO_MOCK_EXPENSE_ONE,
