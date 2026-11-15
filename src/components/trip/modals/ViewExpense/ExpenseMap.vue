@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import * as L from "leaflet";
 import "leaflet/dist/leaflet.css";
+// Leaflet resolves its default icon URLs at runtime, which breaks once Vite
+// hashes assets in production builds. Import them so they're bundled.
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 
 const initialMap = ref<L.Map | null>(null);
@@ -26,7 +31,17 @@ onMounted(() => {
     },
   ).addTo(map);
 
-  L.marker([latlng.value.lat, latlng.value.lng]).addTo(map);
+  const icon = L.icon({
+    iconUrl: markerIcon,
+    iconRetinaUrl: markerIcon2x,
+    shadowUrl: markerShadow,
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
+  });
+
+  L.marker([latlng.value.lat, latlng.value.lng], { icon }).addTo(map);
 
   initialMap.value = map;
 
