@@ -12,6 +12,7 @@ import Spinner from "../ui/spinner/Spinner.vue";
 import Expense from "./Expense.vue";
 import useGetCurrentTripId from "./hooks/useGetCurrentTripId";
 import usePullToRefresh from "./hooks/usePullToRefresh";
+import useRefreshOnForeground from "./hooks/useRefreshOnForeground";
 
 const props = defineProps<{ class?: string }>();
 
@@ -40,6 +41,11 @@ const { pullDistance, isRefreshing, isDragging, isArmed, thresholdPx } = usePull
     }
   },
 );
+
+useRefreshOnForeground({
+  refresh: () => refreshTripData(currentTripId.value),
+  canRefresh: () => isOnline.value && !isRefreshing.value,
+});
 
 const expensesGroupedByDate = computed(() => {
   return getExpenses.value.reduce<Record<string, TripExpense[]>>((acc, current) => {
