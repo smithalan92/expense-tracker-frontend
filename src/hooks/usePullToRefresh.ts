@@ -9,8 +9,8 @@ import { computed, ref, watch, type Ref } from "vue";
   Mouse dragging is deliberately not supported - this is a touch affordance.
 
   `pullDistance` is how far the indicator should be opened, in pixels. Drive the height of a
-  spacer at the top of the scroll container with it rather than a transform: the expense list
-  has `sticky` date headers, and a transform on an ancestor would break their positioning.
+  spacer at the top of the scroll container with it (see PullToRefreshIndicator) rather than a
+  transform: the expense list has `sticky` date headers, and a transform on an ancestor would break their positioning.
 
   `isDragging` is false while the indicator is snapping back, so the caller can transition the
   height then but not while the finger is down.

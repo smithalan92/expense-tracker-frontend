@@ -2,16 +2,16 @@
 import type { TripExpense } from "@/api/expense";
 import useTripData from "@/store/tripDataStore";
 import { useIsOnline } from "@/utils/network";
-import { ArrowDown, BanknoteX } from "@lucide/vue";
+import { BanknoteX } from "@lucide/vue";
 import { format, isSameYear } from "date-fns";
 import { storeToRefs } from "pinia";
 import { computed, ref } from "vue";
 import { toast } from "vue-sonner";
 import Button from "../ui/button/Button.vue";
-import Spinner from "../ui/spinner/Spinner.vue";
+import PullToRefreshIndicator from "../PullToRefreshIndicator.vue";
 import Expense from "./Expense.vue";
 import useGetCurrentTripId from "./hooks/useGetCurrentTripId";
-import usePullToRefresh from "./hooks/usePullToRefresh";
+import usePullToRefresh from "@/hooks/usePullToRefresh";
 import useRefreshOnForeground from "./hooks/useRefreshOnForeground";
 
 const props = defineProps<{ class?: string }>();
@@ -109,22 +109,13 @@ const expensesToDisplayByDate = computed(() => {
     class="overflow-y-auto overscroll-contain w-full flex-1 flex flex-col"
     :class="props.class"
   >
-    <!-- Pull to refresh indicator. Opens by growing rather than translating so the
-         sticky date headers below keep working. -->
-    <div
-      class="flex shrink-0 items-center justify-center overflow-hidden"
-      :class="!isDragging && 'transition-[height] duration-200'"
-      :style="{ height: `${pullDistance}px` }"
-      aria-hidden="true"
-    >
-      <Spinner v-if="isRefreshing" class="size-5" />
-      <ArrowDown
-        v-else
-        class="size-5 transition-transform"
-        :class="isArmed && 'rotate-180'"
-        :style="{ opacity: Math.min(1, pullDistance / thresholdPx) }"
-      />
-    </div>
+    <PullToRefreshIndicator
+      :pull-distance="pullDistance"
+      :is-refreshing="isRefreshing"
+      :is-dragging="isDragging"
+      :is-armed="isArmed"
+      :threshold-px="thresholdPx"
+    />
 
     <div
       v-if="!getExpenses.length"

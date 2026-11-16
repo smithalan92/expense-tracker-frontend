@@ -3,14 +3,19 @@ import { type Trip as TripType } from "@/api/trip.ts";
 import { Card } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import useLocationAccess from "@/hooks/useLocationAccess.ts";
+import usePullToRefresh from "@/hooks/usePullToRefresh";
+import useAppStore from "@/store/appStore.ts";
 import useTripsStore from "@/store/tripsStore";
 import useUIStateStore from "@/store/uiState.ts";
+import { useIsOnline } from "@/utils/network";
 import { PlusCircle } from "@lucide/vue";
 import { isAfter } from "date-fns/isAfter";
 import { isBefore } from "date-fns/isBefore";
 import { parse } from "date-fns/parse";
 import { storeToRefs } from "pinia";
 import { computed, onMounted, ref, watch } from "vue";
+import { toast } from "vue-sonner";
+import PullToRefreshIndicator from "../PullToRefreshIndicator.vue";
 import Button from "../ui/button/Button.vue";
 import UserMenu from "../usermenu/UserMenu.vue";
 import AddTrip from "./modals/AddOrEditTrip/AddTrip.vue";
@@ -18,12 +23,33 @@ import EditTrip from "./modals/AddOrEditTrip/EditTrip.vue";
 import TripInfoModal from "./modals/TripInfoModal/TripInfoModal.vue";
 import TripSection from "./TripSection.vue";
 
+const appStore = useAppStore();
 const tripsStore = useTripsStore();
 const uiStateStore = useUIStateStore();
 const { setIsAddingTrip } = uiStateStore;
 const { tripIdToEdit } = storeToRefs(uiStateStore);
 
 const { ensureLocationAccess } = useLocationAccess();
+
+const isOnline = useIsOnline();
+const scrollEl = ref<HTMLElement | null>(null);
+
+const { pullDistance, isRefreshing, isDragging, isArmed, thresholdPx } = usePullToRefresh(
+  scrollEl,
+  async () => {
+    if (!isOnline.value) {
+      toast.error("Can't refresh while offline");
+      return;
+    }
+
+    try {
+      await Promise.all([tripsStore.loadTrips(), appStore.loadAppData()]);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to refresh trips");
+    }
+  },
+);
 
 // Only remount EditTrip when a new edit is opened (null -> id), never on close, so the
 // Drawer's close animation isn't cut short by tearing down its parent mid-animation.
@@ -130,7 +156,15 @@ onMounted(() => {
       </Card>
     </div>
 
-    <div class="overflow-y-scroll flex-1 min-h-0 px-5 pt-2 pb-12">
+    <div ref="scrollEl" class="overflow-y-scroll overscroll-contain flex-1 min-h-0 px-5 pt-2 pb-12">
+      <PullToRefreshIndicator
+        :pull-distance="pullDistance"
+        :is-refreshing="isRefreshing"
+        :is-dragging="isDragging"
+        :is-armed="isArmed"
+        :threshold-px="thresholdPx"
+      />
+
       <!-- Active Trips -->
       <TripSection
         v-if="activeTrips.length"

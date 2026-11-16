@@ -1,4 +1,4 @@
-import usePullToRefresh from "@/components/trip/hooks/usePullToRefresh";
+import usePullToRefresh from "@/hooks/usePullToRefresh";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ref } from "vue";
 
