@@ -369,10 +369,10 @@ describe("App.integration", () => {
     };
 
     // Country fixtures with globally-unique city IDs so currency auto-sync works correctly
-    const CORK_CITY = { id: 10, name: "Cork" };
-    const DUBAI_CITY = { id: 20, name: "Dubai" };
-    const IRELAND = { ...IRELAND_FOR_TRIP, cities: [CORK_CITY, { id: 11, name: "Dublin" }] };
-    const UAE = { ...UAE_FOR_TRIP, cities: [DUBAI_CITY, { id: 21, name: "Abu Dhabi" }] };
+    const CORK_CITY = { id: 10, name: "Cork", latitude: 51.8985, longitude: -8.4756 };
+    const DUBAI_CITY = { id: 20, name: "Dubai", latitude: 25.2048, longitude: 55.2708 };
+    const IRELAND = { ...IRELAND_FOR_TRIP, cities: [CORK_CITY, { id: 11, name: "Dublin", latitude: 53.3498, longitude: -6.2603 }] };
+    const UAE = { ...UAE_FOR_TRIP, cities: [DUBAI_CITY, { id: 21, name: "Abu Dhabi", latitude: 24.4539, longitude: 54.3773 }] };
 
     // Factory — always returns a fresh object so store mutations (e.g. splice in deleteExpense)
     // never corrupt data shared between tests.
@@ -535,8 +535,7 @@ describe("App.integration", () => {
       // Select category
       await fireEvent.click(screen.getByRole("button", { name: /restaurants/i }));
 
-      // Select both users (neither is pre-selected for a new expense)
-      await fireEvent.click(screen.getByRole("button", { name: "One" }));
+      // The current user (One) is pre-selected for a new expense, so only add Two
       await fireEvent.click(screen.getByRole("button", { name: "Two" }));
 
       // Submit
@@ -627,9 +626,8 @@ describe("App.integration", () => {
       await fireEvent.click(screen.getByRole("button", { name: /restaurants/i }));
       await clickNext();
 
-      // Step 5: description and users (neither is pre-selected for a new expense)
+      // Step 5: description and users (the current user, One, is pre-selected for a new expense, so only add Two)
       await fireEvent.update(screen.getByTestId("expense-description-input"), "Lunch at restaurant");
-      await fireEvent.click(screen.getByRole("button", { name: "One" }));
       await fireEvent.click(screen.getByRole("button", { name: "Two" }));
 
       await waitFor(() => expect(screen.getByTestId("submit-expense-button")).not.toBeDisabled());

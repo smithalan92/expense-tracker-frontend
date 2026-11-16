@@ -41,7 +41,11 @@ describe("useTripData", () => {
       expect(tripData.startDate).toBe(format(new Date(TESTING_TRIP.startDate), DATE_FORMAT));
       expect(tripData.endDate).toBe(format(new Date(TESTING_TRIP.endDate), DATE_FORMAT));
       expect(tripData.selectedCountries).toEqual([
-        { id: IRELAND_FOR_TRIP.id, name: IRELAND_FOR_TRIP.name, cities: IRELAND_FOR_TRIP.cities },
+        {
+          id: IRELAND_FOR_TRIP.id,
+          name: IRELAND_FOR_TRIP.name,
+          cities: IRELAND_FOR_TRIP.cities.map(({ id, name }) => ({ id, name })),
+        },
       ]);
       expect(tripData.selectedUsers).toEqual([{ id: USER_TWO.id, name: USER_TWO.firstName }]);
     });

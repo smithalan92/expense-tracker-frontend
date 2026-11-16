@@ -1,20 +1,28 @@
 import useExpenseData from "@/components/trip/modals/AddOrEditExpense/hooks/useExpenseData";
+import useAppStore from "@/store/appStore";
 import { format } from "date-fns";
-import { describe, expect, it } from "vitest";
+import { createPinia, setActivePinia } from "pinia";
+import { beforeEach, describe, expect, it } from "vitest";
 import { AED_MOCK_EXPENSE_ONE, EURO_MOCK_EXPENSE_ONE } from "../fixtures/expenses";
 import { USER_ONE, USER_TWO } from "../fixtures/users";
 
 const DATE_FORMAT = "yyyy-MM-dd HH:mm";
 
 describe("useExpenseData", () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+    const appStore = useAppStore();
+    appStore.$patch({ user: USER_ONE, users: [USER_ONE, USER_TWO] });
+  });
+
   describe("initial expenseData", () => {
-    it("defaults to an empty expense for the given currency when no expense is provided", () => {
+    it("defaults to an empty expense with the current user selected when no expense is provided", () => {
       const { expenseData } = useExpenseData(null, 5, false);
 
       expect(expenseData.selectedCity).toBeNull();
       expect(expenseData.selectedCurrency).toBe(5);
       expect(expenseData.selectedCategory).toBeNull();
-      expect(expenseData.selectedUsers).toEqual([]);
+      expect(expenseData.selectedUsers).toEqual([USER_ONE.id]);
       expect(expenseData.description).toBe("");
       expect(expenseData.amount).toBeNull();
       expect(expenseData.expenseDate).toBe(format(new Date(), DATE_FORMAT));
@@ -101,6 +109,7 @@ describe("useExpenseData", () => {
 
       expenseData.selectedCity = 1;
       expenseData.selectedCategory = 1;
+      expenseData.selectedUsers = [];
       expenseData.description = "Coffee";
       expenseData.amount = "5.50";
 
