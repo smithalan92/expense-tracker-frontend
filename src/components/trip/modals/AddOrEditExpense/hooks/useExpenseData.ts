@@ -1,4 +1,5 @@
 import type { TripExpense } from "@/api/expense.ts";
+import useAppStore from "@/store/appStore";
 import { format, isValid } from "date-fns";
 import { computed, reactive } from "vue";
 
@@ -25,12 +26,15 @@ export default function useExpenseData(
   defaultCurrencyId: number,
   isCopyingExpense: boolean,
 ) {
+  const appStore = useAppStore();
+  const defaultSelectedUser = appStore.user?.id ? [appStore.user.id] : [];
+
   const expenseData = reactive<ExpenseData>({
     expenseDate: format(expense?.localDateTime ?? new Date(), DATE_FORMAT),
     selectedCity: expense?.city.id ?? null,
     selectedCurrency: expense?.currency.id ?? defaultCurrencyId,
     selectedCategory: expense?.category.id ?? null,
-    selectedUsers: expense?.users.map((u) => u.id) ?? [],
+    selectedUsers: expense?.users.map((u) => u.id) ?? defaultSelectedUser,
     description: getExpenseDescription({ description: expense?.description, isCopyingExpense }),
     amount: expense?.amount ?? null,
   });
