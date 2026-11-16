@@ -2,6 +2,7 @@
 import PWAUpdate from "@/components/PWAUpdate.vue";
 import { Toaster } from "@/components/ui/sonner";
 import useAppStore from "@/store/appStore";
+import useTripEventsStream from "@/store/useTripEventsStream";
 import { AlertCircle } from "@lucide/vue";
 import { useOnline } from "@vueuse/core";
 import { watch } from "vue";
@@ -12,6 +13,8 @@ import "/node_modules/flag-icons/css/flag-icons.min.css";
 const appStore = useAppStore();
 const router = useRouter();
 const isOnline = useOnline();
+
+useTripEventsStream();
 
 watch(
   () => appStore.isLoggedIn,

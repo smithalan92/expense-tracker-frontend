@@ -707,5 +707,82 @@ describe("tripDataStore", () => {
         expect(store.trip.name).toBe("");
       });
     });
+
+    describe("applyRemoteTripEvent", () => {
+      function seed() {
+        const store = useTripDataStore();
+        store.$patch({ trip: { ...store.trip, id: TRIP_ID }, expenses: [EURO_MOCK_EXPENSE_ONE] });
+        return store;
+      }
+
+      it("adds new expenses and skips ones already present", () => {
+        const store = seed();
+        store.applyRemoteTripEvent({
+          event: "expense.added",
+          data: { tripId: TRIP_ID, expenses: [EURO_MOCK_EXPENSE_ONE, AED_MOCK_EXPENSE_ONE] },
+        });
+        expect(store.expenses.map((e) => e.id)).toEqual([EURO_MOCK_EXPENSE_ONE.id, AED_MOCK_EXPENSE_ONE.id]);
+      });
+
+      it("replaces an updated expense, or adds it if missing", () => {
+        const store = seed();
+        store.applyRemoteTripEvent({
+          event: "expense.updated",
+          data: { tripId: TRIP_ID, expense: { ...EURO_MOCK_EXPENSE_ONE, description: "changed" } },
+        });
+        expect(store.expenses).toHaveLength(1);
+        expect(store.expenses[0]!.description).toBe("changed");
+
+        store.applyRemoteTripEvent({
+          event: "expense.updated",
+          data: { tripId: TRIP_ID, expense: AED_MOCK_EXPENSE_ONE },
+        });
+        expect(store.expenses).toHaveLength(2);
+      });
+
+      it("removes a deleted expense", () => {
+        const store = seed();
+        store.applyRemoteTripEvent({
+          event: "expense.deleted",
+          data: { tripId: TRIP_ID, expenseId: EURO_MOCK_EXPENSE_ONE.id },
+        });
+        expect(store.expenses).toHaveLength(0);
+      });
+
+      it("ignores adds and updates for an expense that was already deleted", () => {
+        const store = seed();
+        store.applyRemoteTripEvent({
+          event: "expense.deleted",
+          data: { tripId: TRIP_ID, expenseId: EURO_MOCK_EXPENSE_ONE.id },
+        });
+        store.applyRemoteTripEvent({
+          event: "expense.updated",
+          data: { tripId: TRIP_ID, expense: EURO_MOCK_EXPENSE_ONE },
+        });
+        store.applyRemoteTripEvent({
+          event: "expense.added",
+          data: { tripId: TRIP_ID, expenses: [EURO_MOCK_EXPENSE_ONE] },
+        });
+        expect(store.expenses).toHaveLength(0);
+      });
+
+      it("matches the trip when tripId arrives as a string", () => {
+        const store = seed();
+        store.applyRemoteTripEvent({
+          event: "expense.added",
+          data: { tripId: String(TRIP_ID) as unknown as number, expenses: [AED_MOCK_EXPENSE_ONE] },
+        });
+        expect(store.expenses).toHaveLength(2);
+      });
+
+      it("ignores events for other trips", () => {
+        const store = seed();
+        store.applyRemoteTripEvent({
+          event: "expense.deleted",
+          data: { tripId: TRIP_ID + 1, expenseId: EURO_MOCK_EXPENSE_ONE.id },
+        });
+        expect(store.expenses).toHaveLength(1);
+      });
+    });
   });
 });

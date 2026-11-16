@@ -15,8 +15,13 @@ import { computed, ref } from "vue";
 
 const appStore = useAppStore();
 
-const { user, lastCurrencySyncDateTime, shouldUseAddExpenseWizard, shouldUseAutoCityDetection } =
-  storeToRefs(appStore);
+const {
+  user,
+  lastCurrencySyncDateTime,
+  shouldUseAddExpenseWizard,
+  shouldUseAutoCityDetection,
+  shouldUseSSEUpdates,
+} = storeToRefs(appStore);
 
 const isModalOpen = ref(false);
 
@@ -65,6 +70,15 @@ const onClickLogout = () => {
             data-testid="use-auto-city-detection"
             :model-value="shouldUseAutoCityDetection"
             @update:model-value="appStore.setUseAutoCityDetection"
+          />
+        </div>
+        <div class="flex items-center justify-between">
+          <Label for="use-sse-updates">Use SSE updates</Label>
+          <Switch
+            id="use-sse-updates"
+            data-testid="use-sse-updates"
+            :model-value="shouldUseSSEUpdates"
+            @update:model-value="appStore.setUseSSEUpdates"
           />
         </div>
       </div>

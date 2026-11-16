@@ -143,4 +143,20 @@ describe("appStore", () => {
       expect(store.shouldUseAutoCityDetection).toBe(true);
     });
   });
+
+  describe("SSE updates preference", () => {
+    it("is enabled by default", () => {
+      expect(useAppStore().shouldUseSSEUpdates).toBe(true);
+    });
+
+    it("can be turned off and back on", () => {
+      const store = useAppStore();
+
+      store.setUseSSEUpdates(false);
+      expect(store.shouldUseSSEUpdates).toBe(false);
+
+      store.setUseSSEUpdates(true);
+      expect(store.shouldUseSSEUpdates).toBe(true);
+    });
+  });
 });

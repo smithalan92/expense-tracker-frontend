@@ -12,6 +12,7 @@ const ACTIONS_TO_SYNC: StorePropery[] = [
   "_addUnsavedExpense",
   "syncUnsavedExpenses",
   "_updateUnsavedExpense",
+  "applyRemoteTripEvent",
 ];
 
 function shouldSyncAction(action: StorePropery) {

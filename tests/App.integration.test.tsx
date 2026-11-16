@@ -43,6 +43,7 @@ vi.mock("@/api/expense", () => ({
   deleteExpense: vi.fn(),
 }));
 vi.mock("@/api/file", () => ({ uploadFile: vi.fn() }));
+vi.mock("@/api/events", () => ({ subscribeToTripEvents: vi.fn(() => () => {}) }));
 vi.mock("@vueuse/core", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@vueuse/core")>();
   return {

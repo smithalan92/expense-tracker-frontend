@@ -35,4 +35,4 @@ export function getTripFromLocalStorage(tripId: number) {
   return getFromLocalStorage<SavedTripData>(`${TRIP_DATA_KEY}__${tripId}`);
 }
 
-type SavedTripData = Omit<TripDataState, "isLoadingTripData" | "hasFailedToLoadTripData" | "filters">;
+type SavedTripData = Omit<TripDataState, "isLoadingTripData" | "hasFailedToLoadTripData" | "filters" | "deletedExpenseIds">;

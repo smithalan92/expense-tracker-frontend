@@ -18,6 +18,7 @@ const useAppStore = defineStore("app", {
     isLoggedIn: (state) => state.authToken !== null,
     shouldUseAddExpenseWizard: (state) => state.userPreferences?.useAddExpenseWizard ?? false,
     shouldUseAutoCityDetection: (state) => state.userPreferences?.useAutoCityDetection ?? true,
+    shouldUseSSEUpdates: (state) => state.userPreferences?.useSSEUpdates ?? true,
   },
   actions: {
     async loginUser({ email, password }: { email: string; password: string }) {
@@ -53,6 +54,10 @@ const useAppStore = defineStore("app", {
 
     setUseAutoCityDetection(shouldUse: boolean) {
       this.userPreferences.useAutoCityDetection = shouldUse;
+    },
+
+    setUseSSEUpdates(shouldUse: boolean) {
+      this.userPreferences.useSSEUpdates = shouldUse;
     },
   },
   persist: true,

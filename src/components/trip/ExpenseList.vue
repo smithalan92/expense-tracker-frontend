@@ -68,8 +68,13 @@ const expensesToDisplayByDate = computed(() => {
   const allExpensesByDate: ExpensesByDate[] = [];
 
   for (const date of dates) {
+    // Newest first. localDateTime only has minute precision, so break ties by id (higher first)
+    // to keep the order stable regardless of the order expenses were loaded or arrived in
     const expenses = expensesGroupedByDate.value[date]!.sort((a, b) => {
-      return new Date(b.localDateTime).getTime() - new Date(a.localDateTime).getTime();
+      const dateComp = new Date(b.localDateTime).getTime() - new Date(a.localDateTime).getTime();
+
+      if (a.id < 0 || b.id < 0) return dateComp;
+      return dateComp || b.id - a.id;
     });
 
     let formattedDate;

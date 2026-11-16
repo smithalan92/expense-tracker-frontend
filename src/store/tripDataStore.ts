@@ -6,6 +6,7 @@ import {
   type ExpensePayload,
   type TripExpense,
 } from "@/api/expense";
+import type { TripEvent } from "@/api/events";
 import { getTripData, type Trip, type TripCountry } from "@/api/trip";
 
 import useAppStore from "@/store/appStore";
@@ -34,6 +35,7 @@ const useTripDataStore = defineStore("tripData", {
     userIds: [],
     isLoadingTripData: false,
     hasFailedToLoadTripData: false,
+    deletedExpenseIds: [],
     filters: {
       search: "",
       filterByUserId: null,
@@ -313,9 +315,43 @@ const useTripDataStore = defineStore("tripData", {
 
       if (expenseIdx > -1) {
         await deleteExpense(expenseId);
+        this.deletedExpenseIds.push(expenseId);
         this.expenses.splice(expenseIdx, 1);
       } else {
         throw new Error("Could not find expense to delete");
+      }
+    },
+
+    // Applies an expense change another trip member made (received over the events stream)
+    applyRemoteTripEvent(event: TripEvent) {
+      // Number() since the backend has sent tripId as a string ("73") despite its types saying number
+      if (!this.trip.id || Number(event.data.tripId) !== this.trip.id) return;
+
+      switch (event.event) {
+        case "expense.added": {
+          const existingIds = new Set(this.expenses.map((e) => e.id));
+          const newExpenses = event.data.expenses.filter(
+            (e) => !existingIds.has(e.id) && !this.deletedExpenseIds.includes(e.id),
+          );
+          if (newExpenses.length) this.expenses.push(...newExpenses);
+          break;
+        }
+        case "expense.updated": {
+          const { expense } = event.data;
+          if (this.deletedExpenseIds.includes(expense.id)) break;
+          const idx = this.expenses.findIndex((e) => e.id === expense.id);
+          // Not found means we missed the add, so treat it as one
+          if (idx > -1) this.expenses.splice(idx, 1, expense);
+          else this.expenses.push(expense);
+          break;
+        }
+        case "expense.deleted": {
+          const expenseId = Number(event.data.expenseId);
+          this.deletedExpenseIds.push(expenseId);
+          const idx = this.expenses.findIndex((e) => e.id === expenseId);
+          if (idx > -1) this.expenses.splice(idx, 1);
+          break;
+        }
       }
     },
 
@@ -351,6 +387,10 @@ export interface TripDataState {
   userIds: number[];
   isLoadingTripData: boolean;
   hasFailedToLoadTripData: boolean;
+  // Ids of expenses deleted locally or via the events stream. Expense ids are never reused, so this
+  // lets a stream event that races a delete (e.g. someone's edit landing just after we deleted it)
+  // be ignored instead of bringing the expense back. Not persisted.
+  deletedExpenseIds: number[];
   filters: {
     search: string;
     filterByUserId: number | null;

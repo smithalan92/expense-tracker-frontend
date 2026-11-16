@@ -11,6 +11,7 @@ export const MOCK_TRIP_DATA_STATE: Omit<TripDataState, "isLoadingTripData" | "ha
   currencyIds: [1],
   categories: [{ id: 4, name: "Restaurants" }],
   userIds: [1],
+  deletedExpenseIds: [],
   filters: {
     search: "",
     filterByUserId: null,
