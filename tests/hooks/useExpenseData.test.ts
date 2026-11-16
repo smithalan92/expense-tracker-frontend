@@ -2,14 +2,23 @@ import useExpenseData from "@/components/trip/modals/AddOrEditExpense/hooks/useE
 import useAppStore from "@/store/appStore";
 import { format } from "date-fns";
 import { createPinia, setActivePinia } from "pinia";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { DUBAI, IRELAND_FOR_TRIP, UAE_FOR_TRIP } from "../fixtures/countries_cities";
 import { AED_MOCK_EXPENSE_ONE, EURO_MOCK_EXPENSE_ONE } from "../fixtures/expenses";
 import { USER_ONE, USER_TWO } from "../fixtures/users";
+
+const mockGetNearestCityId = vi.fn();
+
+vi.mock("@/components/trip/modals/AddOrEditExpense/hooks/useNearestCity", () => ({
+  default: () => ({ getNearestCityId: mockGetNearestCityId }),
+}));
 
 const DATE_FORMAT = "yyyy-MM-dd HH:mm";
 
 describe("useExpenseData", () => {
   beforeEach(() => {
+    vi.clearAllMocks();
+    mockGetNearestCityId.mockResolvedValue(null);
     setActivePinia(createPinia());
     const appStore = useAppStore();
     appStore.$patch({ user: USER_ONE, users: [USER_ONE, USER_TWO] });
@@ -213,6 +222,71 @@ describe("useExpenseData", () => {
       expenseData.selectedUsers = [];
 
       expect(isDataValid.value).toBe(false);
+    });
+  });
+
+  describe("auto city detection", () => {
+    const countries = [IRELAND_FOR_TRIP, UAE_FOR_TRIP];
+
+    it("defaults the city to the nearest city for a new expense", async () => {
+      mockGetNearestCityId.mockResolvedValue(DUBAI.id);
+
+      const { expenseData } = useExpenseData(null, 1, false, countries);
+      expect(expenseData.selectedCity).toBeNull();
+
+      await vi.waitFor(() => expect(expenseData.selectedCity).toBe(DUBAI.id));
+      expect(mockGetNearestCityId).toHaveBeenCalledWith(countries);
+    });
+
+    it("leaves the city empty when no nearest city could be determined", async () => {
+      mockGetNearestCityId.mockResolvedValue(null);
+
+      const { expenseData } = useExpenseData(null, 1, false, countries);
+      await vi.waitFor(() => expect(mockGetNearestCityId).toHaveBeenCalled());
+      await Promise.resolve();
+
+      expect(expenseData.selectedCity).toBeNull();
+    });
+
+    it("does not override a city the user picked while the location was loading", async () => {
+      let resolveCity!: (id: number) => void;
+      mockGetNearestCityId.mockReturnValue(new Promise<number>((resolve) => (resolveCity = resolve)));
+
+      const { expenseData } = useExpenseData(null, 1, false, countries);
+      expenseData.selectedCity = IRELAND_FOR_TRIP.cities[0].id;
+
+      resolveCity(DUBAI.id);
+      await Promise.resolve();
+      await Promise.resolve();
+
+      expect(expenseData.selectedCity).toBe(IRELAND_FOR_TRIP.cities[0].id);
+    });
+
+    it("does not detect the city when the user has turned the preference off", () => {
+      useAppStore().$patch({ userPreferences: { useAutoCityDetection: false } });
+
+      useExpenseData(null, 1, false, countries);
+
+      expect(mockGetNearestCityId).not.toHaveBeenCalled();
+    });
+
+    it("does not detect the city when editing an existing expense", () => {
+      const { expenseData } = useExpenseData(AED_MOCK_EXPENSE_ONE, 1, false, countries);
+
+      expect(mockGetNearestCityId).not.toHaveBeenCalled();
+      expect(expenseData.selectedCity).toBe(AED_MOCK_EXPENSE_ONE.city.id);
+    });
+
+    it("does not detect the city when copying an expense", () => {
+      useExpenseData(EURO_MOCK_EXPENSE_ONE, 1, true, countries);
+
+      expect(mockGetNearestCityId).not.toHaveBeenCalled();
+    });
+
+    it("does not detect the city when no countries are provided", () => {
+      useExpenseData(null, 1, false);
+
+      expect(mockGetNearestCityId).not.toHaveBeenCalled();
     });
   });
 });

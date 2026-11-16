@@ -15,7 +15,8 @@ import { computed, ref } from "vue";
 
 const appStore = useAppStore();
 
-const { user, lastCurrencySyncDateTime, shouldUseAddExpenseWizard } = storeToRefs(appStore);
+const { user, lastCurrencySyncDateTime, shouldUseAddExpenseWizard, shouldUseAutoCityDetection } =
+  storeToRefs(appStore);
 
 const isModalOpen = ref(false);
 
@@ -47,16 +48,25 @@ const onClickLogout = () => {
       <DialogHeader>
         <DialogTitle>Hi {{ user?.firstName }}</DialogTitle>
       </DialogHeader>
-      <div
-        class="flex items-center justify-between gap-4 px-2 py-4 border-t border-b border-solid border-white/20"
-      >
-        <Label for="use-add-expense-wizard">Use add expense wizard</Label>
-        <Switch
-          id="use-add-expense-wizard"
-          data-testid="use-add-expense-wizard-toggle"
-          :model-value="shouldUseAddExpenseWizard"
-          @update:model-value="appStore.setUseAddExpenseWizard"
-        />
+      <div class="flex flex-col gap-4 px-2 py-4 border-t border-b border-solid border-white/20">
+        <div class="flex items-center justify-between">
+          <Label for="use-add-expense-wizard">Use add expense wizard</Label>
+          <Switch
+            id="use-add-expense-wizard"
+            data-testid="use-add-expense-wizard-toggle"
+            :model-value="shouldUseAddExpenseWizard"
+            @update:model-value="appStore.setUseAddExpenseWizard"
+          />
+        </div>
+        <div class="flex items-center justify-between">
+          <Label for="use-auto-city-detection">Use auto city detection</Label>
+          <Switch
+            id="use-auto-city-detection"
+            data-testid="use-auto-city-detection"
+            :model-value="shouldUseAutoCityDetection"
+            @update:model-value="appStore.setUseAutoCityDetection"
+          />
+        </div>
       </div>
       <div class="flex flex-col">
         <div class="p-2 text-sm">

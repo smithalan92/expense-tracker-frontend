@@ -127,4 +127,20 @@ describe("appStore", () => {
       });
     });
   });
+
+  describe("auto city detection preference", () => {
+    it("is enabled by default", () => {
+      expect(useAppStore().shouldUseAutoCityDetection).toBe(true);
+    });
+
+    it("can be turned off and back on", () => {
+      const store = useAppStore();
+
+      store.setUseAutoCityDetection(false);
+      expect(store.shouldUseAutoCityDetection).toBe(false);
+
+      store.setUseAutoCityDetection(true);
+      expect(store.shouldUseAutoCityDetection).toBe(true);
+    });
+  });
 });

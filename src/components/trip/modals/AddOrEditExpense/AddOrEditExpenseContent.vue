@@ -57,7 +57,12 @@ const availableUsers = computed(() => {
 const defaultCurrency =
   availableCurrencies.value.find((c) => c.code === "EUR") ?? availableCurrencies.value[0];
 
-const { expenseData, isDataValid } = useExpenseData(expense, defaultCurrency.id, isCopyingExpense.value);
+const { expenseData, isDataValid } = useExpenseData(
+  expense,
+  defaultCurrency.id,
+  isCopyingExpense.value,
+  countries.value,
+);
 
 const { selectedCity, selectedCurrency } = toRefs(expenseData);
 

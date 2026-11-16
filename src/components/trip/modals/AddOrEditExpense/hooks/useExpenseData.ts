@@ -1,7 +1,10 @@
 import type { TripExpense } from "@/api/expense.ts";
+import type { TripCountry } from "@/api/trip.ts";
 import useAppStore from "@/store/appStore";
 import { format, isValid } from "date-fns";
+import { storeToRefs } from "pinia";
 import { computed, reactive } from "vue";
+import useNearestCity from "./useNearestCity.ts";
 
 const DATE_FORMAT = "yyyy-MM-dd HH:mm";
 
@@ -25,9 +28,11 @@ export default function useExpenseData(
   expense: TripExpense | null,
   defaultCurrencyId: number,
   isCopyingExpense: boolean,
+  countries: TripCountry[] = [],
 ) {
   const appStore = useAppStore();
-  const defaultSelectedUser = appStore.user?.id ? [appStore.user.id] : [];
+  const { shouldUseAutoCityDetection, user } = storeToRefs(appStore);
+  const defaultSelectedUser = user.value?.id ? [user.value.id] : [];
 
   const expenseData = reactive<ExpenseData>({
     expenseDate: format(expense?.localDateTime ?? new Date(), DATE_FORMAT),
@@ -38,6 +43,18 @@ export default function useExpenseData(
     description: getExpenseDescription({ description: expense?.description, isCopyingExpense }),
     amount: expense?.amount ?? null,
   });
+
+  // For a brand new expense, default the city to the one nearest the user (if we can get their location)
+  if (!expense && shouldUseAutoCityDetection.value && countries.length > 0) {
+    const { getNearestCityId } = useNearestCity();
+
+    getNearestCityId(countries).then((cityId) => {
+      // Don't override a city the user picked while we were waiting on the location
+      if (cityId !== null && expenseData.selectedCity === null) {
+        expenseData.selectedCity = cityId;
+      }
+    });
+  }
 
   const hasOriginalDataChanged = computed(() => {
     if (!expense) return true;

@@ -54,7 +54,7 @@ const availableUsers = computed(() => users.value.filter((u) => userIds.value.in
 const defaultCurrency =
   availableCurrencies.value.find((c) => c.code === "EUR") ?? availableCurrencies.value[0];
 
-const { expenseData, isDataValid } = useExpenseData(null, defaultCurrency.id, false);
+const { expenseData, isDataValid } = useExpenseData(null, defaultCurrency.id, false, countries.value);
 const { selectedCity, selectedCurrency } = toRefs(expenseData);
 
 useSyncCurrencyWithSelectedCountry({
