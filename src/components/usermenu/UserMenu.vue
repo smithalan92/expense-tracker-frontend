@@ -53,7 +53,7 @@ const onClickLogout = () => {
       <DialogHeader>
         <DialogTitle>Hi {{ user?.firstName }}</DialogTitle>
       </DialogHeader>
-      <div class="flex flex-col gap-4 px-2 py-4 border-t border-b border-solid border-white/20">
+      <div class="flex flex-col gap-6 px-2 py-8 border-t border-b border-solid border-white/20">
         <div class="flex items-center justify-between">
           <Label for="use-add-expense-wizard">Use add expense wizard</Label>
           <Switch
@@ -82,14 +82,15 @@ const onClickLogout = () => {
           />
         </div>
       </div>
-      <div class="flex flex-col">
-        <div class="p-2 text-sm">
+      <div class="flex flex-col px-2 py-4">
+        <div class="text-sm">
           Last currency sync:
           <strong>{{ currencySyncDate }}</strong>
         </div>
       </div>
 
-      <DialogFooter>
+      <DialogFooter class="gap-4">
+        <Button variant="secondary" @click="isModalOpen = false">Close</Button>
         <Button variant="destructive" @click="onClickLogout">Logout</Button>
       </DialogFooter>
     </DialogContent>
