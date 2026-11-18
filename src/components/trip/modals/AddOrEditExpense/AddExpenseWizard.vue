@@ -37,7 +37,7 @@ const tripDataStore = useTripDataStore();
 const { addExpense } = tripDataStore;
 const { countries, userIds } = storeToRefs(tripDataStore);
 const { currencies, users } = storeToRefs(useAppStore());
-const { hasLocationAccess, requestLocation, ensureLocationAccess } = useLocationAccess();
+const { getLatLong, ensureLocationAccess } = useLocationAccess();
 
 const step = ref(0);
 const isSaving = ref(false);
@@ -149,14 +149,8 @@ const onClickAdd = async () => {
       userIds: expenseData.selectedUsers,
     };
 
-    if (hasLocationAccess.value) {
-      try {
-        const { coords } = await requestLocation();
-        payload.latlong = `${coords.latitude},${coords.longitude}`;
-      } catch {
-        // Do nothing if we cant get the location
-      }
-    }
+    const latlong = await getLatLong();
+    if (latlong) payload.latlong = latlong;
 
     await addExpense({ payload });
     toast.success("Expense added.");

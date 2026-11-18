@@ -34,7 +34,7 @@ const tripDataStore = useTripDataStore();
 const { addExpense, updateExpense } = tripDataStore;
 const { countries, userIds } = storeToRefs(tripDataStore);
 const { currencies, users } = storeToRefs(useAppStore());
-const { hasLocationAccess, requestLocation, ensureLocationAccess } = useLocationAccess();
+const { getLatLong, ensureLocationAccess } = useLocationAccess();
 
 const amountInputRef = ref<InstanceType<typeof Input> | null>(null);
 
@@ -127,15 +127,8 @@ const onClickAddOrEditExpense = async () => {
       await updateExpense({ expenseId: expense!.id, payload });
       toast.success("Expense updated.");
     } else {
-      if (hasLocationAccess.value) {
-        try {
-          const { coords } = await requestLocation();
-          payload.latlong = `${coords.latitude},${coords.longitude}`;
-          console.log(payload.latlong);
-        } catch {
-          // Do nothing if we cant get the location
-        }
-      }
+      const latlong = await getLatLong();
+      if (latlong) payload.latlong = latlong;
 
       await addExpense({ payload });
       if (isCopyingExpense.value) {

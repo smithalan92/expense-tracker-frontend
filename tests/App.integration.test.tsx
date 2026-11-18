@@ -561,6 +561,9 @@ describe("App.integration", () => {
       await waitFor(() => expect(screen.getByTestId("expense-99")).toBeInTheDocument());
       expect(within(screen.getByTestId("expense-99")).getByText("Lunch at restaurant")).toBeInTheDocument();
 
+      // Wait for the save to finish closing the form before reopening it
+      await waitFor(() => expect(screen.getByText("Expense added.")).toBeInTheDocument());
+
       // Reopening the form (even before the closing drawer animation finishes) must not show stale data
       await fireEvent.click(screen.getByTestId("add-expense-button"));
       await waitFor(() => expect(screen.getByRole("heading", { name: "Add Expense" })).toBeInTheDocument());
@@ -649,6 +652,9 @@ describe("App.integration", () => {
       });
 
       await waitFor(() => expect(screen.getByTestId("expense-99")).toBeInTheDocument());
+
+      // Wait for the save to finish closing the wizard before reopening it
+      await waitFor(() => expect(screen.getByText("Expense added.")).toBeInTheDocument());
 
       // Reopening the wizard must restart on step 1 without stale data
       await fireEvent.click(screen.getByTestId("add-expense-button"));
