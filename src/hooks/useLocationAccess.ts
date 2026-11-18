@@ -1,4 +1,4 @@
-import { computed, ref } from "vue";
+import { computed, readonly, ref } from "vue";
 
 export default function useLocationAccess() {
   const state = ref<LocationPermissionState | undefined>(undefined);
@@ -47,7 +47,13 @@ export default function useLocationAccess() {
     }
   };
 
-  return { hasLocationAccess, getPermissionState, requestLocation, ensureLocationAccess };
+  return {
+    permissionState: readonly(state),
+    hasLocationAccess,
+    getPermissionState,
+    requestLocation,
+    ensureLocationAccess,
+  };
 }
 
 export type LocationPermissionState = "granted" | "denied" | "prompt" | "unsupported";

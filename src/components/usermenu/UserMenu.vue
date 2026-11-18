@@ -5,13 +5,15 @@ import DialogContent from "@/components/ui/dialog/DialogContent.vue";
 import DialogFooter from "@/components/ui/dialog/DialogFooter.vue";
 import DialogHeader from "@/components/ui/dialog/DialogHeader.vue";
 import DialogTitle from "@/components/ui/dialog/DialogTitle.vue";
+import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
+import useLocationAccess from "@/hooks/useLocationAccess.ts";
 import { Switch } from "@/components/ui/switch";
 import useAppStore from "@/store/appStore";
 import { getAvatarStyles } from "@/utils/ui";
 import { format } from "date-fns";
 import { storeToRefs } from "pinia";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 
 const appStore = useAppStore();
 
@@ -32,6 +34,49 @@ const currencySyncDate = computed(() =>
 const userInitals = computed(() => {
   if (!user) return "";
   return `${user.value?.firstName.slice(0, 1)}${user.value?.lastName.slice(0, 1)}`.toUpperCase();
+});
+
+const { permissionState, getPermissionState, requestLocation } = useLocationAccess();
+const isRequestingLocation = ref(false);
+const locationRequestFailed = ref(false);
+
+const locationStatus = computed(() => {
+  switch (permissionState.value) {
+    case "granted":
+      return { label: "Granted", variant: "default" as const };
+    case "denied":
+      return { label: "Denied", variant: "destructive" as const };
+    case "prompt":
+      return { label: "Not requested", variant: "secondary" as const };
+    case "unsupported":
+      return { label: "Unsupported", variant: "outline" as const };
+    default:
+      return { label: "Checking…", variant: "outline" as const };
+  }
+});
+
+const canRequestLocation = computed(
+  () => permissionState.value === "prompt" || permissionState.value === "denied",
+);
+
+const onClickGrantLocation = async () => {
+  isRequestingLocation.value = true;
+  locationRequestFailed.value = false;
+  try {
+    await requestLocation();
+  } catch {
+    locationRequestFailed.value = true;
+  } finally {
+    await getPermissionState();
+    isRequestingLocation.value = false;
+  }
+};
+
+watch(isModalOpen, (open) => {
+  if (open) {
+    locationRequestFailed.value = false;
+    getPermissionState();
+  }
 });
 
 const onClickLogout = () => {
@@ -80,6 +125,33 @@ const onClickLogout = () => {
             :model-value="shouldUseSSEUpdates"
             @update:model-value="appStore.setUseSSEUpdates"
           />
+        </div>
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center justify-between gap-4">
+            <span class="text-sm font-medium">Location access</span>
+            <div class="flex items-center gap-2">
+              <Badge :variant="locationStatus.variant" data-testid="location-permission-status">
+                {{ locationStatus.label }}
+              </Badge>
+              <Button
+                v-if="canRequestLocation"
+                size="sm"
+                variant="secondary"
+                data-testid="grant-location-access"
+                :disabled="isRequestingLocation"
+                @click="onClickGrantLocation"
+              >
+                {{ permissionState === "denied" ? "Retry" : "Allow" }}
+              </Button>
+            </div>
+          </div>
+          <p
+            v-if="permissionState === 'denied' && locationRequestFailed"
+            class="text-xs text-muted-foreground"
+          >
+            Your browser is blocking location for this site. Enable it in your browser's site
+            settings (usually via the icon next to the address bar), then reopen this menu.
+          </p>
         </div>
       </div>
       <div class="flex flex-col px-2 py-4">
