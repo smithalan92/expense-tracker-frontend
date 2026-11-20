@@ -1,3 +1,4 @@
+import type { TripEvent } from "@/api/events";
 import {
   addExpensesToTrip,
   deleteExpense,
@@ -6,13 +7,33 @@ import {
   type ExpensePayload,
   type TripExpense,
 } from "@/api/expense";
-import type { TripEvent } from "@/api/events";
 import { getTripData, type Trip, type TripCountry } from "@/api/trip";
 
 import useAppStore from "@/store/appStore";
 import { getTripFromLocalStorage } from "@/utils/localstorage";
 import { isNetworkError } from "@/utils/network";
+import { endOfDay, isAfter } from "date-fns";
 import { acceptHMRUpdate, defineStore } from "pinia";
+
+const isFutureExpense = (exp: TripExpense, endOfToday: Date) =>
+  isAfter(new Date(exp.localDateTime), endOfToday);
+
+// The filters from the filters drawer (everything except hideFutureExpenses)
+const matchesFilters = (exp: TripExpense, filters: TripDataState["filters"]) => {
+  const { search, filterByUserId, filterByCategoryId, excludedCategoryIds } = filters;
+
+  const hasMatchingDescription = search.trim() ? exp.description.includes(search.trim()) : true;
+
+  const hasMatchingUser = filterByUserId
+    ? exp.users.find((user) => user.id === filterByUserId) !== undefined
+    : true;
+
+  const hasMatchingCategory =
+    (filterByCategoryId ? exp.category.id === filterByCategoryId : true) &&
+    !excludedCategoryIds.includes(exp.category.id);
+
+  return hasMatchingDescription && hasMatchingUser && hasMatchingCategory;
+};
 
 const useTripDataStore = defineStore("tripData", {
   state: (): TripDataState => ({
@@ -41,24 +62,35 @@ const useTripDataStore = defineStore("tripData", {
       filterByUserId: null,
       filterByCategoryId: null,
       excludedCategoryIds: [],
+      hideFutureExpenses: true,
     },
   }),
   getters: {
     getExpenses(state) {
+      const endOfToday = endOfDay(new Date());
+
       return [...state.expenses, ...state.unsavedExpenses].filter((exp) => {
-        const { search, filterByUserId, filterByCategoryId, excludedCategoryIds } = state.filters;
-        const hasMatchingDescription = search.trim() ? exp.description.includes(search.trim()) : true;
+        if (state.filters.hideFutureExpenses && isFutureExpense(exp, endOfToday)) return false;
 
-        const hasMatchingUser = filterByUserId
-          ? exp.users.find((user) => user.id === filterByUserId) !== undefined
-          : true;
-
-        const hasMatchingCategory =
-          (filterByCategoryId ? exp.category.id === filterByCategoryId : true) &&
-          !excludedCategoryIds.includes(exp.category.id);
-
-        return hasMatchingDescription && hasMatchingUser && hasMatchingCategory;
+        return matchesFilters(exp, state.filters);
       });
+    },
+    // Future expenses that match the active filters, whether or not they're currently hidden
+    futureExpenseCount(state): number {
+      const endOfToday = endOfDay(new Date());
+
+      return [...state.expenses, ...state.unsavedExpenses].filter(
+        (exp) => isFutureExpense(exp, endOfToday) && matchesFilters(exp, state.filters),
+      ).length;
+    },
+    hasAnyExpenses(state) {
+      return state.expenses.length + state.unsavedExpenses.length > 0;
+    },
+    // Ignores filters, so the toggle doesn't come and go as filters change
+    hasFutureExpenses(state) {
+      const endOfToday = endOfDay(new Date());
+
+      return [...state.expenses, ...state.unsavedExpenses].some((exp) => isFutureExpense(exp, endOfToday));
     },
     hasUnsavedExpenses(state) {
       return state.unsavedExpenses.length > 0;
@@ -359,13 +391,19 @@ const useTripDataStore = defineStore("tripData", {
       this.$reset();
     },
 
+    // Leaves hideFutureExpenses alone: it's a view toggle, not one of the filters in the drawer
     clearFilters() {
       this.filters = {
         search: "",
         filterByCategoryId: null,
         excludedCategoryIds: [],
         filterByUserId: null,
+        hideFutureExpenses: this.filters.hideFutureExpenses,
       };
+    },
+
+    toggleHideFutureExpenses() {
+      this.filters.hideFutureExpenses = !this.filters.hideFutureExpenses;
     },
   },
   persist: false, // We need manual persistance due to saving different trips
@@ -396,5 +434,6 @@ export interface TripDataState {
     filterByUserId: number | null;
     filterByCategoryId: number | null;
     excludedCategoryIds: number[];
+    hideFutureExpenses: boolean;
   };
 }

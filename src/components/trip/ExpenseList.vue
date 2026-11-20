@@ -2,7 +2,7 @@
 import type { TripExpense } from "@/api/expense";
 import useTripData from "@/store/tripDataStore";
 import { useIsOnline } from "@/utils/network";
-import { BanknoteX } from "@lucide/vue";
+import { BanknoteX, CalendarClock } from "@lucide/vue";
 import { format, isSameYear } from "date-fns";
 import { storeToRefs } from "pinia";
 import { computed, ref } from "vue";
@@ -17,8 +17,11 @@ import useRefreshOnForeground from "./hooks/useRefreshOnForeground";
 const props = defineProps<{ class?: string }>();
 
 const store = useTripData();
-const { getExpenses, areAnyFiltersActive } = storeToRefs(store);
-const { clearFilters, refreshTripData } = store;
+const { getExpenses, areAnyFiltersActive, filters, futureExpenseCount } = storeToRefs(store);
+const { clearFilters, refreshTripData, toggleHideFutureExpenses } = store;
+
+// futureExpenseCount respects the active filters, so this only counts what "Show" would reveal
+const hiddenUpcomingCount = computed(() => (filters.value.hideFutureExpenses ? futureExpenseCount.value : 0));
 
 const isOnline = useIsOnline();
 const currentTripId = useGetCurrentTripId();
@@ -117,6 +120,20 @@ const expensesToDisplayByDate = computed(() => {
       :threshold-px="thresholdPx"
     />
 
+    <button
+      v-if="hiddenUpcomingCount > 0"
+      type="button"
+      data-testid="show-upcoming-expenses-button"
+      class="mx-4 mt-4 flex items-center gap-3 rounded-lg border border-dashed px-4 py-3 text-left text-sm text-muted-foreground"
+      @click="toggleHideFutureExpenses"
+    >
+      <CalendarClock class="size-4 shrink-0" />
+      <span class="flex-1">
+        {{ hiddenUpcomingCount }} upcoming {{ hiddenUpcomingCount === 1 ? "expense" : "expenses" }} hidden
+      </span>
+      <span class="font-medium text-foreground">Show</span>
+    </button>
+
     <div
       v-if="!getExpenses.length"
       class="flex flex-col flex-1 justify-center items-center py-12"
@@ -130,6 +147,8 @@ const expensesToDisplayByDate = computed(() => {
           Clear filters
         </Button>
       </div>
+
+      <span v-else-if="hiddenUpcomingCount > 0">No expenses up to today</span>
 
       <span v-else>No expenses just yet</span>
     </div>

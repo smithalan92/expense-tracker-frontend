@@ -17,5 +17,6 @@ export const MOCK_TRIP_DATA_STATE: Omit<TripDataState, "isLoadingTripData" | "ha
     filterByUserId: null,
     filterByCategoryId: null,
     excludedCategoryIds: [],
+    hideFutureExpenses: true,
   },
 };

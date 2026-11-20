@@ -3,7 +3,15 @@ import useTripData from "@/store/tripDataStore";
 import useUIStateStore from "@/store/uiState.ts";
 import { useIsOnline } from "@/utils/network.ts";
 import { formatDateRange, getTripCoverStyle } from "@/utils/ui";
-import { Calendar, ChartColumn, ChevronLeft, CloudSync, PlusCircle } from "@lucide/vue";
+import {
+  Calendar,
+  CalendarClock,
+  CalendarOff,
+  ChartColumn,
+  ChevronLeft,
+  CloudSync,
+  PlusCircle,
+} from "@lucide/vue";
 import { storeToRefs } from "pinia";
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
@@ -23,17 +31,24 @@ const tripDataStore = useTripData();
 const { setIsAddingExpense } = useUIStateStore();
 const router = useRouter();
 
-const { trip, countries, totalExpenseAmount, hasUnsavedExpenses, getExpenses, areAnyFiltersActive } =
-  storeToRefs(tripDataStore);
+const {
+  trip,
+  countries,
+  totalExpenseAmount,
+  hasUnsavedExpenses,
+  hasAnyExpenses,
+  hasFutureExpenses,
+  filters,
+} = storeToRefs(tripDataStore);
 
-const { syncUnsavedExpenses } = tripDataStore;
+const { syncUnsavedExpenses, toggleHideFutureExpenses } = tripDataStore;
 
 const isSyncingExpenses = ref(false);
 const isShowingStats = ref(false);
 
-const hasNoExpenses = computed(() => {
-  return !getExpenses.value.length && !areAnyFiltersActive.value;
-});
+// Based on all expenses, so the header (and its toggles) stays visible when filters or the
+// future expenses toggle hide everything
+const hasNoExpenses = computed(() => !hasAnyExpenses.value);
 
 const onClickSync = async () => {
   try {
@@ -104,6 +119,16 @@ const onClickSync = async () => {
         </div>
       </div>
       <div class="flex-1 flex justify-end gap-2">
+        <Button
+          v-if="hasFutureExpenses"
+          data-testid="toggle-future-expenses-button"
+          variant="outline"
+          :aria-label="filters.hideFutureExpenses ? 'Show upcoming expenses' : 'Hide upcoming expenses'"
+          @click="toggleHideFutureExpenses"
+        >
+          <CalendarOff v-if="filters.hideFutureExpenses" class="size-4 text-red-500" />
+          <CalendarClock v-else class="size-4" />
+        </Button>
         <Button
           data-testid="toggle-stats-button"
           :variant="isShowingStats ? 'default' : 'outline'"

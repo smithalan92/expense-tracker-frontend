@@ -372,8 +372,14 @@ describe("App.integration", () => {
     // Country fixtures with globally-unique city IDs so currency auto-sync works correctly
     const CORK_CITY = { id: 10, name: "Cork", latitude: 51.8985, longitude: -8.4756 };
     const DUBAI_CITY = { id: 20, name: "Dubai", latitude: 25.2048, longitude: 55.2708 };
-    const IRELAND = { ...IRELAND_FOR_TRIP, cities: [CORK_CITY, { id: 11, name: "Dublin", latitude: 53.3498, longitude: -6.2603 }] };
-    const UAE = { ...UAE_FOR_TRIP, cities: [DUBAI_CITY, { id: 21, name: "Abu Dhabi", latitude: 24.4539, longitude: 54.3773 }] };
+    const IRELAND = {
+      ...IRELAND_FOR_TRIP,
+      cities: [CORK_CITY, { id: 11, name: "Dublin", latitude: 53.3498, longitude: -6.2603 }],
+    };
+    const UAE = {
+      ...UAE_FOR_TRIP,
+      cities: [DUBAI_CITY, { id: 21, name: "Abu Dhabi", latitude: 24.4539, longitude: 54.3773 }],
+    };
 
     // Factory — always returns a fresh object so store mutations (e.g. splice in deleteExpense)
     // never corrupt data shared between tests.
@@ -425,6 +431,84 @@ describe("App.integration", () => {
 
       // Total spent: €10.00 (EURO expense) + €4.00 (AED expense) = €14.00
       expect(screen.getByTestId("total-expense-amount")).toHaveTextContent("€14.00");
+    });
+
+    it("hides the upcoming expenses toggle when there are no upcoming expenses", async () => {
+      vi.mocked(loadAppData).mockResolvedValue(GET_APP_DATA_FIXTURE);
+      vi.mocked(getTripData).mockResolvedValue(makeExpenseTripData());
+
+      await navigateToTrip();
+
+      await waitFor(() => expect(screen.getByTestId("expense-1")).toBeInTheDocument());
+      expect(screen.queryByTestId("toggle-future-expenses-button")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("show-upcoming-expenses-button")).not.toBeInTheDocument();
+    });
+
+    it("hides upcoming expenses by default and toggles them with the calendar button", async () => {
+      const futureExpense = { ...EURO_MOCK_EXPENSE_ONE, id: 77, localDateTime: "2099-01-01T12:00:00" };
+
+      vi.mocked(loadAppData).mockResolvedValue(GET_APP_DATA_FIXTURE);
+      vi.mocked(getTripData).mockResolvedValue(
+        makeExpenseTripData({ expenses: [{ ...EURO_MOCK_EXPENSE_ONE }, futureExpense] }),
+      );
+
+      await navigateToTrip();
+
+      await waitFor(() => expect(screen.getByTestId("expense-1")).toBeInTheDocument());
+      expect(screen.queryByTestId("expense-77")).not.toBeInTheDocument();
+
+      const toggle = screen.getByTestId("toggle-future-expenses-button");
+      expect(toggle).toHaveAccessibleName("Show upcoming expenses");
+
+      await fireEvent.click(toggle);
+      await waitFor(() => expect(screen.getByTestId("expense-77")).toBeInTheDocument());
+      expect(toggle).toHaveAccessibleName("Hide upcoming expenses");
+      expect(screen.queryByTestId("show-upcoming-expenses-button")).not.toBeInTheDocument();
+
+      await fireEvent.click(toggle);
+      await waitFor(() => expect(screen.queryByTestId("expense-77")).not.toBeInTheDocument());
+    });
+
+    it("shows how many upcoming expenses are hidden and reveals them from the list", async () => {
+      const futureExpenses = [
+        { ...EURO_MOCK_EXPENSE_ONE, id: 77, localDateTime: "2099-01-01T12:00:00" },
+        { ...EURO_MOCK_EXPENSE_ONE, id: 78, localDateTime: "2099-01-02T12:00:00" },
+      ];
+
+      vi.mocked(loadAppData).mockResolvedValue(GET_APP_DATA_FIXTURE);
+      vi.mocked(getTripData).mockResolvedValue(
+        makeExpenseTripData({ expenses: [{ ...EURO_MOCK_EXPENSE_ONE }, ...futureExpenses] }),
+      );
+
+      await navigateToTrip();
+
+      const row = await screen.findByTestId("show-upcoming-expenses-button");
+      expect(row).toHaveTextContent("2 upcoming expenses hidden");
+
+      await fireEvent.click(row);
+      await waitFor(() => {
+        expect(screen.getByTestId("expense-77")).toBeInTheDocument();
+        expect(screen.getByTestId("expense-78")).toBeInTheDocument();
+      });
+      expect(screen.queryByTestId("show-upcoming-expenses-button")).not.toBeInTheDocument();
+    });
+
+    it("keeps the header and upcoming row when upcoming expenses are the only ones", async () => {
+      const futureExpense = { ...EURO_MOCK_EXPENSE_ONE, id: 77, localDateTime: "2099-01-01T12:00:00" };
+
+      vi.mocked(loadAppData).mockResolvedValue(GET_APP_DATA_FIXTURE);
+      vi.mocked(getTripData).mockResolvedValue(makeExpenseTripData({ expenses: [futureExpense] }));
+
+      await navigateToTrip();
+
+      await waitFor(() => expect(screen.getByText("No expenses up to today")).toBeInTheDocument());
+      expect(screen.getByTestId("toggle-future-expenses-button")).toBeInTheDocument();
+      expect(screen.getByTestId("show-upcoming-expenses-button")).toHaveTextContent(
+        "1 upcoming expense hidden",
+      );
+
+      await fireEvent.click(screen.getByTestId("show-upcoming-expenses-button"));
+      await waitFor(() => expect(screen.getByTestId("expense-77")).toBeInTheDocument());
     });
 
     it("shows a list of expenses", async () => {

@@ -1,6 +1,6 @@
 import { BASE_LOCALSTORAGE_KEY } from "@/utils/localstorage";
 import { createPinia, setActivePinia } from "pinia";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { RESTAURANTS, SNACKS_DRINKS } from "../fixtures/categories";
 import { IRELAND_FOR_TRIP } from "../fixtures/countries_cities";
 import { AED_MOCK_EXPENSE_ONE, EURO_MOCK_EXPENSE_ONE } from "../fixtures/expenses";
@@ -153,6 +153,106 @@ describe("tripDataStore", () => {
         });
 
         expect(store.getExpenses).toHaveLength(2);
+      });
+
+      describe("future expenses", () => {
+        const PAST_EXPENSE = { ...EURO_MOCK_EXPENSE_ONE, id: 101, localDateTime: "2026-11-19T10:00:00" };
+        const TODAY_EXPENSE = { ...EURO_MOCK_EXPENSE_ONE, id: 102, localDateTime: "2026-11-20T23:30:00" };
+        const FUTURE_EXPENSE = { ...EURO_MOCK_EXPENSE_ONE, id: 103, localDateTime: "2026-11-21T00:10:00" };
+
+        beforeEach(() => {
+          vi.useFakeTimers({ toFake: ["Date"] });
+          vi.setSystemTime(new Date(2026, 10, 20, 12, 0));
+        });
+
+        afterEach(() => {
+          vi.useRealTimers();
+        });
+
+        it("hides expenses dated after today by default, keeping today's", () => {
+          const store = useTripDataStore();
+          store.$patch({ expenses: [PAST_EXPENSE, TODAY_EXPENSE, FUTURE_EXPENSE] });
+
+          expect(store.getExpenses.map((e) => e.id)).toEqual([101, 102]);
+        });
+
+        it("hides future unsaved expenses too", () => {
+          const store = useTripDataStore();
+          store.$patch({ unsavedExpenses: [FUTURE_EXPENSE] });
+
+          expect(store.getExpenses).toHaveLength(0);
+        });
+
+        it("shows future expenses once toggled", () => {
+          const store = useTripDataStore();
+          store.$patch({ expenses: [PAST_EXPENSE, FUTURE_EXPENSE] });
+
+          store.toggleHideFutureExpenses();
+
+          expect(store.filters.hideFutureExpenses).toBe(false);
+          expect(store.getExpenses.map((e) => e.id)).toEqual([101, 103]);
+        });
+
+        it("counts future expenses whether or not they're hidden", () => {
+          const store = useTripDataStore();
+          store.$patch({
+            expenses: [PAST_EXPENSE, TODAY_EXPENSE, FUTURE_EXPENSE],
+            unsavedExpenses: [{ ...FUTURE_EXPENSE, id: 104 }],
+          });
+
+          expect(store.futureExpenseCount).toBe(2);
+
+          store.toggleHideFutureExpenses();
+          expect(store.futureExpenseCount).toBe(2);
+        });
+
+        it("only counts future expenses that match the active filters", () => {
+          const store = useTripDataStore();
+          store.$patch({
+            expenses: [
+              FUTURE_EXPENSE,
+              { ...FUTURE_EXPENSE, id: 104, description: "Hotel", category: SNACKS_DRINKS },
+              { ...PAST_EXPENSE, description: "Hotel" },
+            ],
+          });
+
+          store.filters.search = "Hotel";
+          expect(store.futureExpenseCount).toBe(1);
+
+          store.filters.search = "";
+          store.filters.excludedCategoryIds = [SNACKS_DRINKS.id];
+          expect(store.futureExpenseCount).toBe(1);
+        });
+
+        it("reports whether there are any future expenses, ignoring filters", () => {
+          const store = useTripDataStore();
+          store.$patch({ expenses: [PAST_EXPENSE, TODAY_EXPENSE] });
+          expect(store.hasFutureExpenses).toBe(false);
+
+          store.$patch({ unsavedExpenses: [FUTURE_EXPENSE] });
+          expect(store.hasFutureExpenses).toBe(true);
+
+          store.filters.search = "no match";
+          expect(store.hasFutureExpenses).toBe(true);
+        });
+
+        it("does not count as an active filter", () => {
+          const store = useTripDataStore();
+          expect(store.filters.hideFutureExpenses).toBe(true);
+          expect(store.areAnyFiltersActive).toBe(false);
+        });
+
+        it("still counts future expenses in the total", () => {
+          const store = useTripDataStore();
+          store.$patch({
+            expenses: [
+              { ...PAST_EXPENSE, euroAmount: "10.00" },
+              { ...FUTURE_EXPENSE, euroAmount: "5.00" },
+            ],
+          });
+
+          expect(store.totalExpenseAmount).toBe("€15.00");
+        });
       });
     });
 
@@ -416,6 +516,7 @@ describe("tripDataStore", () => {
           filterByUserId: USER_ONE.id,
           filterByCategoryId: SNACKS_DRINKS.id,
           excludedCategoryIds: [],
+          hideFutureExpenses: true,
         });
       });
 
@@ -692,6 +793,15 @@ describe("tripDataStore", () => {
         expect(store.filters.filterByUserId).toBeNull();
         expect(store.filters.filterByCategoryId).toBeNull();
         expect(store.filters.excludedCategoryIds).toEqual([]);
+      });
+
+      it("keeps the future expenses toggle as it was", () => {
+        const store = useTripDataStore();
+        store.toggleHideFutureExpenses();
+
+        store.clearFilters();
+
+        expect(store.filters.hideFutureExpenses).toBe(false);
       });
     });
 
